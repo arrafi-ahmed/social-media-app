@@ -1,0 +1,7 @@
+{
+  "name": "wayzaway",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
