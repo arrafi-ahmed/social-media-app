@@ -242,38 +242,101 @@ exports.getWishlistEvents = (userId, page) => {
 
   const sql =
     "select * from event_wishlist where user_id = $1 order by created_at desc limit $2 offset $3";
-  return db.getRows(sql, [userId, itemsPerPage, offset]);
+  return db.getRows(sql, [userId, itemsPerPage, offset]).then((results) => {
+    return results.map((result) => {
+      result.images = result.images ? JSON.parse(result.images) : [];
+      return result;
+    });
+  });
 };
 
 exports.getWishlistEvent = (eventId) => {
   const sql =
     "select ew.*, c.full_name, c.image from event_wishlist ew join cuser c on ew.user_id = c.id where ew.id = $1";
-  return db.getRow(sql, [eventId]);
-};
-
-exports.addWishlistEvent = (body, userId) => {
-  const { title, location, description, category } = body;
-  const sql =
-    "INSERT INTO event_wishlist (title, location, description, category, user_id, created_at) VALUES ($1, $2, $3," +
-    " $4, $5, $6);";
-  const values = [title, location, description, category, userId, new Date()];
-
-  return db.execute(sql, values).then((result) => {
-    const sql2 = "SELECT * FROM event_wishlist WHERE id = ?;";
-    return db.getRow(sql2, [result.insertId]);
+  return db.getRow(sql, [eventId]).then((result) => {
+    if (!result) return null;
+    result.images = JSON.parse(result.images);
+    return result;
   });
 };
 
-exports.editWishlistEvent = (body, userId) => {
+exports.addWishlistEvent = (body, files, userId) => {
   const { title, location, description, category } = body;
   const sql =
-    "update event_wishlist set title=$1, location=$2, description=$3, category=$4 where id = $5 and user_id = $6;";
-  const values = [title, location, description, category, body.id, userId];
+    "INSERT INTO event_wishlist (title, location, description, category, user_id, created_at, images) VALUES ($1, $2," +
+    " $3, $4, $5, $6, $7);";
+
+  const fileNames = JSON.stringify(
+    files ? files.map((file) => file.filename) : []
+  );
+  const values = [
+    title,
+    location,
+    description,
+    category,
+    userId,
+    new Date(),
+    fileNames,
+  ];
 
   return db.execute(sql, values).then((result) => {
     const sql2 = "SELECT * FROM event_wishlist WHERE id = ?;";
-    return db.getRow(sql2, [body.id]);
+    return db.getRow(sql2, [result.insertId]).then((result) => {
+      result.images = result.images ? JSON.parse(result.images) : [];
+      return result;
+    });
   });
+};
+
+exports.editWishlistEvent = async (body, files, userId) => {
+  const { id, title, location, description, category, imagesInit, images } =
+    body;
+
+  const parsedImagesInit = JSON.parse(imagesInit);
+  const parsedImages = JSON.parse(images);
+  let filesMarker = 0;
+  let rmImages = [];
+
+  parsedImagesInit.forEach((item, index) => {
+    //add new item
+    if (parsedImages[index] && typeof parsedImages[index] === "object") {
+      parsedImagesInit[index] = files[filesMarker].filename;
+      filesMarker++;
+    }
+    //remove item
+    else if (item && !parsedImages[index]) {
+      rmImages.push(item);
+    }
+  });
+  const filteredParsedImages = parsedImagesInit.filter(
+    (item) => item && !rmImages.includes(item)
+  ); // This creates a new array with the items that are truthy and not in rmImages
+
+  const sql =
+    "update event_wishlist set title=$1, location=$2, description=$3, category=$4, images=$5 where id = $6 and" +
+    " user_id = $7;";
+
+  const values = [
+    title,
+    location,
+    description,
+    category,
+    JSON.stringify(filteredParsedImages),
+    id,
+    userId,
+  ];
+
+  const updatedEvent = db.execute(sql, values).then((result) => {
+    const sql2 = "SELECT * FROM event_wishlist WHERE id = ?;";
+    return db.getRow(sql2, [id]).then((result) => {
+      result.images = result.images ? JSON.parse(result.images) : [];
+      return result;
+    });
+  });
+
+  if (rmImages && rmImages.length > 0) await removeImages(rmImages);
+
+  return updatedEvent;
 };
 
 exports.switchFavoriteEvent = (eventId, payload, userId) => {

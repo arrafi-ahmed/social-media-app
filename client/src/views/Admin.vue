@@ -2,7 +2,12 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import NameCard from "@/components/NameCard.vue";
 import { useStore } from "vuex";
-import { formatDateFromTimestamp, getBlogImageUrl, isValidImage } from "@/util";
+import {
+  formatDateFromTimestamp,
+  getBlogImageUrl,
+  getPageImageUrl,
+  isValidImage,
+} from "@/util";
 import PageTitle from "@/components/PageTitle.vue";
 import { useDisplay } from "vuetify";
 import RemoveEntity from "@/components/RemoveEntity.vue";
@@ -26,10 +31,7 @@ const newBlogDialog = ref(false);
 const editBlogDialog = ref(false);
 
 const searchingUser = ref(null);
-const updatingLanding = reactive({
-  title: ["", "", ""],
-  description: ["", "", "", ""],
-});
+
 const updatingAboutTitle = ref(null);
 const updatingAboutText = ref(null);
 const updatingTermsTitle = ref(null);
@@ -154,14 +156,28 @@ const searchUser = () => {
 const deleteUser = (id) => {
   store.dispatch("cuser/deleteUser", id);
 };
+const updatingLanding = ref([
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+]);
+const handleLandingImageChange = (index, files) => {
+  updatingLanding.value[index].image = files[0];
+};
+const handleUpdateLanding = () => {
+  const formData = new FormData();
+  formData.append("id", initLanding.value.id);
+  formData.append("title", "Landing");
+  formData.append("description", JSON.stringify(updatingLanding.value));
+  formData.append("pageName", "landing");
+  formData.append("descriptionInit", initLanding.value.description);
 
-const updateLanding = () => {
-  store.dispatch("page/updateLanding", {
-    id: initLanding.value.id,
-    title: JSON.stringify(updatingLanding.title),
-    description: JSON.stringify(updatingLanding.description),
-    pageName: "landing",
+  updatingLanding.value.forEach((item) => {
+    if (item.image instanceof File) formData.append("files", item.image);
   });
+
+  store.dispatch("page/updateLanding", formData);
 };
 
 const updateAbout = () => {
@@ -197,13 +213,11 @@ onMounted(() => {
   store.dispatch("blog/setBlogs");
 
   store.dispatch("page/setLanding").then(() => {
-    if (initLanding.value.title) {
-      updatingLanding.title = JSON.parse(initLanding.value.title);
-    }
-    if (initLanding.value.description) {
-      updatingLanding.description = JSON.parse(initLanding.value.description);
+    if (initLanding.value) {
+      updatingLanding.value = JSON.parse(initLanding.value.description);
     }
   });
+
   store.dispatch("page/setAbout").then(() => {
     updatingAboutTitle.value = initAbout.value.title;
     updatingAboutText.value = initAbout.value.description;
@@ -220,533 +234,673 @@ onMounted(() => {
 </script>
 
 <template>
-  <page-title title="Admin Panel"></page-title>
+  <v-container>
+    <page-title title="Admin Panel"></page-title>
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-tabs v-model="tab" bg-color="primary" density="comfortable">
+          <v-tab value="site">Site</v-tab>
+          <v-tab value="blog">Blog</v-tab>
+          <v-tab value="pages">Pages</v-tab>
+        </v-tabs>
 
-  <v-row justify="center">
-    <v-col cols="12">
-      <v-tabs v-model="tab" bg-color="primary" density="comfortable">
-        <v-tab value="site">Site</v-tab>
-        <v-tab value="blog">Blog</v-tab>
-        <v-tab value="pages">Pages</v-tab>
-      </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item value="site">
+            <v-row align="baseline" class="mt-3" justify="space-around">
+              <v-col cols="12" md="5">
+                <div class="d-flex justify-space-between">
+                  <h3>Manage Category</h3>
 
-      <v-window v-model="tab">
-        <v-window-item value="site">
-          <v-row align="baseline" class="mt-3" justify="space-around">
-            <v-col cols="12" md="5">
-              <div class="d-flex justify-space-between">
-                <h3>Manage Category</h3>
-
-                <v-dialog v-model="newCategoryDialog" width="400">
-                  <template v-slot:activator="{ props }">
-                    <v-btn
-                      v-if="mobile"
-                      color="primary"
-                      density="compact"
-                      icon="mdi-plus-circle-outline"
-                      v-bind="props"
-                      variant="text"
-                    >
-                    </v-btn>
-                    <v-btn v-else color="primary" v-bind="props" variant="text">
-                      New Category
-                    </v-btn>
-                  </template>
-
-                  <v-card>
-                    <v-card-title>
-                      <span>Create Category</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-form
-                        ref="addCategoryForm"
-                        v-model="isAddCategoryFormValid"
-                        fast-fail
-                        @submit.prevent="addCategory"
+                  <v-dialog v-model="newCategoryDialog" width="400">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        v-if="mobile"
+                        color="primary"
+                        density="compact"
+                        icon="mdi-plus-circle-outline"
+                        v-bind="props"
+                        variant="text"
                       >
-                        <v-text-field
-                          v-model="newCategoryTitle"
-                          :rules="[(v) => !!v || 'Title is required!']"
-                          class="mt-2"
-                          clearable
-                          density="compact"
-                          hide-details="auto"
-                          label="Category Title"
-                          required
-                          variant="solo"
-                        ></v-text-field>
+                      </v-btn>
+                      <v-btn
+                        v-else
+                        color="primary"
+                        v-bind="props"
+                        variant="text"
+                      >
+                        New Category
+                      </v-btn>
+                    </template>
 
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            :density="mobile ? 'comfortable' : 'default'"
-                            color="primary"
-                            type="submit"
-                            >Submit
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-              </div>
-
-              <v-divider class="my-1"></v-divider>
-
-              <v-list>
-                <v-list-item
-                  v-for="(item, index) in categories"
-                  :key="index"
-                  :title="item.name"
-                >
-                  <template v-slot:append>
-                    <v-dialog v-model="editCategoryDialog" width="400">
-                      <template v-slot:activator="{ props }">
-                        <v-btn
-                          color="primary"
-                          icon="mdi-pencil"
-                          size="small"
-                          v-bind="props"
-                          variant="text"
-                          @click="openEditCategoryDialog(item)"
+                    <v-card>
+                      <v-card-title>
+                        <span>Create Category</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-form
+                          ref="addCategoryForm"
+                          v-model="isAddCategoryFormValid"
+                          fast-fail
+                          @submit.prevent="addCategory"
                         >
-                        </v-btn>
-                      </template>
-
-                      <v-card>
-                        <v-card-title>
-                          <span>Edit Category</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-form
-                            ref="editCategoryForm"
-                            v-model="isEditCategoryFormValid"
-                            fast-fail
-                            @submit.prevent="
-                              editCategory(editingCategory, index)
-                            "
-                          >
-                            <v-text-field
-                              v-model="editingCategory.name"
-                              :rules="[(v) => !!v || 'Title is required!']"
-                              class="mt-2"
-                              clearable
-                              density="compact"
-                              hide-details="auto"
-                              label="Category Title"
-                              required
-                              variant="solo"
-                            ></v-text-field>
-
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                :density="mobile ? 'comfortable' : 'default'"
-                                color="primary"
-                                type="submit"
-                                >Submit
-                              </v-btn>
-                            </v-card-actions>
-                          </v-form>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-
-                    <v-btn
-                      color="primary"
-                      icon="mdi-close"
-                      size="small"
-                      variant="text"
-                      @click="deleteCategory(item.id)"
-                    >
-                    </v-btn>
-                  </template>
-                </v-list-item>
-              </v-list>
-            </v-col>
-            <v-divider v-if="!mobile" inset vertical></v-divider>
-            <v-col cols="12" md="5">
-              <div class="d-flex justify-space-between align-center mt-5">
-                <h3>Manage User</h3>
-                <v-spacer v-if="!mobile"></v-spacer>
-                <v-text-field
-                  v-model="searchingUser"
-                  append-inner-icon="mdi-magnify"
-                  class="flex-grow-1 ml-5 ml-md-1 pa-0"
-                  density="compact"
-                  hide-details="auto"
-                  label="Search by ID/Name/Email"
-                  single-line
-                  variant="solo"
-                  @click:append-inner="searchUser"
-                ></v-text-field>
-              </div>
-              <v-divider class="my-2"></v-divider>
-
-              <v-list v-if="foundUsers.length > 0">
-                <v-list-item
-                  v-for="(item, index) in foundUsers"
-                  :key="index"
-                  :class="{ 'px-1': mobile }"
-                  link
-                  @click="
-                    $router.push({ name: 'wall', params: { id: item.id } })
-                  "
-                >
-                  <div class="d-flex justify-space-between align-center">
-                    <name-card
-                      :img-size="60"
-                      :isDetailed="true"
-                      :profile="item"
-                      container-class="clickable"
-                      img-class="rounded-circle"
-                    ></name-card>
-                    <v-spacer></v-spacer>
-                    <remove-entity
-                      :id="item.id"
-                      @remove-entity="deleteUser"
-                    ></remove-entity>
-                  </div>
-                </v-list-item>
-              </v-list>
-              <h4 v-else class="py-5 text-center">
-                No users in search list!
-              </h4></v-col
-            >
-          </v-row>
-        </v-window-item>
-
-        <v-window-item value="blog">
-          <div class="d-flex justify-space-between align-center mt-5">
-            <h3>Manage Blog</h3>
-            <v-btn
-              v-if="mobile"
-              color="primary"
-              density="compact"
-              icon="mdi-plus-circle-outline"
-              variant="text"
-              @click="openNewBlogDialog"
-            >
-            </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              variant="text"
-              @click="openNewBlogDialog"
-            >
-              New Blog
-            </v-btn>
-          </div>
-          <v-divider class="my-1"></v-divider>
-
-          <v-list v-if="blogs.length > 0">
-            <v-list-item
-              v-for="(item, index) in blogs"
-              :key="index"
-              :subtitle="formatDateFromTimestamp(item.created_at)"
-              :title="item.title"
-              class="pb-3"
-            >
-              <template v-slot:append>
-                <v-dialog v-model="editBlogDialog" width="800">
-                  <template v-slot:activator="{ props }">
-                    <v-btn
-                      color="primary"
-                      icon="mdi-pencil"
-                      size="small"
-                      v-bind="props"
-                      variant="text"
-                      @click="openEditBlogDialog(item)"
-                    >
-                    </v-btn>
-                  </template>
-
-                  <v-card>
-                    <v-card-title>
-                      <span>Edit Blog</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-form
-                        ref="editBlogForm"
-                        v-model="isEditBlogFormValid"
-                        fast-fail
-                        @submit.prevent="editBlog"
-                      >
-                        <v-text-field
-                          v-model="editingBlog.title"
-                          :rules="[(v) => !!v || 'Title is required!']"
-                          class="mt-2"
-                          clearable
-                          density="compact"
-                          hide-details="auto"
-                          label="Blog Title"
-                          required
-                          variant="solo"
-                        ></v-text-field>
-
-                        <v-textarea
-                          v-model="editingBlog.description"
-                          :rules="[(v) => !!v || 'Description is required!']"
-                          class="mt-2 text-pre-wrap"
-                          hide-details="auto"
-                          label="Description"
-                          rows="8"
-                          variant="solo"
-                        ></v-textarea>
-
-                        <div class="d-flex align-center mt-3">
-                          <v-avatar
-                            :image="getBlogImageUrl(editingBlog?.image)"
-                            rounded="sm"
-                            size="x-large"
-                          ></v-avatar>
-                          <v-file-input
-                            :rules="[
-                              (v) =>
-                                isValidImage(v) || 'Only jpeg/png allowed!',
-                            ]"
-                            accept="image/*"
-                            class="ml-2"
+                          <v-text-field
+                            v-model="newCategoryTitle"
+                            :rules="[(v) => !!v || 'Title is required!']"
+                            class="mt-2"
                             clearable
                             density="compact"
                             hide-details="auto"
-                            label="Upload image"
-                            prepend-icon=""
-                            prepend-inner-icon="mdi-camera"
-                            show-size
+                            label="Category Title"
+                            required
                             variant="solo"
-                            @update:modelValue="handleEditBlogImageChange"
-                          >
-                            <template v-slot:selection="{ fileNames }">
-                              <template
-                                v-for="fileName in fileNames"
-                                :key="fileName"
-                              >
-                                <v-chip
-                                  class="me-2"
-                                  color="primary"
-                                  label
-                                  size="small"
-                                >
-                                  {{ fileName }}
-                                </v-chip>
-                              </template>
-                            </template>
-                          </v-file-input>
-                        </div>
+                          ></v-text-field>
 
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              :density="mobile ? 'comfortable' : 'default'"
+                              color="primary"
+                              type="submit"
+                              >Submit
+                            </v-btn>
+                          </v-card-actions>
+                        </v-form>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+                </div>
+
+                <v-divider class="my-1"></v-divider>
+
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in categories"
+                    :key="index"
+                    :title="item.name"
+                  >
+                    <template v-slot:append>
+                      <v-dialog v-model="editCategoryDialog" width="400">
+                        <template v-slot:activator="{ props }">
                           <v-btn
-                            :density="mobile ? 'comfortable' : 'default'"
                             color="primary"
-                            type="submit"
-                            >Submit
+                            icon="mdi-pencil"
+                            size="small"
+                            v-bind="props"
+                            variant="text"
+                            @click="openEditCategoryDialog(item)"
+                          >
                           </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
+                        </template>
 
-                <v-btn
-                  color="primary"
-                  icon="mdi-close"
-                  size="small"
-                  variant="text"
-                  @click="deleteBlog(item.id, item.image)"
-                >
-                </v-btn>
-              </template>
-            </v-list-item>
-          </v-list>
-          <h4 v-else class="text-center py-5">No blogs listed!</h4>
-        </v-window-item>
+                        <v-card>
+                          <v-card-title>
+                            <span>Edit Category</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-form
+                              ref="editCategoryForm"
+                              v-model="isEditCategoryFormValid"
+                              fast-fail
+                              @submit.prevent="
+                                editCategory(editingCategory, index)
+                              "
+                            >
+                              <v-text-field
+                                v-model="editingCategory.name"
+                                :rules="[(v) => !!v || 'Title is required!']"
+                                class="mt-2"
+                                clearable
+                                density="compact"
+                                hide-details="auto"
+                                label="Category Title"
+                                required
+                                variant="solo"
+                              ></v-text-field>
 
-        <v-window-item value="pages">
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-title>Landing</v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <h3 class="pa-1">Section 1:</h3>
-                <v-text-field
-                  v-model="updatingLanding.title[0]"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingLanding.description[0]"
-                  class="text-pre-wrap"
-                  label="Description"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <h3 class="pa-1">Section 2:</h3>
-                <v-text-field
-                  v-model="updatingLanding.title[1]"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingLanding.description[1]"
-                  class="text-pre-wrap"
-                  label="Description"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <h3 class="pa-1">Section 3:</h3>
-                <v-text-field
-                  v-model="updatingLanding.title[2]"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingLanding.description[2]"
-                  class="text-pre-wrap"
-                  label="Description"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <h3 class="pa-1">Section 4:</h3>
-                <v-textarea
-                  v-model="updatingLanding.description[3]"
-                  class="text-pre-wrap"
-                  label="Description"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <div class="d-flex justify-end mb-1">
-                  <v-btn
-                    :density="mobile ? 'comfortable' : 'default'"
-                    color="primary"
-                    variant="text"
-                    @click="updateLanding"
-                    >Update
-                  </v-btn>
+                              <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  :density="mobile ? 'comfortable' : 'default'"
+                                  color="primary"
+                                  type="submit"
+                                  >Submit
+                                </v-btn>
+                              </v-card-actions>
+                            </v-form>
+                          </v-card-text>
+                        </v-card>
+                      </v-dialog>
+
+                      <v-btn
+                        color="primary"
+                        icon="mdi-close"
+                        size="small"
+                        variant="text"
+                        @click="deleteCategory(item.id)"
+                      >
+                      </v-btn>
+                    </template>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+              <v-divider v-if="!mobile" inset vertical></v-divider>
+              <v-col cols="12" md="5">
+                <div class="d-flex justify-space-between align-center mt-5">
+                  <h3>Manage User</h3>
+                  <v-spacer v-if="!mobile"></v-spacer>
+                  <v-text-field
+                    v-model="searchingUser"
+                    append-inner-icon="mdi-magnify"
+                    class="flex-grow-1 ml-5 ml-md-1 pa-0"
+                    density="compact"
+                    hide-details="auto"
+                    label="Search by ID/Name/Email"
+                    single-line
+                    variant="solo"
+                    @click:append-inner="searchUser"
+                  ></v-text-field>
                 </div>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-title>About Us</v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <v-text-field
-                  v-model="updatingAboutTitle"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingAboutText"
-                  class="text-pre-wrap"
-                  label="Edit About Us"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <div class="d-flex justify-end mb-1">
+                <v-divider class="my-2"></v-divider>
+
+                <v-list v-if="foundUsers.length > 0">
+                  <v-list-item
+                    v-for="(item, index) in foundUsers"
+                    :key="index"
+                    :class="{ 'px-1': mobile }"
+                    link
+                    @click="
+                      $router.push({ name: 'wall', params: { id: item.id } })
+                    "
+                  >
+                    <div class="d-flex justify-space-between align-center">
+                      <name-card
+                        :img-size="60"
+                        :isDetailed="true"
+                        :profile="item"
+                        container-class="clickable"
+                        img-class="rounded-circle"
+                      ></name-card>
+                      <v-spacer></v-spacer>
+                      <remove-entity
+                        :id="item.id"
+                        @remove-entity="deleteUser"
+                      ></remove-entity>
+                    </div>
+                  </v-list-item>
+                </v-list>
+                <h4 v-else class="py-5 text-center">
+                  No users in search list!
+                </h4></v-col
+              >
+            </v-row>
+          </v-window-item>
+
+          <v-window-item value="blog">
+            <div class="d-flex justify-space-between align-center mt-5">
+              <h3>Manage Blog</h3>
+              <v-btn
+                v-if="mobile"
+                color="primary"
+                density="compact"
+                icon="mdi-plus-circle-outline"
+                variant="text"
+                @click="openNewBlogDialog"
+              >
+              </v-btn>
+              <v-btn
+                v-else
+                color="primary"
+                variant="text"
+                @click="openNewBlogDialog"
+              >
+                New Blog
+              </v-btn>
+            </div>
+            <v-divider class="my-1"></v-divider>
+
+            <v-list v-if="blogs.length > 0">
+              <v-list-item
+                v-for="(item, index) in blogs"
+                :key="index"
+                :subtitle="formatDateFromTimestamp(item.created_at)"
+                :title="item.title"
+                class="pb-3"
+              >
+                <template v-slot:append>
+                  <v-dialog v-model="editBlogDialog" width="800">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        color="primary"
+                        icon="mdi-pencil"
+                        size="small"
+                        v-bind="props"
+                        variant="text"
+                        @click="openEditBlogDialog(item)"
+                      >
+                      </v-btn>
+                    </template>
+
+                    <v-card>
+                      <v-card-title>
+                        <span>Edit Blog</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-form
+                          ref="editBlogForm"
+                          v-model="isEditBlogFormValid"
+                          fast-fail
+                          @submit.prevent="editBlog"
+                        >
+                          <v-text-field
+                            v-model="editingBlog.title"
+                            :rules="[(v) => !!v || 'Title is required!']"
+                            class="mt-2"
+                            clearable
+                            density="compact"
+                            hide-details="auto"
+                            label="Blog Title"
+                            required
+                            variant="solo"
+                          ></v-text-field>
+
+                          <v-textarea
+                            v-model="editingBlog.description"
+                            :rules="[(v) => !!v || 'Description is required!']"
+                            class="mt-2 text-pre-wrap"
+                            hide-details="auto"
+                            label="Description"
+                            rows="8"
+                            variant="solo"
+                          ></v-textarea>
+
+                          <div class="d-flex align-center mt-3">
+                            <v-avatar
+                              :image="getBlogImageUrl(editingBlog?.image)"
+                              rounded="sm"
+                              size="x-large"
+                            ></v-avatar>
+                            <v-file-input
+                              :rules="[
+                                (v) =>
+                                  isValidImage(v) || 'Only jpeg/png allowed!',
+                              ]"
+                              accept="image/*"
+                              class="ml-2"
+                              clearable
+                              density="compact"
+                              hide-details="auto"
+                              label="Upload image"
+                              prepend-icon=""
+                              prepend-inner-icon="mdi-camera"
+                              show-size
+                              variant="solo"
+                              @update:modelValue="handleEditBlogImageChange"
+                            >
+                              <template v-slot:selection="{ fileNames }">
+                                <template
+                                  v-for="fileName in fileNames"
+                                  :key="fileName"
+                                >
+                                  <v-chip
+                                    class="me-2"
+                                    color="primary"
+                                    label
+                                    size="small"
+                                  >
+                                    {{ fileName }}
+                                  </v-chip>
+                                </template>
+                              </template>
+                            </v-file-input>
+                          </div>
+
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              :density="mobile ? 'comfortable' : 'default'"
+                              color="primary"
+                              type="submit"
+                              >Submit
+                            </v-btn>
+                          </v-card-actions>
+                        </v-form>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+
                   <v-btn
-                    :density="mobile ? 'comfortable' : 'default'"
                     color="primary"
+                    icon="mdi-close"
+                    size="small"
                     variant="text"
-                    @click="updateAbout"
-                    >Update
+                    @click="deleteBlog(item.id, item.image)"
+                  >
                   </v-btn>
-                </div>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-title
-                >Terms & Conditions
-              </v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <v-text-field
-                  v-model="updatingTermsTitle"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingTermsText"
-                  class="text-pre-wrap"
-                  label="Edit Terms & Conditions"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <div class="d-flex justify-end mb-1">
-                  <v-btn
-                    :density="mobile ? 'comfortable' : 'default'"
-                    color="primary"
-                    variant="text"
-                    @click="updateTerms"
-                    >Update
-                  </v-btn>
-                </div>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-title>Privacy Policy</v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <v-text-field
-                  v-model="updatingPrivacyTitle"
-                  :rules="[(v) => !!v || 'Title is required!']"
-                  class="mb-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Title"
-                  required
-                  variant="solo"
-                ></v-text-field>
-                <v-textarea
-                  v-model="updatingPrivacyText"
-                  class="text-pre-wrap"
-                  label="Edit Privacy Policy"
-                  rows="10"
-                  variant="solo"
-                ></v-textarea>
-                <div class="d-flex justify-end mb-1">
-                  <v-btn
-                    :density="mobile ? 'comfortable' : 'default'"
-                    color="primary"
-                    variant="text"
-                    @click="updatePrivacy"
-                    >Update
-                  </v-btn>
-                </div>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-window-item>
-      </v-window>
-    </v-col>
-  </v-row>
+                </template>
+              </v-list-item>
+            </v-list>
+            <h4 v-else class="text-center py-5">No blogs listed!</h4>
+          </v-window-item>
+
+          <v-window-item value="pages">
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-title>Landing</v-expansion-panel-title>
+                <v-expansion-panel-text v-if="updatingLanding.length > 0">
+                  <h3 class="pa-1 mt-6">Section 1:</h3>
+                  <v-text-field
+                    v-model="updatingLanding[0].title"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingLanding[0].description"
+                    class="text-pre-wrap"
+                    label="Description"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex align-center">
+                    <v-avatar
+                      :image="getPageImageUrl(updatingLanding[0].image)"
+                      rounded="sm"
+                      size="x-large"
+                    ></v-avatar>
+                    <v-file-input
+                      :rules="[
+                        (v) =>
+                          !v ||
+                          (Array.isArray(v) ? v : [v]).every(
+                            (file) => file.size < 25 * 1024 * 1024
+                          ) ||
+                          'Max file size is 25MB!',
+                        (v) =>
+                          (Array.isArray(v) ? v : [v]).every((file) =>
+                            isValidImage(file)
+                          ) || 'Only jpeg/png allowed!',
+                      ]"
+                      accept="image/*"
+                      class="mx-1"
+                      clearable
+                      density="compact"
+                      hide-details
+                      label="Section 1 image"
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-camera"
+                      variant="solo-filled"
+                      @update:modelValue="handleLandingImageChange(0, $event)"
+                      @click:clear="updatingLanding[0].image = null"
+                    >
+                    </v-file-input>
+                  </div>
+                  <h3 class="pa-1 mt-6">Section 2:</h3>
+                  <v-text-field
+                    v-model="updatingLanding[1].title"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingLanding[1].description"
+                    class="text-pre-wrap"
+                    label="Description"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex align-center">
+                    <v-avatar
+                      :image="getPageImageUrl(updatingLanding[1].image)"
+                      rounded="sm"
+                      size="x-large"
+                    ></v-avatar>
+                    <v-file-input
+                      :rules="[
+                        (v) =>
+                          !v ||
+                          (Array.isArray(v) ? v : [v]).every(
+                            (file) => file.size < 25 * 1024 * 1024
+                          ) ||
+                          'Max file size is 25MB!',
+                        (v) =>
+                          (Array.isArray(v) ? v : [v]).every((file) =>
+                            isValidImage(file)
+                          ) || 'Only jpeg/png allowed!',
+                      ]"
+                      accept="image/*"
+                      class="mx-1"
+                      clearable
+                      density="compact"
+                      hide-details
+                      label="Section 2 image"
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-camera"
+                      variant="solo-filled"
+                      @update:modelValue="handleLandingImageChange(1, $event)"
+                      @click:clear="updatingLanding[1].image = null"
+                    >
+                    </v-file-input>
+                  </div>
+                  <h3 class="pa-1 mt-6">Section 3:</h3>
+                  <v-text-field
+                    v-model="updatingLanding[2].title"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingLanding[2].description"
+                    class="text-pre-wrap"
+                    label="Description"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex align-center">
+                    <v-avatar
+                      :image="getPageImageUrl(updatingLanding[2].image)"
+                      rounded="sm"
+                      size="x-large"
+                    ></v-avatar>
+                    <v-file-input
+                      :rules="[
+                        (v) =>
+                          !v ||
+                          (Array.isArray(v) ? v : [v]).every(
+                            (file) => file.size < 25 * 1024 * 1024
+                          ) ||
+                          'Max file size is 25MB!',
+                        (v) =>
+                          (Array.isArray(v) ? v : [v]).every((file) =>
+                            isValidImage(file)
+                          ) || 'Only jpeg/png allowed!',
+                      ]"
+                      accept="image/*"
+                      class="mx-1"
+                      clearable
+                      density="compact"
+                      hide-details
+                      label="Section 3 image"
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-camera"
+                      variant="solo-filled"
+                      @update:modelValue="handleLandingImageChange(2, $event)"
+                      @click:clear="updatingLanding[2].image = null"
+                    >
+                    </v-file-input>
+                  </div>
+                  <h3 class="pa-1 mt-6">Section 4:</h3>
+                  <v-textarea
+                    v-model="updatingLanding[3].description"
+                    class="text-pre-wrap"
+                    label="Description"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex align-center">
+                    <v-avatar
+                      :image="getPageImageUrl(updatingLanding[3].image)"
+                      rounded="sm"
+                      size="x-large"
+                    ></v-avatar>
+                    <v-file-input
+                      :rules="[
+                        (v) =>
+                          !v ||
+                          (Array.isArray(v) ? v : [v]).every(
+                            (file) => file.size < 25 * 1024 * 1024
+                          ) ||
+                          'Max file size is 25MB!',
+                        (v) =>
+                          (Array.isArray(v) ? v : [v]).every((file) =>
+                            isValidImage(file)
+                          ) || 'Only jpeg/png allowed!',
+                      ]"
+                      accept="image/*"
+                      class="mx-1"
+                      clearable
+                      density="compact"
+                      hide-details
+                      label="Section 4 image"
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-camera"
+                      variant="solo-filled"
+                      @update:modelValue="handleLandingImageChange(3, $event)"
+                      @click:clear="updatingLanding[3].image = null"
+                    >
+                    </v-file-input>
+                  </div>
+                  <div class="d-flex justify-end mb-1">
+                    <v-btn
+                      :density="mobile ? 'comfortable' : 'default'"
+                      color="primary"
+                      variant="text"
+                      @click="handleUpdateLanding"
+                      >Update
+                    </v-btn>
+                  </div>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-title>About Us</v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <v-text-field
+                    v-model="updatingAboutTitle"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingAboutText"
+                    class="text-pre-wrap"
+                    label="Edit About Us"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex justify-end mb-1">
+                    <v-btn
+                      :density="mobile ? 'comfortable' : 'default'"
+                      color="primary"
+                      variant="text"
+                      @click="updateAbout"
+                      >Update
+                    </v-btn>
+                  </div>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-title
+                  >Terms & Conditions
+                </v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <v-text-field
+                    v-model="updatingTermsTitle"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingTermsText"
+                    class="text-pre-wrap"
+                    label="Edit Terms & Conditions"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex justify-end mb-1">
+                    <v-btn
+                      :density="mobile ? 'comfortable' : 'default'"
+                      color="primary"
+                      variant="text"
+                      @click="updateTerms"
+                      >Update
+                    </v-btn>
+                  </div>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-title
+                  >Privacy Policy
+                </v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <v-text-field
+                    v-model="updatingPrivacyTitle"
+                    :rules="[(v) => !!v || 'Title is required!']"
+                    class="mb-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Title"
+                    required
+                    variant="solo"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="updatingPrivacyText"
+                    class="text-pre-wrap"
+                    label="Edit Privacy Policy"
+                    rows="10"
+                    variant="solo"
+                  ></v-textarea>
+                  <div class="d-flex justify-end mb-1">
+                    <v-btn
+                      :density="mobile ? 'comfortable' : 'default'"
+                      color="primary"
+                      variant="text"
+                      @click="updatePrivacy"
+                      >Update
+                    </v-btn>
+                  </div>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-window-item>
+        </v-window>
+      </v-col>
+    </v-row>
+  </v-container>
 
   <v-dialog v-model="newBlogDialog" width="800">
     <v-card>

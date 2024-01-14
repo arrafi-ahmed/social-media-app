@@ -82,157 +82,159 @@ onMounted(() => {
 });
 </script>
 <template>
-  <page-title title="Settings"></page-title>
+  <v-container>
+    <page-title title="Settings"></page-title>
 
-  <v-row justify="center">
-    <v-col cols="12" md="5">
-      <h3 class="mt-5">Update profile</h3>
-      <v-divider></v-divider>
+    <v-row justify="center">
+      <v-col cols="12" md="5">
+        <h3 class="mt-5">Update profile</h3>
+        <v-divider></v-divider>
 
-      <v-form
-        ref="form"
-        v-model="isFormValid"
-        class="mt-5"
-        fast-fail
-        @submit.prevent="updateProfile"
-      >
-        <v-text-field
-          v-model="fullname"
-          :rules="[(v) => !!v || 'Full Name is required!']"
-          class="mt-3"
-          clearable
-          density="compact"
-          hide-details="auto"
-          label="Full Name"
-          variant="solo"
-        ></v-text-field>
-        <v-text-field
-          v-model="newEmail"
-          :rules="[
-            (v) => !!v || 'Email is required!',
-            (v) => isValidEmail(v) || 'Invalid Email',
-          ]"
-          class="mt-3"
-          clearable
-          density="compact"
-          hide-details="auto"
-          label="Email Address"
-          variant="solo"
-        ></v-text-field>
-        <v-text-field
-          v-model="newPassword"
-          class="mt-3"
-          clearable
-          density="compact"
-          hide-details="auto"
-          label="New Password"
-          type="password"
-          variant="solo"
-        ></v-text-field>
-        <div class="d-flex align-center mt-3">
-          <user-avatar
-            :clickable="false"
-            :imgSrc="profile?.image"
-          ></user-avatar>
-          <v-file-input
-            :rules="[
-              (v) =>
-                (Array.isArray(v) ? v : [v]).every((file) =>
-                  isValidImage(file)
-                ) || 'Only jpg/jpeg/png allowed!',
-            ]"
-            accept="image/*"
-            class="ml-2"
+        <v-form
+          ref="form"
+          v-model="isFormValid"
+          class="mt-5"
+          fast-fail
+          @submit.prevent="updateProfile"
+        >
+          <v-text-field
+            v-model="fullname"
+            :rules="[(v) => !!v || 'Full Name is required!']"
+            class="mt-3"
+            clearable
             density="compact"
             hide-details="auto"
-            label="Profile picture"
-            prepend-icon=""
-            prepend-inner-icon="mdi-camera"
-            show-size
+            label="Full Name"
             variant="solo"
-            @update:modelValue="handleProfileImageChange"
-          >
-            <template v-slot:selection="{ fileNames }">
-              <template v-for="fileName in fileNames" :key="fileName">
-                <v-chip class="me-2" color="primary" label size="small">
-                  {{ fileName }}
-                </v-chip>
+          ></v-text-field>
+          <v-text-field
+            v-model="newEmail"
+            :rules="[
+              (v) => !!v || 'Email is required!',
+              (v) => isValidEmail(v) || 'Invalid Email',
+            ]"
+            class="mt-3"
+            clearable
+            density="compact"
+            hide-details="auto"
+            label="Email Address"
+            variant="solo"
+          ></v-text-field>
+          <v-text-field
+            v-model="newPassword"
+            class="mt-3"
+            clearable
+            density="compact"
+            hide-details="auto"
+            label="New Password"
+            type="password"
+            variant="solo"
+          ></v-text-field>
+          <div class="d-flex align-center mt-3">
+            <user-avatar
+              :clickable="false"
+              :imgSrc="profile?.image"
+            ></user-avatar>
+            <v-file-input
+              :rules="[
+                (v) =>
+                  (Array.isArray(v) ? v : [v]).every((file) =>
+                    isValidImage(file)
+                  ) || 'Only jpg/jpeg/png allowed!',
+              ]"
+              accept="image/*"
+              class="ml-2"
+              density="compact"
+              hide-details="auto"
+              label="Profile picture"
+              prepend-icon=""
+              prepend-inner-icon="mdi-camera"
+              show-size
+              variant="solo"
+              @update:modelValue="handleProfileImageChange"
+            >
+              <template v-slot:selection="{ fileNames }">
+                <template v-for="fileName in fileNames" :key="fileName">
+                  <v-chip class="me-2" color="primary" label size="small">
+                    {{ fileName }}
+                  </v-chip>
+                </template>
               </template>
-            </template>
-          </v-file-input>
-        </div>
+            </v-file-input>
+          </div>
 
-        <v-btn
-          :density="mobile ? 'comfortable' : 'default'"
-          class="ml-auto mt-5 d-block"
+          <v-btn
+            :density="mobile ? 'comfortable' : 'default'"
+            class="ml-auto mt-5 d-block"
+            color="primary"
+            type="submit"
+            >Update Profile
+          </v-btn>
+        </v-form>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-col cols="12" md="5">
+        <h3 class="mt-5">Email Notification</h3>
+        <v-divider></v-divider>
+
+        <v-switch
+          v-model="emailNewEventNotification"
+          :false-value="0"
+          :true-value="1"
           color="primary"
-          type="submit"
-          >Update Profile
-        </v-btn>
-      </v-form>
-    </v-col>
-  </v-row>
+          hide-details
+          inset
+          label="When friends post new event"
+          @update:modelValue="
+            handleEmailNewEventNotification(emailNewEventNotification)
+          "
+        ></v-switch>
+        <v-switch
+          v-model="emailUpdateEventNotification"
+          :false-value="0"
+          :true-value="1"
+          color="primary"
+          hide-details
+          inset
+          label="When friends edit event"
+          @update:modelValue="
+            handleEmailUpdateEventNotification(emailUpdateEventNotification)
+          "
+        ></v-switch>
+        <v-switch
+          v-model="emailNewCommentNotification"
+          :false-value="0"
+          :true-value="1"
+          color="primary"
+          hide-details
+          inset
+          label="When friends comment on your event"
+          @update:modelValue="
+            handleEmailNewCommentNotification(emailNewCommentNotification)
+          "
+        ></v-switch>
+      </v-col>
+    </v-row>
 
-  <v-row justify="center">
-    <v-col cols="12" md="5">
-      <h3 class="mt-5">Email Notification</h3>
-      <v-divider></v-divider>
-
-      <v-switch
-        v-model="emailNewEventNotification"
-        :false-value="0"
-        :true-value="1"
-        color="primary"
-        hide-details
-        inset
-        label="When friends post new event"
-        @update:modelValue="
-          handleEmailNewEventNotification(emailNewEventNotification)
-        "
-      ></v-switch>
-      <v-switch
-        v-model="emailUpdateEventNotification"
-        :false-value="0"
-        :true-value="1"
-        color="primary"
-        hide-details
-        inset
-        label="When friends edit event"
-        @update:modelValue="
-          handleEmailUpdateEventNotification(emailUpdateEventNotification)
-        "
-      ></v-switch>
-      <v-switch
-        v-model="emailNewCommentNotification"
-        :false-value="0"
-        :true-value="1"
-        color="primary"
-        hide-details
-        inset
-        label="When friends comment on your event"
-        @update:modelValue="
-          handleEmailNewCommentNotification(emailNewCommentNotification)
-        "
-      ></v-switch>
-    </v-col>
-  </v-row>
-
-  <v-row align="center" class="mt-2 mt-md-5" justify="center">
-    <v-col cols="12" md="5">
-      <h3 class="mt-5">Account Delete</h3>
-      <v-divider></v-divider>
-      <v-row align="center" class="mt-2" no-gutters>
-        <v-col cols="auto"> Do you want to delete your account?</v-col>
-        <v-col cols="auto">
-          <remove-entity
-            btn-variant="text"
-            text="Delete"
-            @remove-entity="deleteAccount"
-          ></remove-entity>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+    <v-row align="center" class="mt-2 mt-md-5" justify="center">
+      <v-col cols="12" md="5">
+        <h3 class="mt-5">Account Delete</h3>
+        <v-divider></v-divider>
+        <v-row align="center" class="mt-2" no-gutters>
+          <v-col cols="auto"> Do you want to delete your account?</v-col>
+          <v-col cols="auto">
+            <remove-entity
+              btn-variant="text"
+              text="Delete"
+              @remove-entity="deleteAccount"
+            ></remove-entity>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style></style>

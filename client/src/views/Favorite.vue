@@ -27,21 +27,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row v-if="events">
-    <!-- Main content -->
-    <v-col cols="12">
-      <page-title title="Favourite"></page-title>
+  <v-container>
+    <v-row v-if="events">
+      <!-- Main content -->
+      <v-col cols="12">
+        <page-title title="Favourite"></page-title>
 
-      <!-- Event Card Feed -->
-      <event-infinite
-        :events="events"
-        :grid="{ sm: 6, md: 4 }"
-        source="favorite"
-        type="has-header"
-        @fetch-events="loadEvents"
-      ></event-infinite>
-    </v-col>
-  </v-row>
+        <!-- Event Card Feed -->
+        <event-infinite
+          :events="events"
+          :grid="{ sm: 6, md: 4 }"
+          source="favorite"
+          type="has-header"
+          @fetch-events="loadEvents"
+        ></event-infinite>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped></style>

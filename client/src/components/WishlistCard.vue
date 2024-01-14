@@ -1,40 +1,48 @@
 <script setup>
-import { to12hTime } from "@/util";
-import { useRouter } from "vue-router";
+import { getEventImageUrl, isValidImage, to12hTime } from "@/util";
 import { useStore } from "vuex";
 import { computed, reactive, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mobile } = useDisplay();
 const store = useStore();
-const router = useRouter();
 const { event } = defineProps(["event"]);
 
-const currentUser = computed(() => store.getters["cuser/getCurrentUser"]);
-// const isAdmin = computed(() => store.getters["cuser/isAdmin"]);
-// const isOwner = computed(() => event.user_id == currentUser.value.id);
-// const featuredEvent = computed(
-//   () => store.getters["eventWall/getFeaturedEvent"]
-// );
-const editEventDialog = ref(false);
+let imagesInit = [];
 const editingEvent = reactive({});
+
 const allEventCategories = computed(() =>
   store.state.category.categories.map((item) => item.name)
 );
-// const handleEventImageChange = (files) => {
-//   files.forEach((item) => editingEvent.images.push(item));
-// };
-const openEditEventDialog = (event) => {
+
+const handleImageClear = (index) => {
+  editingEvent.images.splice(index, 1, null);
+};
+const handleUploadClear = (index) => {
+  if (imagesInit.value[index])
+    editingEvent.images.splice(index, 1, imagesInit.value[index]);
+  else editingEvent.images.splice(index, 1, null);
+};
+const handleEventUploadChange = (index, files) => {
+  editingEvent.images.splice(index, 1, files[0]);
+};
+const editEventDialog = ref(false);
+
+const openEditEventDialog = async (event) => {
   editEventDialog.value = true;
-  Object.assign(editingEvent, event);
-  // editingEvent.images = []; //reset image array everytime open dialog
-  // editingEvent.date = new Date(event.date).toISOString().split("T")[0];
+  imagesInit = [...event.images];
+
+  Object.assign(editingEvent, { ...event });
+  if (event.images?.length < 2) {
+    // If there are less than two items
+    imagesInit = event.images.concat(Array(2 - event.images.length).fill(null)); // Fill the remaining slots with null
+  }
 };
 
 const form = ref(null);
 const isFormValid = ref(true);
 
-const handleSubmitEditEvent = async (event) => {
+const handleSubmitEditEvent = async () => {
   await form.value.validate();
   if (!isFormValid.value) return;
 
@@ -44,8 +52,14 @@ const handleSubmitEditEvent = async (event) => {
   formData.append("location", editingEvent.location);
   formData.append("description", editingEvent.description);
   formData.append("category", editingEvent.category);
+  formData.append("imagesInit", JSON.stringify(imagesInit));
+  formData.append("images", JSON.stringify(editingEvent.images));
 
-  store.dispatch("eventWishlist/editEvent", editingEvent).then((res) => {
+  editingEvent.images.forEach((item) => {
+    if (item && item instanceof File) formData.append("files", item);
+  });
+
+  store.dispatch("eventWishlist/editEvent", formData).then(() => {
     editEventDialog.value = false;
   });
 };
@@ -133,62 +147,122 @@ const deleteEvent = (eventId) => {
           fast-fail
           @submit.prevent="handleSubmitEditEvent(event)"
         >
-          <v-text-field
-            v-model="editingEvent.title"
-            :rules="[
-              (v) => !!v || 'Title is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Title"
-            required
-            variant="solo"
-          ></v-text-field>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="editingEvent.title"
+                :rules="[
+                  (v) => !!v || 'Title is required!',
+                  (v) =>
+                    (v && v.length <= 50) || 'Must not exceed 50 characters',
+                ]"
+                class="mt-2"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Title"
+                required
+                variant="solo"
+              ></v-text-field>
 
-          <v-text-field
-            v-model="editingEvent.location"
-            :rules="[
-              (v) => !!v || 'Location is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Location"
-            required
-            variant="solo"
-          ></v-text-field>
+              <v-text-field
+                v-model="editingEvent.location"
+                :rules="[
+                  (v) => !!v || 'Location is required!',
+                  (v) =>
+                    (v && v.length <= 50) || 'Must not exceed 50 characters',
+                ]"
+                class="mt-2"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Location"
+                required
+                variant="solo"
+              ></v-text-field>
 
-          <v-textarea
-            v-model="editingEvent.description"
-            :rules="[
-              (v) => !!v || 'Description is required!',
-              (v) =>
-                (v && v.length <= 1000) || 'Must not exceed 1000 characters',
-            ]"
-            class="mt-2"
-            clearable
-            hide-details="auto"
-            label="Description"
-            rows="5"
-            variant="solo"
-          ></v-textarea>
-          <v-select
-            v-model="editingEvent.category"
-            :items="allEventCategories"
-            :rules="[(v) => !!v || 'Category is required!']"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details
-            label="Category"
-            required
-            variant="solo"
-          ></v-select>
+              <v-textarea
+                v-model="editingEvent.description"
+                :rules="[
+                  (v) => !!v || 'Description is required!',
+                  (v) =>
+                    (v && v.length <= 1000) ||
+                    'Must not exceed 1000 characters',
+                ]"
+                class="mt-2"
+                clearable
+                hide-details="auto"
+                label="Description"
+                rows="5"
+                variant="solo"
+              ></v-textarea>
+              <v-select
+                v-model="editingEvent.category"
+                :items="allEventCategories"
+                :rules="[(v) => !!v || 'Category is required!']"
+                class="mt-2"
+                clearable
+                density="compact"
+                hide-details
+                label="Category"
+                required
+                variant="solo"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-row align="center" class="mt-1" justify="center" no-gutters>
+            <v-col v-for="n in 2" :key="n" class="mt-2" cols="12" sm="4">
+              <v-img
+                :src="getEventImageUrl(editingEvent.images[n - 1])"
+                aspect-ratio="2"
+                class="position-relative mx-1"
+                cover
+              >
+                <v-btn
+                  v-if="editingEvent.images[n - 1]"
+                  class="position-absolute rounded-0"
+                  color="primary"
+                  density="comfortable"
+                  icon="mdi-delete"
+                  location="top end"
+                  size="x-small"
+                  @click="handleImageClear(n - 1)"
+                >
+                </v-btn>
+              </v-img>
+
+              <v-file-input
+                :rules="[
+                  (v) =>
+                    !v ||
+                    (Array.isArray(v) ? v : [v]).every(
+                      (file) => file.size < 25 * 1024 * 1024
+                    ) ||
+                    'Max file size is 25MB!',
+                  (v) =>
+                    (Array.isArray(v) ? v : [v]).every((file) =>
+                      isValidImage(file)
+                    ) || 'Only jpeg/png allowed!',
+                ]"
+                accept="image/*"
+                class="mx-1"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Upload Image"
+                prepend-icon=""
+                prepend-inner-icon="mdi-camera"
+                variant="solo-filled"
+                @update:modelValue="handleEventUploadChange(n - 1, $event)"
+                @click:clear="handleUploadClear(n - 1)"
+              >
+                <template v-slot:selection="{}">
+                  {{ "New Image " + n }}
+                </template>
+              </v-file-input>
+            </v-col>
+          </v-row>
 
           <v-card-actions>
             <v-spacer></v-spacer>

@@ -94,11 +94,17 @@ export const getEventImageUrl = (imageName) => {
     ? getClientPublicImgUrl("default-event.jpg")
     : getApiPublicImgUrl(imageName, "event");
 };
+
 export const getBlogImageUrl = (imageName) => {
-  // return getApiPublicImgUrl(imageName, "blog");
   return imageName == null || !imageName
     ? getClientPublicImgUrl("default-blog.jpg")
     : getApiPublicImgUrl(imageName, "blog");
+};
+
+export const getPageImageUrl = (imageName) => {
+  return imageName == null || !imageName
+    ? getClientPublicImgUrl("default-blog.jpg")
+    : getApiPublicImgUrl(imageName, "page");
 };
 
 export const getUserImageUrl = (imageName) => {

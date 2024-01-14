@@ -45,17 +45,19 @@ watch(
 );
 </script>
 <template>
-  <page-title :title="getPageTitle"></page-title>
+  <v-container>
+    <page-title :title="getPageTitle"></page-title>
 
-  <v-row class="mt-2" justify="center">
-    <v-col md="7">
-      <v-card>
-        <v-card-text class="text-pre-wrap">
-          {{ getPageDescription }}
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+    <v-row class="mt-2" justify="center">
+      <v-col md="7">
+        <v-card>
+          <v-card-text class="text-pre-wrap">
+            {{ getPageDescription }}
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped></style>

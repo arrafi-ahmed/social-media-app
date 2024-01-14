@@ -7,7 +7,7 @@
     "setup": "npm i && npm update",
     "dev": "NODE_ENV=development nodemon --delay 500ms app.js",
     "prod": "forever stopall && NODE_ENV=production forever start -l forever.log -t -o out.log -e err.log -a --minUptime 5000 --spinSleepTime 2000 -c \"node\" app.js",
-    "clean": "rm -rf node_modules && find public/blog -type f -delete && find public/event -type f -delete && find public/user -type f -delete && find public/temp -type f -delete",
+    "clean": "rm -rf node_modules && find public/blog -type f -delete && find public/event -type f -delete && find public/user -type f -delete && find public/temp -type f -delete && find public/page -type f -delete",
     "build": "npm run clean"
   },
   "repository": {

@@ -98,5 +98,6 @@ const createUpload = (prefix) => {
 const uploadEvent = createUpload("event");
 const uploadUser = createUpload("user");
 const uploadBlog = createUpload("blog");
+const uploadPage = createUpload("page");
 
-module.exports = { uploadEvent, uploadUser, uploadBlog };
+module.exports = { uploadEvent, uploadUser, uploadBlog, uploadPage };

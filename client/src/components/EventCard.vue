@@ -192,7 +192,14 @@ const setEventNotification = (eventId) => {
       :class="type === 'headerless' ? 'position-relative' : ''"
       :src="loadEventThumb(event?.images?.[0], event?.category)"
       aspect-ratio="1.45"
+      class="clickable"
       cover
+      @click="
+        router.push({
+          name: 'eventSingle',
+          params: { id: event.id },
+        })
+      "
     >
       <v-chip
         v-if="event.date"
@@ -392,15 +399,6 @@ const setEventNotification = (eventId) => {
                 label="Date"
                 variant="solo"
               ></date-picker>
-              <!--              <v-text-field-->
-              <!--                v-model="editingEvent.date"-->
-              <!--                :rules="[(v) => !!v || 'Date is required!']"-->
-              <!--                color="primary"-->
-              <!--                label="Date"-->
-              <!--                variant="solo"-->
-              <!--                type="date"-->
-              <!--                hide-details="auto"-->
-              <!--              ></v-text-field>-->
             </v-col>
           </v-row>
 
@@ -432,7 +430,7 @@ const setEventNotification = (eventId) => {
           </v-row>
 
           <v-row align="center" class="mt-1" justify="center" no-gutters>
-            <v-col v-for="n in 5" class="mt-2" cols="12" sm="4">
+            <v-col v-for="n in 5" :key="n" class="mt-2" cols="12" sm="4">
               <v-img
                 :src="getEventImageUrl(imagesClone[n - 1])"
                 aspect-ratio="2"

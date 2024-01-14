@@ -46,104 +46,108 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row justify="center">
-    <!-- Main content -->
-    <v-col cols="12">
-      <page-title :title="`Friends (${friends.length})`">
-        <v-dialog v-model="dialog" width="600">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              :density="mobile ? 'comfortable' : 'default'"
-              v-bind="props"
-              variant="flat"
-            >
-              <template v-slot:prepend>
-                <v-icon color="primary">mdi-plus</v-icon>
-              </template>
-              Invite a friend
-            </v-btn>
-          </template>
-
-          <v-card>
-            <v-card-title>
-              <span>Invite friend</span>
-            </v-card-title>
-            <v-card-text>
-              <v-form
-                ref="form"
-                v-model="isFormValid"
-                fast-fail
-                @submit.prevent="sendInvite"
+  <v-container>
+    <v-row justify="center">
+      <!-- Main content -->
+      <v-col cols="12">
+        <page-title :title="`Friends (${friends.length})`">
+          <v-dialog v-model="dialog" width="600">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                :density="mobile ? 'comfortable' : 'default'"
+                v-bind="props"
+                variant="flat"
               >
-                <v-text-field
-                  v-model="email"
-                  :rules="[
-                    (v) => !!v || 'Email is required!',
-                    (v) => isValidEmail(v) || 'Invalid Email',
-                  ]"
-                  class="mt-2"
-                  clearable
-                  density="compact"
-                  hide-details="auto"
-                  label="Recipient Email"
-                  required
-                  variant="solo"
-                ></v-text-field>
+                <template v-slot:prepend>
+                  <v-icon color="primary">mdi-plus</v-icon>
+                </template>
+                Invite a friend
+              </v-btn>
+            </template>
 
-                <v-textarea
-                  v-model="message"
-                  class="mt-2"
-                  clearable
-                  hide-details="auto"
-                  label="Message"
-                  rows="5"
-                  variant="solo"
-                ></v-textarea>
+            <v-card>
+              <v-card-title>
+                <span>Invite friend</span>
+              </v-card-title>
+              <v-card-text>
+                <v-form
+                  ref="form"
+                  v-model="isFormValid"
+                  fast-fail
+                  @submit.prevent="sendInvite"
+                >
+                  <v-text-field
+                    v-model="email"
+                    :rules="[
+                      (v) => !!v || 'Email is required!',
+                      (v) => isValidEmail(v) || 'Invalid Email',
+                    ]"
+                    class="mt-2"
+                    clearable
+                    density="compact"
+                    hide-details="auto"
+                    label="Recipient Email"
+                    required
+                    variant="solo"
+                  ></v-text-field>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    :density="mobile ? 'comfortable' : 'default'"
-                    color="primary"
-                    type="submit"
-                    >Submit
-                  </v-btn>
-                </v-card-actions>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </page-title>
+                  <v-textarea
+                    v-model="message"
+                    class="mt-2"
+                    clearable
+                    hide-details="auto"
+                    label="Message"
+                    rows="5"
+                    variant="solo"
+                  ></v-textarea>
 
-      <v-row justify="center">
-        <v-col cols="12" md="7">
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in friends"
-              :key="index"
-              :class="{ 'px-1': mobile }"
-              link
-            >
-              <div
-                class="d-flex justify-space-between align-center"
-                @click="$router.push({ name: 'wall', params: { id: item.id } })"
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      :density="mobile ? 'comfortable' : 'default'"
+                      color="primary"
+                      type="submit"
+                      >Submit
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </page-title>
+
+        <v-row justify="center">
+          <v-col cols="12" md="7">
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in friends"
+                :key="index"
+                :class="{ 'px-1': mobile }"
+                link
               >
-                <name-card
-                  :profile="item"
-                  container-class="clickable"
-                  img-class="rounded-circle"
-                ></name-card>
-                <remove-entity
-                  :id="item.friendship_id"
-                  @remove-entity="removeFriend"
-                ></remove-entity>
-              </div>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+                <div
+                  class="d-flex justify-space-between align-center"
+                  @click="
+                    $router.push({ name: 'wall', params: { id: item.id } })
+                  "
+                >
+                  <name-card
+                    :profile="item"
+                    container-class="clickable"
+                    img-class="rounded-circle"
+                  ></name-card>
+                  <remove-entity
+                    :id="item.friendship_id"
+                    @remove-entity="removeFriend"
+                  ></remove-entity>
+                </div>
+              </v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped></style>

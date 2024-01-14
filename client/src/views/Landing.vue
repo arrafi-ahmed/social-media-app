@@ -1,16 +1,18 @@
 <script setup>
 import Logo from "@/components/Logo.vue";
 import { useDisplay } from "vuetify";
-import { getClientPublicImgUrl } from "@/util";
 import { computed, onMounted, reactive, ref } from "vue";
 import VAnimated from "@/components/v-animated.vue";
 import { useStore } from "vuex";
+import { getPageImageUrl } from "@/util";
 
 const initLanding = computed(() => store.state.page.landing);
-const landing = reactive({
-  title: ["", "", ""],
-  description: ["", "", "", ""],
-});
+const landing = reactive([
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+  { title: null, description: null, image: null },
+]);
 
 const store = useStore();
 const { mobile } = useDisplay();
@@ -19,8 +21,12 @@ const show = ref(false);
 onMounted(() => {
   show.value = true;
   store.dispatch("page/setLanding").then(() => {
-    landing.title = JSON.parse(initLanding.value.title);
-    landing.description = JSON.parse(initLanding.value.description);
+    if (initLanding.value) {
+      const parsedDescription = JSON.parse(initLanding.value.description);
+      Object.assign(landing, {
+        ...parsedDescription,
+      });
+    }
   });
 });
 </script>
@@ -28,25 +34,28 @@ onMounted(() => {
 <template>
   <v-container :class="{ 'text-center': mobile }" fluid>
     <v-row class="bg-grey-lighten-3" justify="center">
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="9">
         <v-row
           align="center"
           class="py-2 mb-3 py-md-15 my-md-15"
           justify="center"
         >
-          <v-col cols="12" md="8">
+          <v-col cols="11" md="7">
             <v-animated>
               <logo />
-              <v-img
-                :src="getClientPublicImgUrl('people.png')"
-                class="d-block d-md-none w-50 mx-auto mt-8"
-              ></v-img>
-              <h1 class="mt-3">{{ landing.title[0] }}</h1>
+              <v-sheet
+                v-if="landing[0].image"
+                :elevation="8"
+                class="d-block d-md-none mx-auto mt-8"
+              >
+                <v-img :src="getPageImageUrl(landing[0].image)"></v-img>
+              </v-sheet>
+              <h1 class="mt-3">{{ landing[0].title }}</h1>
               <p
                 :class="{ 'text-grey-darken-1': mobile }"
                 class="mt-2 text-pre-wrap"
               >
-                {{ landing.description[0] }}
+                {{ landing[0].description }}
               </p>
               <div
                 class="mt-4 d-block d-md-flex justify-center justify-md-start"
@@ -67,8 +76,10 @@ onMounted(() => {
             </v-animated>
           </v-col>
 
-          <v-col class="d-none d-md-block" md="4">
-            <v-img :src="getClientPublicImgUrl('people.png')"></v-img>
+          <v-col v-if="landing[0].image" class="d-none d-md-block" md="5">
+            <v-sheet :elevation="8">
+              <v-img :src="getPageImageUrl(landing[0].image)"></v-img>
+            </v-sheet>
           </v-col>
         </v-row>
       </v-col>
@@ -81,19 +92,21 @@ onMounted(() => {
           justify="center"
           justify-md="start"
         >
-          <v-col cols="6" md="6">
-            <v-img :src="getClientPublicImgUrl('motorhome.png')"></v-img>
+          <v-col v-if="landing[1].image" cols="11" md="6">
+            <v-sheet :elevation="8">
+              <v-img :src="getPageImageUrl(landing[1].image)"></v-img>
+            </v-sheet>
           </v-col>
           <v-col class="pl-md-6" cols="12" md="6">
             <v-animated>
               <h1>
-                {{ landing.title[1] }}
+                {{ landing[1].title }}
               </h1>
               <p
                 :class="{ 'text-grey-darken-1': mobile }"
                 class="mt-2 text-pre-wrap"
               >
-                {{ landing.description[1] }}
+                {{ landing[1].description }}
               </p>
             </v-animated>
           </v-col>
@@ -109,17 +122,19 @@ onMounted(() => {
         >
           <v-col class="pl-md-6" cols="12" md="6">
             <v-animated>
-              <h1>{{ landing.title[2] }}</h1>
+              <h1>{{ landing[2].title }}</h1>
               <p
                 :class="{ 'text-grey-darken-1': mobile }"
                 class="mt-2 text-pre-wrap"
               >
-                {{ landing.description[2] }}
+                {{ landing[2].description }}
               </p>
             </v-animated>
           </v-col>
-          <v-col cols="5" md="6">
-            <v-img :src="getClientPublicImgUrl('confetti.png')"></v-img>
+          <v-col v-if="landing[2].image" cols="11" md="6">
+            <v-sheet :elevation="8">
+              <v-img :src="getPageImageUrl(landing[2].image)"></v-img>
+            </v-sheet>
           </v-col>
         </v-row>
       </v-col>
@@ -136,12 +151,14 @@ onMounted(() => {
             :class="{ 'text-grey-darken-1': mobile }"
             class="pt-4 text-pre-wrap"
           >
-            {{ landing.description[3] }}
+            {{ landing[3].description }}
           </p>
         </v-animated>
-        <v-row justify="center">
-          <v-col cols="6" md="4">
-            <v-img :src="getClientPublicImgUrl('beach-sunset.png')"></v-img>
+        <v-row v-if="landing[3].image" justify="center">
+          <v-col class="my-5" cols="11">
+            <v-sheet :elevation="8">
+              <v-img :src="getPageImageUrl(landing[3].image)"></v-img>
+            </v-sheet>
           </v-col>
         </v-row>
         <h4>Are you ready?</h4>

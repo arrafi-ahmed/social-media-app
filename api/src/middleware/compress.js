@@ -11,7 +11,7 @@ const compressAndRotateImage = async (file) => {
   let maxWidth;
   if (prefix === "user") {
     maxWidth = 400;
-  } else if (prefix === "eventLogo") {
+  } else if (prefix === "eventLogo" || prefix === "page") {
     maxWidth = 900;
   }
 

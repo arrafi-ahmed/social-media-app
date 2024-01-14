@@ -6,6 +6,7 @@ const dirMap = {
   event: path.join(__dirname, "..", "..", "public", "event"),
   user: path.join(__dirname, "..", "..", "public", "user"),
   blog: path.join(__dirname, "..", "..", "public", "blog"),
+  page: path.join(__dirname, "..", "..", "public", "page"),
   temp: path.join(__dirname, "..", "..", "public", "temp"),
 };
 

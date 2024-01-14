@@ -50,7 +50,6 @@ const openAddEventDialog = () => {
 const addEvent = async () => {
   await form.value.validate();
   if (!isFormValid.value) return;
-
   const formData = new FormData();
   formData.append("title", newEvent.title);
   formData.append("date", toLocalISOString(newEvent.date).slice(0, 10));
@@ -181,294 +180,300 @@ watch(
 </script>
 
 <template>
-  <div class="d-flex justify-space-between align-center">
-    <name-card
-      :imgSize="80"
-      :isDetailed="false"
-      :profile="user"
-      img-class="rounded-xl"
-    ></name-card>
+  <v-container>
+    <div class="d-flex justify-space-between align-center">
+      <name-card
+        :imgSize="80"
+        :isDetailed="false"
+        :profile="user"
+        img-class="rounded-xl"
+      ></name-card>
 
-    <v-divider v-if="mobile" inset vertical></v-divider>
+      <v-divider v-if="mobile" inset vertical></v-divider>
 
-    <v-btn
-      v-if="mobile"
-      color="primary"
-      density="compact"
-      icon="mdi-plus-circle-outline"
-      variant="text"
-      @click="openAddEventDialog"
-    >
-    </v-btn>
-    <v-btn v-else color="primary" @click="openAddEventDialog">Add Event</v-btn>
-  </div>
-  <v-divider class="my-3"></v-divider>
-
-  <v-row :no-gutters="!!mobile">
-    <!-- Sidebar -->
-    <v-col
-      :class="{ 'flex-sticky top-60': !mobile }"
-      cols="12"
-      md="3"
-      order-md="2"
-    >
-      <!--        for mobile screen-->
-      <div v-if="mobile">
-        <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
-          <v-expansion-panel>
-            <v-expansion-panel-title>Featured Event</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <event-featured
-                v-if="featuredEvent?.id"
-                :event="featuredEvent"
-                type="headerless"
-              ></event-featured>
-              <div v-else>
-                <small>No featured event set</small>
-              </div>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-title>Event Categories</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <category-list
-                :categories="mountedEventCategories"
-                :selected="findFormData.category"
-                type="headerless"
-                @click-category="handleClickCategory"
-              ></category-list>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <events-upcoming
-                :events="upcomingEvents"
-                type="headerless"
-              ></events-upcoming>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-          <v-expansion-panel class="find-events">
-            <v-expansion-panel-title>Find Events</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <find-event-form
-                @find-events="handleFindEvents"
-                @reset-find-events="handleResetFindEvents"
-              ></find-event-form>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </div>
-
-      <!--        for large screen-->
-      <div v-else>
-        <!-- Featured event -->
-        <event-featured
-          v-if="featuredEvent?.id"
-          :event="featuredEvent"
-          type="has-header"
-        ></event-featured>
-
-        <!-- Categories Section -->
-        <category-list
-          :categories="mountedEventCategories"
-          :selected="findFormData.category"
-          type="has-header"
-          @click-category="handleClickCategory"
-        ></category-list>
-
-        <!-- Upcoming Events Section -->
-        <events-upcoming
-          :events="upcomingEvents"
-          type="has-header"
-        ></events-upcoming>
-      </div>
-    </v-col>
-
-    <!-- Main content -->
-    <v-col cols="12" md="9" order-md="1">
-      <!-- Filter Form -->
-      <find-event-form
-        v-if="!mobile"
-        @find-events="handleFindEvents"
-        @reset-find-events="handleResetFindEvents"
-      ></find-event-form>
-
-      <!-- Event Posts Feed -->
-      <event-infinite
-        :events="events"
-        :grid="{ sm: 6 }"
-        source="wall"
-        type="headerless"
-        @fetch-events="loadEvents"
+      <v-btn
+        v-if="mobile"
+        color="primary"
+        density="compact"
+        icon="mdi-plus-circle-outline"
+        variant="text"
+        @click="openAddEventDialog"
       >
-      </event-infinite>
-    </v-col>
-  </v-row>
+      </v-btn>
+      <v-btn v-else color="primary" @click="openAddEventDialog"
+        >Add Event
+      </v-btn>
+    </div>
+    <v-divider class="my-3"></v-divider>
 
-  <v-dialog
-    v-if="route.params.id == currentUser.id"
-    v-model="dialog"
-    width="600"
-  >
-    <v-card>
-      <v-card-title>
-        <span>Add Event</span>
-      </v-card-title>
-      <v-card-text>
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-          @submit.prevent="addEvent"
+    <v-row :no-gutters="!!mobile">
+      <!-- Sidebar -->
+      <v-col
+        :class="{ 'flex-sticky top-60': !mobile }"
+        cols="12"
+        md="3"
+        order-md="2"
+      >
+        <!--        for mobile screen-->
+        <div v-if="mobile">
+          <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
+            <v-expansion-panel>
+              <v-expansion-panel-title>Featured Event</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <event-featured
+                  v-if="featuredEvent?.id"
+                  :event="featuredEvent"
+                  type="headerless"
+                ></event-featured>
+                <div v-else>
+                  <small>No featured event set</small>
+                </div>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title
+                >Event Categories
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <category-list
+                  :categories="mountedEventCategories"
+                  :selected="findFormData.category"
+                  type="headerless"
+                  @click-category="handleClickCategory"
+                ></category-list>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <events-upcoming
+                  :events="upcomingEvents"
+                  type="headerless"
+                ></events-upcoming>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel class="find-events">
+              <v-expansion-panel-title>Find Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <find-event-form
+                  @find-events="handleFindEvents"
+                  @reset-find-events="handleResetFindEvents"
+                ></find-event-form>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </div>
+
+        <!--        for large screen-->
+        <div v-else>
+          <!-- Featured event -->
+          <event-featured
+            v-if="featuredEvent?.id"
+            :event="featuredEvent"
+            type="has-header"
+          ></event-featured>
+
+          <!-- Categories Section -->
+          <category-list
+            :categories="mountedEventCategories"
+            :selected="findFormData.category"
+            type="has-header"
+            @click-category="handleClickCategory"
+          ></category-list>
+
+          <!-- Upcoming Events Section -->
+          <events-upcoming
+            :events="upcomingEvents"
+            type="has-header"
+          ></events-upcoming>
+        </div>
+      </v-col>
+
+      <!-- Main content -->
+      <v-col cols="12" md="9" order-md="1">
+        <!-- Filter Form -->
+        <find-event-form
+          v-if="!mobile"
+          @find-events="handleFindEvents"
+          @reset-find-events="handleResetFindEvents"
+        ></find-event-form>
+
+        <!-- Event Posts Feed -->
+        <event-infinite
+          :events="events"
+          :grid="{ sm: 6 }"
+          source="wall"
+          type="headerless"
+          @fetch-events="loadEvents"
         >
-          <v-text-field
-            v-model="newEvent.title"
-            :rules="[
-              (v) => !!v || 'Title is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Title"
-            required
-            variant="solo"
-          ></v-text-field>
+        </event-infinite>
+      </v-col>
+    </v-row>
 
-          <v-text-field
-            v-model="newEvent.location"
-            :rules="[
-              (v) => !!v || 'Location is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Location"
-            required
-            variant="solo"
-          ></v-text-field>
-
-          <v-textarea
-            v-model="newEvent.description"
-            :rules="[
-              (v) => !!v || 'Description is required!',
-              (v) =>
-                (v && v.length <= 1000) || 'Must not exceed 1000 characters',
-            ]"
-            class="mt-2 text-pre-wrap"
-            clearable
-            hide-details="auto"
-            label="Description"
-            rows="5"
-            variant="solo"
-          ></v-textarea>
-          <v-row :no-gutters="!!mobile">
-            <v-col class="mt-2" cols="12" md="6">
-              <v-select
-                v-model="newEvent.selectedCategory"
-                :items="allEventCategories"
-                :rules="[(v) => !!v || 'Category is required!']"
-                clearable
-                density="compact"
-                hide-details
-                label="Category"
-                required
-                variant="solo"
-              ></v-select>
-            </v-col>
-            <v-col class="mt-2" cols="12" md="6">
-              <date-picker
-                v-model="newEvent.date"
-                :rules="[(v) => !!v || 'Date is required!']"
-                color="primary"
-                label="Date"
-                variant="solo"
-              ></date-picker>
-            </v-col>
-          </v-row>
-          <v-row :no-gutters="!!mobile" class="mt-md-n1">
-            <v-col class="mt-2 mt-md-0" cols="12" md="6">
-              <v-text-field
-                v-model="newEvent.startTime"
-                :rules="[(v) => !!v || 'Start Time is required!']"
-                density="compact"
-                hide-details="auto"
-                label="Start Time"
-                required
-                type="time"
-                variant="solo"
-              ></v-text-field>
-            </v-col>
-            <v-col class="mt-2 mt-md-0" cols="12" md="6">
-              <v-text-field
-                v-model="newEvent.endTime"
-                :rules="[(v) => !!v || 'End Time is required!']"
-                density="compact"
-                hide-details="auto"
-                label="End Time"
-                required
-                type="time"
-                variant="solo"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-file-input
-            :rules="[
-              (v) =>
-                newEvent.images.length === 0 ||
-                (Array.isArray(v) ? v : [v]).every(
-                  (file) => file.size <= 25 * 1024 * 1024
-                ) ||
-                'Max file size is 25MB!',
-              (v) => newEvent.images.length <= 5 || 'Max 5 images allowed!',
-              (v) =>
-                (Array.isArray(v) ? v : [v]).every((file) =>
-                  isValidImage(file)
-                ) || 'Only jpeg/png allowed!',
-            ]"
-            accept="image/*"
-            class="mt-2"
-            clearable
-            density="compact"
-            hide-details="auto"
-            hint="Upload up to 5 images"
-            label="Upload Images"
-            multiple
-            persistent-hint
-            prepend-icon=""
-            prepend-inner-icon="mdi-camera"
-            show-size
-            variant="solo"
-            @update:modelValue="handleEventImageChange"
-            @click:clear="newEvent.images = []"
+    <v-dialog
+      v-if="route.params.id == currentUser.id"
+      v-model="dialog"
+      width="600"
+    >
+      <v-card>
+        <v-card-title>
+          <span>Add Event</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form
+            ref="form"
+            v-model="isFormValid"
+            fast-fail
+            @submit.prevent="addEvent"
           >
-            <template v-slot:selection="{ fileNames }">
-              <template v-for="(image, index) in fileNames" :key="index">
-                <v-chip class="me-2" color="primary" label size="small">
-                  {{ image }}
-                </v-chip>
-              </template>
-            </template>
-          </v-file-input>
+            <v-text-field
+              v-model="newEvent.title"
+              :rules="[
+                (v) => !!v || 'Title is required!',
+                (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+              ]"
+              class="mt-2"
+              clearable
+              density="compact"
+              hide-details="auto"
+              label="Title"
+              required
+              variant="solo"
+            ></v-text-field>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              :density="mobile ? 'compact' : 'default'"
-              color="primary"
-              type="submit"
-              >Add
-            </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+            <v-text-field
+              v-model="newEvent.location"
+              :rules="[
+                (v) => !!v || 'Location is required!',
+                (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+              ]"
+              class="mt-2"
+              clearable
+              density="compact"
+              hide-details="auto"
+              label="Location"
+              required
+              variant="solo"
+            ></v-text-field>
+
+            <v-textarea
+              v-model="newEvent.description"
+              :rules="[
+                (v) => !!v || 'Description is required!',
+                (v) =>
+                  (v && v.length <= 1000) || 'Must not exceed 1000 characters',
+              ]"
+              class="mt-2 text-pre-wrap"
+              clearable
+              hide-details="auto"
+              label="Description"
+              rows="5"
+              variant="solo"
+            ></v-textarea>
+            <v-row :no-gutters="!!mobile">
+              <v-col class="mt-2" cols="12" md="6">
+                <v-select
+                  v-model="newEvent.selectedCategory"
+                  :items="allEventCategories"
+                  :rules="[(v) => !!v || 'Category is required!']"
+                  clearable
+                  density="compact"
+                  hide-details
+                  label="Category"
+                  required
+                  variant="solo"
+                ></v-select>
+              </v-col>
+              <v-col class="mt-2" cols="12" md="6">
+                <date-picker
+                  v-model="newEvent.date"
+                  :rules="[(v) => !!v || 'Date is required!']"
+                  color="primary"
+                  label="Date"
+                  variant="solo"
+                ></date-picker>
+              </v-col>
+            </v-row>
+            <v-row :no-gutters="!!mobile" class="mt-md-n1">
+              <v-col class="mt-2 mt-md-0" cols="12" md="6">
+                <v-text-field
+                  v-model="newEvent.startTime"
+                  :rules="[(v) => !!v || 'Start Time is required!']"
+                  density="compact"
+                  hide-details="auto"
+                  label="Start Time"
+                  required
+                  type="time"
+                  variant="solo"
+                ></v-text-field>
+              </v-col>
+              <v-col class="mt-2 mt-md-0" cols="12" md="6">
+                <v-text-field
+                  v-model="newEvent.endTime"
+                  :rules="[(v) => !!v || 'End Time is required!']"
+                  density="compact"
+                  hide-details="auto"
+                  label="End Time"
+                  required
+                  type="time"
+                  variant="solo"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-file-input
+              :rules="[
+                (v) =>
+                  newEvent.images.length === 0 ||
+                  (Array.isArray(v) ? v : [v]).every(
+                    (file) => file.size <= 25 * 1024 * 1024
+                  ) ||
+                  'Max file size is 25MB!',
+                (v) => newEvent.images.length <= 5 || 'Max 5 images allowed!',
+                (v) =>
+                  (Array.isArray(v) ? v : [v]).every((file) =>
+                    isValidImage(file)
+                  ) || 'Only jpeg/png allowed!',
+              ]"
+              accept="image/*"
+              class="mt-2"
+              clearable
+              density="compact"
+              hide-details="auto"
+              hint="Upload up to 5 images"
+              label="Upload Images"
+              multiple
+              persistent-hint
+              prepend-icon=""
+              prepend-inner-icon="mdi-camera"
+              show-size
+              variant="solo"
+              @update:modelValue="handleEventImageChange"
+              @click:clear="newEvent.images = []"
+            >
+              <template v-slot:selection="{ fileNames }">
+                <template v-for="(image, index) in fileNames" :key="index">
+                  <v-chip class="me-2" color="primary" label size="small">
+                    {{ image }}
+                  </v-chip>
+                </template>
+              </template>
+            </v-file-input>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                :density="mobile ? 'compact' : 'default'"
+                color="primary"
+                type="submit"
+                >Add
+              </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <style scoped></style>

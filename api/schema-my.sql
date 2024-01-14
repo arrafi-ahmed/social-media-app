@@ -85,6 +85,7 @@ CREATE TABLE event_wishlist
     location    VARCHAR(255),
     description TEXT,
     category    VARCHAR(50),
+    images      TEXT,
     user_id     INT NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES cuser (id) ON DELETE CASCADE

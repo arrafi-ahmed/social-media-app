@@ -1,5 +1,5 @@
 # WayzAway
-## Features
+## Features 
 1. User Registration and Login:
 - Secure and user-friendly registration and login processes.
 - Users can create an account using their full name, email address, password, date of birth, and country.

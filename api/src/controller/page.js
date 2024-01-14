@@ -2,6 +2,8 @@ const router = require("express").Router();
 const ApiResponse = require("../model/ApiResponse");
 const auth = require("../middleware/auth");
 const pageService = require("../service/page");
+const { uploadPage } = require("../middleware/upload");
+const compressImages = require("../middleware/compress");
 
 router.get("/getPage", (req, res) => {
   const pageName = req.query && req.query.pageName;
@@ -15,9 +17,9 @@ router.get("/getPage", (req, res) => {
     });
 });
 
-router.post("/updatePage", auth, (req, res) => {
+router.post("/updatePage", auth, uploadPage, compressImages, (req, res) => {
   pageService
-    .updatePage(req.body)
+    .updatePage(req.body, req.files)
     .then((result) => {
       res
         .status(200)

@@ -89,87 +89,91 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row :no-gutters="!!mobile">
-    <!-- Sidebar -->
-    <v-col
-      :class="{ 'flex-sticky top-60': !mobile }"
-      cols="12"
-      md="3"
-      order-md="2"
-    >
-      <!--        for mobile screen-->
-      <div v-if="mobile">
-        <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
-          <v-expansion-panel>
-            <v-expansion-panel-title>Event Categories</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <category-list
-                :categories="mountedEventCategories"
-                :selected="findFormData.category"
-                type="headerless"
-                @click-category="handleClickCategory"
-              ></category-list>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <events-upcoming
-                :events="upcomingEvents"
-                type="headerless"
-              ></events-upcoming>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-title>Find Events</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <find-event-form
-                @find-events="handleFindEvents"
-                @reset-find-events="handleResetFindEvents"
-              ></find-event-form>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </div>
-
-      <!--        for large screen-->
-      <div v-else>
-        <!-- Categories Section -->
-        <category-list
-          :categories="mountedEventCategories"
-          :selected="findFormData.category"
-          type="has-header"
-          @click-category="handleClickCategory"
-        ></category-list>
-
-        <!-- Upcoming Events Section -->
-        <events-upcoming
-          :events="upcomingEvents"
-          type="has-header"
-        ></events-upcoming>
-      </div>
-    </v-col>
-
-    <!-- Main content -->
-    <v-col cols="12" md="9" order-md="1">
-      <!-- Filter Form -->
-      <find-event-form
-        v-if="!mobile"
-        @find-events="handleFindEvents"
-        @reset-find-events="handleResetFindEvents"
-      ></find-event-form>
-
-      <!-- Event Posts Feed -->
-      <event-infinite
-        :events="events"
-        :grid="{ sm: 6 }"
-        source="browse"
-        type="has-header"
-        @fetch-events="loadEvents"
+  <v-container>
+    <v-row :no-gutters="!!mobile">
+      <!-- Sidebar -->
+      <v-col
+        :class="{ 'flex-sticky top-60': !mobile }"
+        cols="12"
+        md="3"
+        order-md="2"
       >
-      </event-infinite>
-    </v-col>
-  </v-row>
+        <!--        for mobile screen-->
+        <div v-if="mobile">
+          <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
+            <v-expansion-panel>
+              <v-expansion-panel-title
+                >Event Categories
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <category-list
+                  :categories="mountedEventCategories"
+                  :selected="findFormData.category"
+                  type="headerless"
+                  @click-category="handleClickCategory"
+                ></category-list>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <events-upcoming
+                  :events="upcomingEvents"
+                  type="headerless"
+                ></events-upcoming>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Find Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <find-event-form
+                  @find-events="handleFindEvents"
+                  @reset-find-events="handleResetFindEvents"
+                ></find-event-form>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </div>
+
+        <!--        for large screen-->
+        <div v-else>
+          <!-- Categories Section -->
+          <category-list
+            :categories="mountedEventCategories"
+            :selected="findFormData.category"
+            type="has-header"
+            @click-category="handleClickCategory"
+          ></category-list>
+
+          <!-- Upcoming Events Section -->
+          <events-upcoming
+            :events="upcomingEvents"
+            type="has-header"
+          ></events-upcoming>
+        </div>
+      </v-col>
+
+      <!-- Main content -->
+      <v-col cols="12" md="9" order-md="1">
+        <!-- Filter Form -->
+        <find-event-form
+          v-if="!mobile"
+          @find-events="handleFindEvents"
+          @reset-find-events="handleResetFindEvents"
+        ></find-event-form>
+
+        <!-- Event Posts Feed -->
+        <event-infinite
+          :events="events"
+          :grid="{ sm: 6 }"
+          source="browse"
+          type="has-header"
+          @fetch-events="loadEvents"
+        >
+        </event-infinite>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style>

@@ -198,31 +198,43 @@ router.get("/getWishlistEvent", auth, (req, res) => {
     });
 });
 
-router.post("/addWishlistEvent", auth, (req, res) => {
-  eventService
-    .addWishlistEvent(req.body, req.currentUser.id)
-    .then((result) => {
-      res
-        .status(200)
-        .json(new ApiResponse("Event created successfully!", result));
-    })
-    .catch((err) => {
-      res.status(500).json(new ApiResponse("Event creation failed!", null));
-    });
-});
+router.post(
+  "/addWishlistEvent",
+  auth,
+  uploadEvent,
+  compressImages,
+  (req, res) => {
+    eventService
+      .addWishlistEvent(req.body, req.files, req.currentUser.id)
+      .then((result) => {
+        res
+          .status(200)
+          .json(new ApiResponse("Event created successfully!", result));
+      })
+      .catch((err) => {
+        res.status(500).json(new ApiResponse("Event creation failed!", null));
+      });
+  }
+);
 
-router.post("/editWishlistEvent", auth, (req, res) => {
-  eventService
-    .editWishlistEvent(req.body, req.currentUser.id)
-    .then((result) => {
-      res
-        .status(200)
-        .json(new ApiResponse("Event edited successfully!", result));
-    })
-    .catch((err) => {
-      res.status(500).json(new ApiResponse("Event editing failed!", null));
-    });
-});
+router.post(
+  "/editWishlistEvent",
+  auth,
+  uploadEvent,
+  compressImages,
+  (req, res) => {
+    eventService
+      .editWishlistEvent(req.body, req.files, req.currentUser.id)
+      .then((result) => {
+        res
+          .status(200)
+          .json(new ApiResponse("Event edited successfully!", result));
+      })
+      .catch((err) => {
+        res.status(500).json(new ApiResponse("Event editing failed!", null));
+      });
+  }
+);
 
 router.get("/getEventsByUserId", auth, (req, res) => {
   const userId = (req.query && req.query.userId) || req.currentUser.id;
