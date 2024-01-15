@@ -9,17 +9,11 @@ const customCors = (req, res, next) => {
   const hostname = URL.parse(baseUrl).hostname;
   const corsOptions = {
     origin: (origin, callback) => {
-      let urlwww;
-      if (req.secure) {
-        urlwww = `https://www.${hostname}`;
-      } else {
-        urlwww = `http://www.${hostname}`;
-      }
+      let urlwww = `https://www.${hostname}`;
       const allowedOrigins = [baseUrl];
       if (urlwww) {
         allowedOrigins.push(urlwww);
       }
-      console.log(2, new Date(), origin, allowedOrigins);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {

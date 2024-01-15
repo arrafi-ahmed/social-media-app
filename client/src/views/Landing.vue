@@ -139,8 +139,9 @@ onMounted(() => {
         </v-row>
       </v-col>
     </v-row>
+
     <v-row class="py-5 my-5 py-md-15 my-md-15 bg-white" justify="center">
-      <v-col class="text-center" cols="12" md="10">
+      <v-col class="text-center" cols="12" md="9">
         <v-animated>
           <v-row justify="center">
             <v-col cols="auto">
@@ -155,7 +156,7 @@ onMounted(() => {
           </p>
         </v-animated>
         <v-row v-if="landing[3].image" justify="center">
-          <v-col class="my-5" cols="11">
+          <v-col class="my-5" cols="11" md="5">
             <v-sheet :elevation="8">
               <v-img :src="getPageImageUrl(landing[3].image)"></v-img>
             </v-sheet>
