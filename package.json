@@ -11,12 +11,7 @@
     "process:dist": "cd client && mv dist build && zip -r project.zip build .htaccess && rm -rf build",
     "move:zip-to-root": "mv client/project.zip ./",
     "build:full": "npm run build:client && npm run copy:client-htaccess && npm run build:api && npm run copy:api-to-client && npm run rename:api-htaccess && npm run process:dist && npm run move:zip-to-root",
-    "transfer:to-server": "sshpass -p 'Knightdev55' scp project.zip mctn2m5vzi50@92.205.5.249:public_html/ && rm project.zip",
-    "unzip:server": "sshpass -p 'Knightdev55' ssh mctn2m5vzi50@92.205.5.249 'unzip -o public_html/project.zip -d public_html/'",
-    "replace:public-folder": "sshpass -p 'Knightdev55' ssh mctn2m5vzi50@92.205.5.249 'mv public_html/api/public/* public_html/build/api/public/'",
-    "delete:server-files": "sshpass -p 'Knightdev55' ssh mctn2m5vzi50@92.205.5.249 'find public_html -mindepth 1 -maxdepth 1 ! -name \"build\" -exec rm -rf {} + && cd public_html && mv build/* build/.htaccess . && rmdir build'",
-    "deploy:server": "sshpass -p 'Knightdev55' ssh mctn2m5vzi50@92.205.5.249 'cd public_html/api && nvm use v11 && npm install && npm run prod'",
-    "deploy:full": "npm run build:full && npm run transfer:to-server && npm run unzip:server && npm run replace:public-folder && npm run delete:server-files && npm run deploy:server"
+
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
