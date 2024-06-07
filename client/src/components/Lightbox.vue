@@ -25,9 +25,6 @@ const switchDialog = () => {
   fullSize.value = false;
   dialog.value = !dialog.value;
 };
-const switchFullsize = () => {
-  fullSize.value = !fullSize.value;
-};
 const getPrevImage = () => {
   if (currIndex.value === 0) return;
   currIndex.value = currIndex.value - 1;
@@ -37,6 +34,21 @@ const getNextImage = () => {
   if (currIndex.value === imgSet.length - 1) return;
   currIndex.value = currIndex.value + 1;
   currImg.value = imgSet[currIndex.value];
+};
+const targetImageContainer = ref(null);
+const targetImageWidth = ref(null);
+const targetImageHeight = ref(null);
+
+const onImageLoad = () => {
+  const imageElement = targetImageContainer.value?.$el.querySelector("img");
+  if (imageElement) {
+    targetImageWidth.value = imageElement.naturalWidth;
+    targetImageHeight.value = imageElement.naturalHeight;
+  }
+};
+
+const switchFullsize = () => {
+  fullSize.value = !fullSize.value;
 };
 </script>
 
@@ -49,7 +61,7 @@ const getNextImage = () => {
     @click="switchDialog"
   ></v-img>
 
-  <v-dialog v-model="dialog" :max-width="!fullSize ? '100vh' : undefined">
+  <v-dialog v-model="dialog" :max-width="fullSize ? 1000 : targetImageWidth">
     <v-card class="position-relative">
       <v-btn
         :block="false"
@@ -62,11 +74,15 @@ const getNextImage = () => {
         size="sm"
         @click="dialog = !dialog"
       ></v-btn>
+
+      <!--      <div ref="targetImage">-->
       <v-img
+        ref="targetImageContainer"
         :contain="!fullSize"
-        :max-height="!fullSize ? '85vh' : undefined"
+        :max-height="fullSize ? targetImageHeight : '85vh'"
         :src="getEventImageUrl(currImg || null)"
         @click="switchFullsize"
+        @load="onImageLoad"
       >
         <v-row
           v-if="imgSet"
@@ -96,6 +112,7 @@ const getNextImage = () => {
           </v-col>
         </v-row>
       </v-img>
+      <!--      </div>-->
     </v-card>
   </v-dialog>
 </template>

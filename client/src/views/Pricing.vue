@@ -207,10 +207,10 @@ onMounted(async () => {
       <v-col cols="auto">
         <v-btn
           v-if="showContinue"
-          :to="{ name: 'wall', params: { id: currentUser.id } }"
-          color="primary"
           :density="mobile ? 'comfortable' : 'default'"
+          :to="{ name: 'wall', params: { id: currentUser.id } }"
           class="text-center"
+          color="primary"
           >Continue
         </v-btn>
       </v-col>

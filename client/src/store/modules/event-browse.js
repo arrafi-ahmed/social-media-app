@@ -3,6 +3,7 @@ export const state = {
   page: 1,
   events: [],
   upcomingEvents: [],
+  editingEvent: {},
 };
 export const mutations = {
   setPage(state, payload) {
@@ -33,6 +34,9 @@ export const mutations = {
     );
     if (targetItemIndex === -1) return;
     state.events.splice(targetItemIndex, 1);
+  },
+  setEditingEvent(state, payload) {
+    state.editingEvent = payload;
   },
 };
 export const actions = {
@@ -112,6 +116,21 @@ export const actions = {
         })
         .then((response) => {
           commit("setUpcomingEvents", response.data.payload);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setEditingEvent({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/getEvent", {
+          params: { eventId: request },
+        })
+        .then((response) => {
+          commit("setEditingEvent", response.data.payload);
           resolve(response);
         })
         .catch((err) => {

@@ -35,7 +35,7 @@ onMounted(() => {
 <template>
   <v-container :class="{ 'text-center': xs }" fluid>
     <v-row class="bg-grey-lighten-3" justify="center">
-      <v-col cols="12" md="9" class="limit-max-width-xl mx-auto">
+      <v-col class="limit-max-width-xl mx-auto" cols="12" md="9">
         <v-row
           align="center"
           class="py-2 mb-3 py-md-15 my-md-15"
@@ -43,7 +43,7 @@ onMounted(() => {
         >
           <v-col cols="11" md="7">
             <v-row :justify="xs ? 'center' : 'start'" no-gutters>
-              <v-col cols="8" sm="6" md="4">
+              <v-col cols="8" md="4" sm="6">
                 <applink></applink>
               </v-col>
             </v-row>
@@ -97,7 +97,7 @@ onMounted(() => {
       </v-col>
     </v-row>
     <v-row class="bg-white" justify="center">
-      <v-col cols="12" md="6" class="limit-max-width-xl mx-auto">
+      <v-col class="limit-max-width-xl mx-auto" cols="12" md="6">
         <v-row
           align="center"
           class="py-5 my-5 py-md-15 my-md-15"
@@ -126,7 +126,7 @@ onMounted(() => {
       </v-col>
     </v-row>
     <v-row class="bg-grey-lighten-3" justify="center">
-      <v-col cols="12" md="6" class="limit-max-width-xl mx-auto">
+      <v-col class="limit-max-width-xl mx-auto" cols="12" md="6">
         <v-row
           align="center"
           class="py-5 my-5 py-md-15 my-md-15"

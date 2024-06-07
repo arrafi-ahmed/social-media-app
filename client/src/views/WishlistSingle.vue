@@ -72,9 +72,9 @@ onMounted(() => {
         <v-row v-if="event?.images?.length > 0" class="mt-6" justify="start">
           <v-col v-for="(image, index) in event?.images" :key="index" cols="6">
             <lightbox
+              :key="image"
               :aspect-ratio="1.45"
               :img-src="image"
-              :key="image"
             ></lightbox>
           </v-col>
         </v-row>

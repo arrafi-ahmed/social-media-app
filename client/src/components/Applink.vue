@@ -15,9 +15,9 @@ const { xs, smAndUp } = useDisplay();
       target="_blank"
     >
       <v-img
-        width="120"
-        height="40"
         :src="getClientPublicImgUrl('badge-google-play.png')"
+        height="40"
+        width="120"
       ></v-img>
     </a>
     <a
@@ -26,9 +26,9 @@ const { xs, smAndUp } = useDisplay();
     >
       <v-img
         :class="{ 'ml-2': xs, 'ml-3': smAndUp }"
-        width="120"
-        height="40"
         :src="getClientPublicImgUrl('badge-app-store.png')"
+        height="40"
+        width="120"
       ></v-img>
     </a>
   </div>

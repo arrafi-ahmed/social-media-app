@@ -6,6 +6,7 @@ export const state = {
   user: {},
   featuredEvent: {},
   upcomingEvents: [],
+  editingEvent: {},
 };
 
 export const mutations = {
@@ -60,6 +61,9 @@ export const mutations = {
     );
     if (targetItemIndex === -1) return;
     state.events[targetItemIndex].new_notification = payload.payload;
+  },
+  setEditingEvent(state, payload) {
+    state.editingEvent = payload;
   },
 };
 
@@ -256,6 +260,21 @@ export const actions = {
         })
         .then((response) => {
           commit("setUpcomingEvents", response.data.payload);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setEditingEvent({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/getEvent", {
+          params: { eventId: request },
+        })
+        .then((response) => {
+          commit("setEditingEvent", response.data.payload);
           resolve(response);
         })
         .catch((err) => {

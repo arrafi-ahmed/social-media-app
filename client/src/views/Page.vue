@@ -52,7 +52,7 @@ watch(
     <v-row class="mt-2" justify="center">
       <v-col md="7">
         <v-row justify="start" no-gutters>
-          <v-col cols="8" sm="6" md="4">
+          <v-col cols="8" md="4" sm="6">
             <applink v-if="route.name === 'about'"></applink>
           </v-col>
         </v-row>

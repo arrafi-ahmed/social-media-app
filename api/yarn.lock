@@ -3,9 +3,9 @@
 
 
 "@types/node@>=8.1.0":
-  "integrity" "sha512-gBGeanV41c1L171rR7wjbMiEpEI/l5XFQdLLfhr/REwpgDy/4U8y89+i8kRiLzDyZdOkXh+cRaTetUnCYutoXA=="
-  "resolved" "https://registry.npmjs.org/@types/node/-/node-20.12.13.tgz"
-  "version" "20.12.13"
+  "integrity" "sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q=="
+  "resolved" "https://registry.npmjs.org/@types/node/-/node-20.14.2.tgz"
+  "version" "20.14.2"
   dependencies:
     "undici-types" "~5.26.4"
 
@@ -699,9 +699,9 @@
   "version" "1.1.0"
 
 "stripe@^15.7.0":
-  "integrity" "sha512-7eEPMgehd1I16cXeP7Rcn/JKkPWIadB9vGIeE+vbCzQXaY5R95AoNmkZx0vmlu1H4QIDs7j1pYIKPRm9Dr4LKg=="
-  "resolved" "https://registry.npmjs.org/stripe/-/stripe-15.8.0.tgz"
-  "version" "15.8.0"
+  "integrity" "sha512-C7NAK17wGr6DOybxThO0n1zVcqSShWno7kx/UcJorQ/nWZ5KnfHQ38DUTb9NgizC8TCII3BPIhqq6Zc/1aUkrg=="
+  "resolved" "https://registry.npmjs.org/stripe/-/stripe-15.9.0.tgz"
+  "version" "15.9.0"
   dependencies:
     "@types/node" ">=8.1.0"
     "qs" "^6.11.0"

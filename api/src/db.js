@@ -15,6 +15,7 @@ let pool = mysql.createPool({
   user: DB_USER,
   database: DB_DATABASE,
   password: DB_PASSWORD,
+  ssl: false,
   // waitForConnections: true,
   // connectionLimit: 10,
   // queueLimit: 0,

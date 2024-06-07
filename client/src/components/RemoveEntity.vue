@@ -25,33 +25,33 @@ const remove = (id) => {
 <template>
   <v-btn
     v-if="mobile && text"
-    :variant="btnVariant"
     :class="customClass"
+    :size="size || 'small'"
+    :variant="btnVariant"
     color="primary"
     density="comfortable"
-    :size="size || 'small'"
     @click.stop="dialog = !dialog"
   >
     {{ text }}
   </v-btn>
   <v-btn
-    :class="customClass"
     v-if="mobile && !text"
+    :class="customClass"
+    :size="size || 'small'"
     :variant="btnVariant"
     color="primary"
     density="compact"
     icon="mdi-close"
-    :size="size || 'small'"
     @click.stop="dialog = !dialog"
   >
   </v-btn>
   <v-btn
-    :class="customClass"
     v-if="!mobile"
+    :class="customClass"
+    :size="size || 'default'"
     :variant="btnVariant"
     color="primary"
     density="default"
-    :size="size || 'default'"
     @click.stop="dialog = !dialog"
     >{{ text || "Remove" }}
   </v-btn>

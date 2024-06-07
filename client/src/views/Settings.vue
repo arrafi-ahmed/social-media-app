@@ -178,12 +178,12 @@ onMounted(() => {
       <v-col cols="12" md="5">
         <h3 class="mt-5">Subscription</h3>
         <v-divider></v-divider>
-        <v-row align="center" justify="end" class="mt-2" no-gutters>
+        <v-row align="center" class="mt-2" justify="end" no-gutters>
           <v-col cols="auto">
             <v-btn
               :density="mobile ? 'comfortable' : 'default'"
-              class="ml-auto mt-5"
               :to="{ name: 'pricing' }"
+              class="ml-auto mt-5"
               color="primary"
               >Update Plan
             </v-btn>
@@ -246,10 +246,10 @@ onMounted(() => {
           <v-row justify="end">
             <v-col cols="auto">
               <remove-entity
-                custom-class="ms-auto"
                 btn-variant="flat"
-                text="Delete"
+                custom-class="ms-auto"
                 size="default"
+                text="Delete"
                 @remove-entity="deleteAccount"
               ></remove-entity>
             </v-col>

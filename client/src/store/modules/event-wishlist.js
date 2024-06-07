@@ -4,6 +4,7 @@ export const state = {
   page: 1,
   events: [],
   event: {},
+  editingEvent: {},
 };
 
 export const mutations = {
@@ -35,6 +36,9 @@ export const mutations = {
     );
     if (targetItemIndex === -1) return;
     state.events.splice(targetItemIndex, 1);
+  },
+  setEditingEvent(state, payload) {
+    state.editingEvent = payload;
   },
 };
 
@@ -101,6 +105,21 @@ export const actions = {
         .get("/api/event/deleteWishlistEvent", { params: { eventId: request } })
         .then((response) => {
           commit("removeEvent", request);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setEditingEvent({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/getWishlistEvent", {
+          params: { eventId: request },
+        })
+        .then((response) => {
+          commit("setEditingEvent", response.data.payload);
           resolve(response);
         })
         .catch((err) => {

@@ -1,3 +1,5 @@
+process.env.MAGICK_THREAD_LIMIT = 1;
+
 const gm = require("gm").subClass({ imageMagick: true });
 const fs = require("fs");
 const { promisify } = require("util");

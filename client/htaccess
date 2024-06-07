@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  SetEnv MAGICK_THREAD_LIMIT 1
 
   # Redirect HTTP to HTTPS
   RewriteCond %{HTTPS} off

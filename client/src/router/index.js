@@ -37,9 +37,36 @@ const routes = [
         },
       },
       {
+        path: "wall/:id/add",
+        name: "eventAdd",
+        component: () => import("@/views/EventAdd.vue"),
+        props: true,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "wall/event/edit/:eventId",
+        name: "eventEdit-wall",
+        component: () => import("@/views/EventEdit.vue"),
+        props: true,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: "wall/:id",
         name: "wall",
         component: () => import("@/views/Wall.vue"),
+        props: true,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "browse/event/edit/:eventId",
+        name: "eventEdit-browse",
+        component: () => import("@/views/EventEdit.vue"),
         props: true,
         meta: {
           requiresAuth: true,
@@ -78,9 +105,17 @@ const routes = [
         },
       },
       {
-        path: "wishlist",
-        name: "wishlist",
-        component: () => import("@/views/Wishlist.vue"),
+        path: "wishlist/edit/:eventId",
+        name: "wishlistEdit",
+        component: () => import("@/views/WishlistEdit.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "wishlist/:id/add",
+        name: "wishlistAdd",
+        component: () => import("@/views/WishlistAdd.vue"),
         meta: {
           requiresAuth: true,
         },
@@ -89,6 +124,14 @@ const routes = [
         path: "wishlist/:id",
         name: "wishlistSingle",
         component: () => import("@/views/WishlistSingle.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "wishlist",
+        name: "wishlist",
+        component: () => import("@/views/Wishlist.vue"),
         meta: {
           requiresAuth: true,
         },
@@ -105,41 +148,31 @@ const routes = [
         path: "blog",
         name: "blog",
         component: () => import("@/views/Blog.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "blog/:id",
         name: "blogSingle",
         component: () => import("@/views/BlogSingle.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "terms",
         name: "terms",
         component: () => import("@/views/Page.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "about",
         name: "about",
         component: () => import("@/views/Page.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "privacy",
         name: "privacy",
         component: () => import("@/views/Page.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "reset-password",
@@ -161,9 +194,7 @@ const routes = [
         path: "pricing",
         name: "pricing",
         component: () => import("@/views/Pricing.vue"),
-        meta: {
-          // requiresAuth: true,
-        },
+        meta: {},
       },
       {
         path: "/admin/dashboard",
@@ -187,9 +218,7 @@ const routes = [
       status: route.params.status || 404,
       message: route.params.message || "Looks like you're lost!",
     }),
-    meta: {
-      requiresNoAuth: true,
-    },
+    meta: {},
   },
   {
     path: "/:catchAll(.*)",
