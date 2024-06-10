@@ -124,6 +124,7 @@ CREATE TABLE user_settings
     email_new_event_notification    BOOLEAN,
     email_update_event_notification BOOLEAN,
     email_new_comment_notification  BOOLEAN,
+    sort                            varchar(5),  --added
     user_id                         INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES cuser (id) ON DELETE CASCADE
 );

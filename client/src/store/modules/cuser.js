@@ -9,6 +9,7 @@ export const state = {
     role: localStorage.getItem("currentUserRole") || null,
   },
   profile: {},
+  settings: JSON.parse(localStorage.getItem("settings")) || {},
   foundUsers: [],
   friends: [],
 };
@@ -47,10 +48,14 @@ export const mutations = {
   setProfile(state, payload) {
     state.profile = { ...state.profile, ...payload };
   },
+  setUserSettings(state, payload) {
+    localStorage.setItem("settings", JSON.stringify(payload));
+    state.settings = payload;
+  },
   setFoundUsers(state, payload) {
     state.foundUsers = payload;
   },
-  removeFoundUsers(state, payload) {
+  removeFoundUsers(state) {
     state.foundUsers = [];
   },
   deleteUser(state, payload) {
@@ -128,6 +133,19 @@ export const actions = {
           commit("setProfile", response.data?.payload);
           commit("setCurrentUserName", response.data?.payload?.full_name);
           commit("setCurrentUserImage", response.data?.payload?.image);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  updateSettings({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/user/updateSettings", request)
+        .then((response) => {
+          commit("setUserSettings", request);
           resolve(response);
         })
         .catch((err) => {
@@ -293,11 +311,24 @@ export const actions = {
         });
     });
   },
-  addAllUsersToAdminFriendlist({}) {
+  addAllUsersToAdminFriendlist() {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/user/addAllUsersToAdminFriendlist")
         .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject();
+        });
+    });
+  },
+  setUserSettings({ commit }) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/user/getUserSettings")
+        .then((response) => {
+          commit("setUserSettings", response.data?.payload);
           resolve(response);
         })
         .catch((err) => {

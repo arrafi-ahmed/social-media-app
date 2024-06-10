@@ -120,6 +120,13 @@ exports.getIdByEmail = (email) => {
   return db.getRow(sql, [email]);
 };
 
+exports.getUserSettings = (userId) => {
+  const sql = `select *
+                 from user_settings
+                 where user_id = $1`;
+  return db.getRow(sql, [userId]);
+};
+
 exports.getAdmins = () => {
   const sql = "select * from cuser where role = ?";
   return db.getRows(sql, [2]);
@@ -535,9 +542,37 @@ exports.getPendingInvitation = (email) => {
 exports.createUserSettings = (userId) => {
   const sql =
     "insert into user_settings (email_new_event_notification," +
-    " email_update_event_notification, email_new_comment_notification, user_id)" +
+    " email_update_event_notification, email_new_comment_notification, sort, user_id)" +
     " values (?, ?, ?, ?);";
-  return db.execute(sql, [true, true, true, userId]);
+  return db.execute(sql, [true, true, true, "DESC", userId]);
+};
+
+exports.updateSettings = (payload, userId) => {
+  let sql = "UPDATE user_settings SET";
+  const values = [];
+
+  if (payload.email_new_event_notification !== undefined) {
+    sql += " email_new_event_notification = ?,";
+    values.push(payload.email_new_event_notification);
+  }
+  if (payload.email_update_event_notification !== undefined) {
+    sql += " email_update_event_notification = ?,";
+    values.push(payload.email_update_event_notification);
+  }
+  if (payload.email_new_comment_notification !== undefined) {
+    sql += " email_new_comment_notification = ?,";
+    values.push(payload.email_new_comment_notification);
+  }
+  if (payload.sort !== undefined) {
+    sql += " sort = ?,";
+    values.push(payload.sort);
+  }
+
+  // Remove the trailing comma and add the WHERE clause
+  sql = sql.slice(0, -1) + " WHERE user_id = ?";
+  values.push(userId);
+
+  return db.execute(sql, values);
 };
 
 const bulkInsertFriendships = async (records) => {

@@ -11,7 +11,6 @@
     "process:dist": "cd client && mv dist build && zip -r project.zip build .htaccess && rm -rf build",
     "move:zip-to-root": "mv client/project.zip ./",
     "build:full": "npm run build:client && npm run copy:client-htaccess && npm run build:api && npm run copy:api-to-client && npm run rename:api-htaccess && npm run process:dist && npm run move:zip-to-root",
-
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

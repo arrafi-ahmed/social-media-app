@@ -237,11 +237,10 @@ router.post(
 );
 
 router.get("/getEventsByUserId", auth, (req, res) => {
-  const userId = (req.query && req.query.userId) || req.currentUser.id;
-  const page = req.query && req.query.page;
+  req.query.payload.userId = req.query?.payload?.userId || req.currentUser.id;
 
   eventService
-    .getEventsByUserId(userId, page)
+    .getEventsByUserId(req.query?.payload)
     .then((result) => {
       res.status(200).json(new ApiResponse(null, result));
     })
@@ -278,17 +277,10 @@ router.get("/getUpcomingEvents", auth, (req, res) => {
     });
 });
 
-router.get("/findWallEvents", auth, (req, res) => {
-  const userId = (req.query && req.query.userId) || req.currentUser.id;
+router.post("/findWallEvents", auth, (req, res) => {
+  req.body.userId = (req.body && req.body.userId) || req.currentUser.id;
   eventService
-    .findWallEvents(
-      userId,
-      req.query && req.query.searchKeyword,
-      req.query && req.query.startDate,
-      req.query && req.query.endDate,
-      req.query && req.query.category,
-      req.query && req.query.page
-    )
+    .findWallEvents(req.body)
     .then((result) => {
       res.status(200).json(new ApiResponse(null, result));
     })
@@ -297,17 +289,10 @@ router.get("/findWallEvents", auth, (req, res) => {
     });
 });
 
-router.get("/findBrowseEvents", auth, (req, res) => {
-  const userId = (req.query && req.query.userId) || req.currentUser.id;
+router.post("/findBrowseEvents", auth, (req, res) => {
+  req.body.userId = (req.body && req.body.userId) || req.currentUser.id;
   eventService
-    .findBrowseEvents(
-      userId,
-      req.query && req.query.searchKeyword,
-      req.query && req.query.startDate,
-      req.query && req.query.endDate,
-      req.query && req.query.category,
-      req.query && req.query.page
-    )
+    .findBrowseEvents(req.body)
     .then((result) => {
       res.status(200).json(new ApiResponse(null, result));
     })

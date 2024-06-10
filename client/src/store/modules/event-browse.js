@@ -55,15 +55,10 @@ export const actions = {
         });
     });
   },
-  findEvents(
-    { commit },
-    { searchKeyword, startDate, endDate, category, page }
-  ) {
+  findEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get("/api/event/findBrowseEvents", {
-          params: { searchKeyword, startDate, endDate, category, page },
-        })
+        .post("/api/event/findBrowseEvents", request)
         .then((response) => {
           commit("setEvents", response.data.payload);
           resolve(response);

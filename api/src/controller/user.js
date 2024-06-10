@@ -102,6 +102,19 @@ router.get("/getUserById", auth, (req, res) => {
     });
 });
 
+router.get("/getUserSettings", auth, (req, res) => {
+  const userId = req.currentUser.id;
+
+  userService
+    .getUserSettings(userId)
+    .then((result) => {
+      res.status(200).json(new ApiResponse(null, result));
+    })
+    .catch((err) => {
+      res.status(500).json(new ApiResponse(null, null));
+    });
+});
+
 router.get("/searchUser", auth, (req, res) => {
   const requestedUser = req.query && req.query.requestedUser;
 
@@ -180,6 +193,18 @@ router.post("/updateProfile", auth, uploadUser, compressImages, (req, res) => {
     })
     .catch((err) => {
       res.status(500).json(new ApiResponse("Profile update failed!", null));
+    });
+});
+
+router.post("/updateSettings", auth, (req, res) => {
+  const userId = req.currentUser.id;
+  userService
+    .updateSettings(req.body, userId)
+    .then((result) => {
+      res.status(200).json(new ApiResponse(null, result));
+    })
+    .catch((err) => {
+      res.status(500).json(new ApiResponse("Settings update failed!", null));
     });
 });
 

@@ -49,7 +49,7 @@ export const getCurrentDate = () => {
 };
 
 export const isObjEmpty = (obj) =>
-  Object.keys(obj).length === 0 && obj.constructor === Object;
+  !obj || (Object.keys(obj).length === 0 && obj.constructor === Object);
 
 export const formatTimeFromDate = (currentDate) => {
   return `${currentDate.getHours()}:${currentDate.getMinutes()}`;

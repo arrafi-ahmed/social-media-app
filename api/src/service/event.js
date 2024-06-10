@@ -84,11 +84,13 @@ exports.editEvent = (body, files, userId, clientUrl) => {
 
   let filesArrIndex = 0;
   newUploads.forEach((item, index) => {
-    if (item === "new") {
-      if (files[filesArrIndex] && files[filesArrIndex].filename) {
-        newUploads[index] = files[filesArrIndex].filename;
-        filesArrIndex++;
-      }
+    if (
+      item === "new" &&
+      files[filesArrIndex] &&
+      files[filesArrIndex].filename
+    ) {
+      newUploads[index] = files[filesArrIndex].filename;
+      filesArrIndex++;
     }
   });
 
@@ -134,13 +136,16 @@ exports.editEvent = (body, files, userId, clientUrl) => {
     });
 };
 
-exports.getEventsByUserId = (userId, page) => {
+exports.getEventsByUserId = ({ userId, page, sort = "desc" }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
 
-  const sql =
-    "select e.*, c.full_name, c.image from event_post e join cuser c on e.user_id = c.id where e.user_id = $1 order by" +
-    " e.id desc limit $2 offset $3";
+  const sql = `select e.*, c.full_name, c.image
+                 from event_post e
+                          join cuser c on e.user_id = c.id
+                 where e.user_id = $1
+                 order by e.id ${sort}
+                 limit $3 offset $4`;
   return db.getRows(sql, [userId, itemsPerPage, offset]).then((results) => {
     return results.map((result) => {
       result.images = result.images ? JSON.parse(result.images) : [];
@@ -424,19 +429,22 @@ exports.getUpcomingEvents = async (userId, source) => {
   });
 };
 
-exports.findWallEvents = (
+exports.findWallEvents = ({
   userId,
   searchKeyword,
   startDate,
   endDate,
   category,
-  page
-) => {
+  sort,
+  page,
+}) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   let values = [];
-  let sql =
-    "select e.*, c.full_name, c.image from event_post e join cuser c on e.user_id = c.id where e.user_id = ?";
+  let sql = `select e.*, c.full_name, c.image
+               from event_post e
+                        join cuser c on e.user_id = c.id
+               where e.user_id = ?`;
 
   values.push(userId);
 
@@ -456,7 +464,10 @@ exports.findWallEvents = (
     sql += " and e.category = ?";
     values.push(category);
   }
-  sql += " ORDER BY e.date DESC, e.id DESC limit ? offset ?";
+  if (sort) {
+    sql += ` ORDER BY e.date ${sort}, e.id ${sort} `;
+  }
+  sql += " limit ? offset ?";
   values.push(itemsPerPage);
   values.push(offset);
   return db.getRows(sql, values).then((results) => {
@@ -468,14 +479,15 @@ exports.findWallEvents = (
   });
 };
 
-exports.findBrowseEvents = (
+exports.findBrowseEvents = ({
   userId,
   searchKeyword,
   startDate,
   endDate,
   category,
-  page
-) => {
+  sort,
+  page,
+}) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   let values = [];
@@ -507,7 +519,11 @@ exports.findBrowseEvents = (
     sql += " and e.category = ?";
     values.push(category);
   }
-  sql += " ORDER BY e.date DESC, e.id DESC limit ? offset ?";
+  if (sort) {
+    sql += ` ORDER BY e.date ${sort}, e.id ${sort} `;
+  }
+
+  sql += " limit ? offset ?";
   values.push(itemsPerPage);
   values.push(offset);
 

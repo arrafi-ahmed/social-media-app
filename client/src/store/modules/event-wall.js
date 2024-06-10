@@ -116,11 +116,11 @@ export const actions = {
         });
     });
   },
-  setEvents({ commit }, { userId, page }) {
+  setEvents({ commit }, payload) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/event/getEventsByUserId", {
-          params: { userId, page },
+          params: { payload },
         })
         .then((response) => {
           commit("setEvents", response.data.payload);
@@ -234,15 +234,10 @@ export const actions = {
         });
     });
   },
-  findEvents(
-    { commit },
-    { userId, searchKeyword, startDate, endDate, category, page }
-  ) {
+  findEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get("/api/event/findWallEvents", {
-          params: { userId, searchKeyword, startDate, endDate, category, page },
-        })
+        .post("/api/event/findWallEvents", request)
         .then((response) => {
           commit("setEvents", response.data.payload);
           resolve(response);

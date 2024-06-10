@@ -26,7 +26,7 @@ onMounted(() => {
     <!-- Blog Post Content -->
     <v-row class="mt-5" justify="center">
       <v-col cols="12" md="7">
-        <v-card>
+        <v-card v-if="blog.id">
           <v-img
             :src="getBlogImageUrl(blog.image)"
             alt="Blog Post Image"

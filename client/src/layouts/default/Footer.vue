@@ -28,7 +28,7 @@ const items = [
       </v-btn>
       <v-col class="text-center mt-md-1" cols="12">
         <small>
-          &copy; {{ new Date().getFullYear() }} — <strong>WayzAway</strong> v1.3
+          &copy; {{ new Date().getFullYear() }} — <strong>WayzAway</strong> v1.4
         </small>
       </v-col>
     </v-row>

@@ -9,6 +9,7 @@ import EventFeatured from "@/components/EventFeatured.vue";
 import CategoryList from "@/components/CategoryList.vue";
 import EventsUpcoming from "@/components/EventsUpcoming.vue";
 import EventInfinite from "@/components/EventInfinite.vue";
+import { isObjEmpty } from "@/util";
 
 const { mobile } = useDisplay();
 const route = useRoute();
@@ -30,33 +31,36 @@ const mountedEventCategories = computed(
   () => store.getters["eventWall/getMountedEventCategories"]
 );
 
+const settings = computed(() => store.state.cuser.settings);
+if (isObjEmpty(settings.value?.sort)) {
+  store.dispatch("cuser/setUserSettings");
+}
+
 let filterActive = ref("none");
 const findFormData = reactive({
   searchKeyword: null,
   startDate: null,
   endDate: null,
   category: null,
+  sort: settings.value?.sort,
 });
-let prevPage = 0;
 const page = computed(() => store.state.eventWall.page);
 
 const loadEvents = async ({ done }) => {
   try {
-    const action = filterActive.value === "none" ? "setEvents" : "findEvents";
-
-    //hotfix for wall events page-1 fetched twice while reloading page
-    if (action === "setEvents" && prevPage == page.value) return;
-    prevPage = page.value;
+    const action =
+      filterActive.value === "findForm" ? "findEvents" : "setEvents";
 
     const payload = {
       userId: route.params.id,
-      page: page.value,
       searchKeyword:
         filterActive.value === "findForm" ? findFormData.searchKeyword : null,
       startDate:
         filterActive.value === "findForm" ? findFormData.startDate : null,
       endDate: filterActive.value === "findForm" ? findFormData.endDate : null,
       category: findFormData.category,
+      sort: findFormData.sort,
+      page: page.value,
     };
 
     const result = await store.dispatch(`eventWall/${action}`, payload);
@@ -86,11 +90,12 @@ const setFindFormData = async (filterValue, formOrCategory) => {
   resetPageNEvents();
 
   filterActive.value = filterValue;
-
   if (filterValue === "findForm") {
     Object.assign(findFormData, formOrCategory);
   } else if (filterValue === "category") {
     findFormData.category = formOrCategory;
+  } else if (filterValue === "sort") {
+    findFormData.sort = formOrCategory;
   } else if (filterValue === "none") {
     nullifyFindFormData();
   }
@@ -99,6 +104,13 @@ const setFindFormData = async (filterValue, formOrCategory) => {
 const handleFindEvents = (form) => setFindFormData("findForm", form);
 const handleResetFindEvents = () => setFindFormData("none");
 const handleClickCategory = (category) => setFindFormData("category", category);
+const handleSort = (form) => {
+  setFindFormData("sort", form.sort);
+  store.dispatch("cuser/updateSettings", {
+    ...settings.value,
+    sort: form.sort,
+  });
+};
 
 const fetchData = async () => {
   resetPageNEvents();
@@ -226,6 +238,7 @@ watch(
                 <find-event-form
                   @find-events="handleFindEvents"
                   @reset-find-events="handleResetFindEvents"
+                  @sort-events="handleSort"
                 ></find-event-form>
               </v-expansion-panel-text>
             </v-expansion-panel>
@@ -264,6 +277,7 @@ watch(
           v-if="!mobile"
           @find-events="handleFindEvents"
           @reset-find-events="handleResetFindEvents"
+          @sort-events="handleSort"
         ></find-event-form>
 
         <!-- Event Posts Feed -->

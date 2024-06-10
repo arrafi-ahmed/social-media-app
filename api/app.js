@@ -33,7 +33,7 @@ app.use("/api/blog", require("./src/controller/blog"));
 app.use("/api/subscription", require("./src/controller/subscription"));
 
 app.get("/api/version", function (req, res) {
-  res.status(200).json({ version: 1.3 });
+  res.status(200).json({ version: 1.4 });
 });
 
 const server = app.listen(port, (err) => {

@@ -7,17 +7,19 @@ import DatePicker from "@/components/DatePicker.vue";
 const { mobile } = useDisplay();
 const store = useStore();
 
-const emit = defineEmits(["findEvents", "resetFindEvents"]);
+const emit = defineEmits(["findEvents", "resetFindEvents", "sortEvents"]);
 const form = ref(null);
 const isFormValid = ref(true);
 const allEventCategories = computed(() =>
   store.state.category.categories.map((item) => item.name)
 );
+const settings = computed(() => store.state.cuser.settings);
 const findForm = reactive({
   searchKeyword: null,
   startDate: null,
   endDate: null,
   category: null,
+  sort: settings.value?.sort,
 });
 
 const handleFindEvents = async () => {
@@ -29,6 +31,11 @@ const handleFindEvents = async () => {
 const resetForm = () => {
   form.value.reset();
   emit("resetFindEvents");
+};
+// let sort = ref(settings.value?.sort);
+const handleSort = () => {
+  findForm.sort = findForm.sort === "ASC" ? "DESC" : "ASC";
+  emit("sortEvents", findForm);
 };
 </script>
 
@@ -98,6 +105,18 @@ const resetForm = () => {
           </v-row>
         </v-col>
         <v-col class="text-center d-flex" cols="12" md="2">
+          <v-btn
+            :density="mobile ? 'comfortable' : 'default'"
+            class="mr-1 rounded flex-grow-1"
+            color="primary"
+            :icon="
+              findForm.sort === 'ASC'
+                ? 'mdi-sort-reverse-variant'
+                : 'mdi-sort-variant'
+            "
+            @click="handleSort"
+          >
+          </v-btn>
           <v-btn
             :density="mobile ? 'comfortable' : 'default'"
             class="mr-1 rounded flex-grow-1"
