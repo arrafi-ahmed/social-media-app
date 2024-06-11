@@ -22,6 +22,16 @@ const findForm = reactive({
   sort: settings.value?.sort,
 });
 
+const sortIcon = computed(() =>
+  findForm.sort === "ASC"
+    ? "mdi-sort-reverse-variant"
+    : findForm.sort === "DESC"
+    ? "mdi-sort-variant"
+    : findForm.sort === "LATEST"
+    ? "mdi-sort-clock-descending-outline"
+    : null
+);
+
 const handleFindEvents = async () => {
   await form.value.validate();
   if (!isFormValid.value) return;
@@ -33,8 +43,8 @@ const resetForm = () => {
   emit("resetFindEvents");
 };
 // let sort = ref(settings.value?.sort);
-const handleSort = () => {
-  findForm.sort = findForm.sort === "ASC" ? "DESC" : "ASC";
+const handleSort = (sortInput) => {
+  findForm.sort = sortInput;
   emit("sortEvents", findForm);
 };
 </script>
@@ -105,21 +115,47 @@ const handleSort = () => {
           </v-row>
         </v-col>
         <v-col class="text-center d-flex" cols="12" md="2">
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                :density="mobile ? 'comfortable' : 'default'"
+                class="mr-sm-1 rounded flex-grow-1"
+                color="primary"
+                :icon="sortIcon"
+                v-bind="props"
+              >
+              </v-btn>
+            </template>
+            <v-list density="compact">
+              <!--              LATEST-->
+              <v-list-item
+                link
+                title="Recent Posts"
+                prepend-icon="mdi-sort-clock-descending-outline"
+                @click="handleSort('LATEST')"
+              >
+              </v-list-item>
+              <!--              DESC-->
+              <v-list-item
+                link
+                title="Newest Events First"
+                prepend-icon="mdi-sort-variant"
+                @click="handleSort('DESC')"
+              >
+              </v-list-item>
+              <!--              ASC-->
+              <v-list-item
+                link
+                title="Oldest Events First"
+                prepend-icon="mdi-sort-reverse-variant"
+                @click="handleSort('ASC')"
+              >
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-btn
             :density="mobile ? 'comfortable' : 'default'"
-            class="mr-1 rounded flex-grow-1"
-            color="primary"
-            :icon="
-              findForm.sort === 'ASC'
-                ? 'mdi-sort-reverse-variant'
-                : 'mdi-sort-variant'
-            "
-            @click="handleSort"
-          >
-          </v-btn>
-          <v-btn
-            :density="mobile ? 'comfortable' : 'default'"
-            class="mr-1 rounded flex-grow-1"
+            class="ml-2 mr-sm-1 ml-md-0 rounded flex-grow-1"
             color="primary"
             icon="mdi-magnify"
             type="submit"

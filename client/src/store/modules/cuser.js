@@ -93,13 +93,13 @@ export const actions = {
     });
   },
   signout({ commit }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       commit("removeToken");
       commit("removeCurrentUser");
       resolve();
     });
   },
-  setProfile({ commit }, request) {
+  setProfile({ commit }) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/user/getUserById")

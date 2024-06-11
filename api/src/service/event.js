@@ -129,14 +129,17 @@ exports.editEvent = (body, files, userId, clientUrl) => {
       result.images = JSON.parse(result.images);
 
       //remove replaced images
-
       if (body.rmImages && body.rmImages.length > 0)
         await removeImages(JSON.parse(body.rmImages));
       return result;
     });
 };
-
-exports.getEventsByUserId = ({ userId, page, sort = "desc" }) => {
+const getSortingColumn = (sort) => {
+  if (sort === "LATEST") return `e.created_at DESC, e.id DESC`;
+  else if (sort === "DESC") return `e.date DESC, e.id DESC`;
+  else if (sort === "ASC") return `e.date ASC, e.id ASC`;
+};
+exports.getEventsByUserId = ({ userId, page, sort = "LATEST" }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
 
@@ -144,9 +147,143 @@ exports.getEventsByUserId = ({ userId, page, sort = "desc" }) => {
                  from event_post e
                           join cuser c on e.user_id = c.id
                  where e.user_id = $1
-                 order by e.id ${sort}
+                 order by ${getSortingColumn(sort)}
                  limit $3 offset $4`;
   return db.getRows(sql, [userId, itemsPerPage, offset]).then((results) => {
+    return results.map((result) => {
+      result.images = result.images ? JSON.parse(result.images) : [];
+      return result;
+    });
+  });
+};
+exports.getAllEventsByFriends = ({ userId, page, sort = "LATEST" }) => {
+  const itemsPerPage = 10;
+  const offset = (page - 1) * itemsPerPage;
+  const sql = `select e.*, c.full_name, c.image
+                 from event_post e
+                          join (select user_id_1 as friend_id
+                                from friendship
+                                where user_id_2 = $1
+                                union
+                                select user_id_2 as friend_id
+                                from friendship
+                                where user_id_1 = $1
+                                union
+                                select $1 as friend_id) as friends on e.user_id = friends.friend_id
+                          join cuser c on e.user_id = c.id
+                 order by ${getSortingColumn(sort)}
+                 limit $4 offset $5`;
+  return db
+    .getRows(sql, [userId, userId, userId, itemsPerPage, offset])
+    .then((results) => {
+      // Parse the images field for each record
+      return results.map((result) => {
+        result.images = result.images ? JSON.parse(result.images) : [];
+        return result;
+      });
+    });
+};
+
+exports.findWallEvents = ({
+  userId,
+  searchKeyword,
+  startDate,
+  endDate,
+  category,
+  sort = "LATEST",
+  page,
+}) => {
+  const itemsPerPage = 10;
+  const offset = (page - 1) * itemsPerPage;
+  let values = [];
+  let sql = `select e.*, c.full_name, c.image
+               from event_post e
+                        join cuser c on e.user_id = c.id
+               where e.user_id = ?`;
+
+  values.push(userId);
+
+  if (searchKeyword) {
+    sql += " and e.title like ?";
+    values.push("%" + searchKeyword + "%");
+  }
+  if (startDate) {
+    sql += " and e.date >= ?";
+    values.push(startDate);
+  }
+  if (endDate) {
+    sql += " and e.date <= ?";
+    values.push(endDate);
+  }
+  if (category) {
+    sql += " and e.category = ?";
+    values.push(category);
+  }
+  if (sort) {
+    sql += ` order by ${getSortingColumn(sort)} `;
+  }
+  sql += " limit ? offset ?";
+  values.push(itemsPerPage);
+  values.push(offset);
+  return db.getRows(sql, values).then((results) => {
+    // Parse the images field for each record
+    return results.map((result) => {
+      result.images = result.images ? JSON.parse(result.images) : [];
+      return result;
+    });
+  });
+};
+
+exports.findBrowseEvents = ({
+  userId,
+  searchKeyword,
+  startDate,
+  endDate,
+  category,
+  sort = "LATEST",
+  page,
+}) => {
+  const itemsPerPage = 10;
+  const offset = (page - 1) * itemsPerPage;
+  let values = [];
+
+  let sql =
+    "select e.*, c.full_name, c.image from event_post e " +
+    "join (select user_id_1 as friend_id from friendship where user_id_2 = ?" +
+    " union select user_id_2 as friend_id from friendship where user_id_1 = ?" +
+    " union select ? as friend_id) as friends on e.user_id = friends.friend_id" +
+    " join cuser c on e.user_id = c.id";
+
+  values.push(userId);
+  values.push(userId);
+  values.push(userId);
+
+  if (searchKeyword) {
+    sql += " and e.title like ?";
+    values.push("%" + searchKeyword + "%");
+  }
+  if (startDate) {
+    sql += " and e.date >= ?";
+    values.push(startDate);
+  }
+  if (endDate) {
+    sql += " and e.date <= ?";
+    values.push(endDate);
+  }
+  if (category) {
+    sql += " and e.category = ?";
+    values.push(category);
+  }
+  if (sort) {
+    sql += ` order by ${getSortingColumn(sort)} `;
+  }
+
+  sql += " limit ? offset ?";
+  values.push(itemsPerPage);
+  values.push(offset);
+
+  return db.getRows(sql, values).then((results) => {
+    // Parse the images field for each record
     return results.map((result) => {
       result.images = result.images ? JSON.parse(result.images) : [];
       return result;
@@ -427,141 +564,6 @@ exports.getUpcomingEvents = async (userId, source) => {
       return result;
     });
   });
-};
-
-exports.findWallEvents = ({
-  userId,
-  searchKeyword,
-  startDate,
-  endDate,
-  category,
-  sort,
-  page,
-}) => {
-  const itemsPerPage = 10;
-  const offset = (page - 1) * itemsPerPage;
-  let values = [];
-  let sql = `select e.*, c.full_name, c.image
-               from event_post e
-                        join cuser c on e.user_id = c.id
-               where e.user_id = ?`;
-
-  values.push(userId);
-
-  if (searchKeyword) {
-    sql += " and e.title like ?";
-    values.push("%" + searchKeyword + "%");
-  }
-  if (startDate) {
-    sql += " and e.date >= ?";
-    values.push(startDate);
-  }
-  if (endDate) {
-    sql += " and e.date <= ?";
-    values.push(endDate);
-  }
-  if (category) {
-    sql += " and e.category = ?";
-    values.push(category);
-  }
-  if (sort) {
-    sql += ` ORDER BY e.date ${sort}, e.id ${sort} `;
-  }
-  sql += " limit ? offset ?";
-  values.push(itemsPerPage);
-  values.push(offset);
-  return db.getRows(sql, values).then((results) => {
-    // Parse the images field for each record
-    return results.map((result) => {
-      result.images = result.images ? JSON.parse(result.images) : [];
-      return result;
-    });
-  });
-};
-
-exports.findBrowseEvents = ({
-  userId,
-  searchKeyword,
-  startDate,
-  endDate,
-  category,
-  sort,
-  page,
-}) => {
-  const itemsPerPage = 10;
-  const offset = (page - 1) * itemsPerPage;
-  let values = [];
-
-  let sql =
-    "select e.*, c.full_name, c.image from event_post e " +
-    "join (select user_id_1 as friend_id from friendship where user_id_2 = ?" +
-    " union select user_id_2 as friend_id from friendship where user_id_1 = ?" +
-    " union select ? as friend_id) as friends on e.user_id = friends.friend_id" +
-    " join cuser c on e.user_id = c.id";
-
-  values.push(userId);
-  values.push(userId);
-  values.push(userId);
-
-  if (searchKeyword) {
-    sql += " and e.title like ?";
-    values.push("%" + searchKeyword + "%");
-  }
-  if (startDate) {
-    sql += " and e.date >= ?";
-    values.push(startDate);
-  }
-  if (endDate) {
-    sql += " and e.date <= ?";
-    values.push(endDate);
-  }
-  if (category) {
-    sql += " and e.category = ?";
-    values.push(category);
-  }
-  if (sort) {
-    sql += ` ORDER BY e.date ${sort}, e.id ${sort} `;
-  }
-
-  sql += " limit ? offset ?";
-  values.push(itemsPerPage);
-  values.push(offset);
-
-  return db.getRows(sql, values).then((results) => {
-    // Parse the images field for each record
-    return results.map((result) => {
-      result.images = result.images ? JSON.parse(result.images) : [];
-      return result;
-    });
-  });
-};
-
-exports.getAllEventsByFriends = ({ userId, page, sort = "desc" }) => {
-  const itemsPerPage = 10;
-  const offset = (page - 1) * itemsPerPage;
-  const sql = `select e.*, c.full_name, c.image
-         from event_post e
-                  join (select user_id_1 as friend_id
-                        from friendship
-                        where user_id_2 = $1
-                        union
-                        select user_id_2 as friend_id
-                        from friendship
-                        where user_id_1 = $1
-                        union
-                        select $1 as friend_id) as friends on e.user_id = friends.friend_id
-                  join cuser c on e.user_id = c.id
-         ORDER BY e.date ${sort}, e.id ${sort}
-         limit $4 offset $5`;
-  return db
-    .getRows(sql, [userId, userId, userId, itemsPerPage, offset])
-    .then((results) => {
-      // Parse the images field for each record
-      return results.map((result) => {
-        result.images = result.images ? JSON.parse(result.images) : [];
-        return result;
-      });
-    });
 };
 
 exports.getFeaturedEvent = (userId) => {

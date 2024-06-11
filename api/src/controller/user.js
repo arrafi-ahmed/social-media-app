@@ -204,6 +204,7 @@ router.post("/updateSettings", auth, (req, res) => {
       res.status(200).json(new ApiResponse(null, result));
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json(new ApiResponse("Settings update failed!", null));
     });
 });
