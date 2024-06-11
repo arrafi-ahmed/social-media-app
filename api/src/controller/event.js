@@ -250,10 +250,9 @@ router.get("/getEventsByUserId", auth, (req, res) => {
 });
 
 router.get("/getAllEventsByFriends", auth, (req, res) => {
-  const userId = (req.query && req.query.userId) || req.currentUser.id;
-  const page = req.query && req.query.page;
+  req.query.payload.userId = req.query?.payload?.userId || req.currentUser.id;
   eventService
-    .getAllEventsByFriends(userId, page)
+    .getAllEventsByFriends(req.query?.payload)
     .then((result) => {
       res.status(200).json(new ApiResponse(null, result));
     })

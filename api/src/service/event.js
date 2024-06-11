@@ -536,15 +536,23 @@ exports.findBrowseEvents = ({
   });
 };
 
-exports.getAllEventsByFriends = (userId, page) => {
+exports.getAllEventsByFriends = ({ userId, page, sort = "desc" }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
-  const sql =
-    "select e.*, c.full_name, c.image from event_post e " +
-    "join (select user_id_1 as friend_id from friendship where user_id_2 = $1" +
-    " union select user_id_2 as friend_id from friendship where user_id_1 = $1" +
-    " union select $1 as friend_id) as friends on e.user_id = friends.friend_id" +
-    " join cuser c on e.user_id = c.id ORDER BY e.date DESC, e.id DESC limit $4 offset $5";
+  const sql = `select e.*, c.full_name, c.image
+         from event_post e
+                  join (select user_id_1 as friend_id
+                        from friendship
+                        where user_id_2 = $1
+                        union
+                        select user_id_2 as friend_id
+                        from friendship
+                        where user_id_1 = $1
+                        union
+                        select $1 as friend_id) as friends on e.user_id = friends.friend_id
+                  join cuser c on e.user_id = c.id
+         ORDER BY e.date ${sort}, e.id ${sort}
+         limit $4 offset $5`;
   return db
     .getRows(sql, [userId, userId, userId, itemsPerPage, offset])
     .then((results) => {

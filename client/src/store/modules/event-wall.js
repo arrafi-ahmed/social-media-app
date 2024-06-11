@@ -116,11 +116,11 @@ export const actions = {
         });
     });
   },
-  setEvents({ commit }, payload) {
+  setEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/event/getEventsByUserId", {
-          params: { payload },
+          params: { payload: request },
         })
         .then((response) => {
           commit("setEvents", response.data.payload);

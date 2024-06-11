@@ -44,7 +44,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/event/getAllEventsByFriends", {
-          params: { page: request.page },
+          params: { payload: request },
         })
         .then((response) => {
           commit("setEvents", response.data.payload);
