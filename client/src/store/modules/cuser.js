@@ -9,7 +9,7 @@ export const state = {
     role: localStorage.getItem("currentUserRole") || null,
   },
   profile: {},
-  settings: JSON.parse(localStorage.getItem("settings")) || {},
+  settings: JSON.parse(localStorage.getItem("settings")) || { sort: "LATEST" },
   foundUsers: [],
   friends: [],
 };
@@ -198,19 +198,6 @@ export const actions = {
         });
     });
   },
-
-  deleteAccount({ commit }, { rmImage }) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .get("/api/user/deleteUser", { params: { rmImage } })
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
   searchUser({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
@@ -224,6 +211,20 @@ export const actions = {
         });
     });
   },
+  //used in user->settings page
+  deleteAccount({ commit }, { rmImage }) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/user/deleteUser", { params: { rmImage } })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  //used in admin->dashboard page
   deleteUser({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
@@ -356,5 +357,13 @@ export const getters = {
   },
   signedin(state) {
     return !!state.token;
+  },
+  calcHome(state) {
+    // add all the app roles here, and their default home page
+    return state.currentUser.role === "admin"
+      ? { name: "adminDashboard" }
+      : state.currentUser.role === "user"
+      ? { name: "browse" }
+      : { name: "signout" };
   },
 };

@@ -44,9 +44,6 @@ const form = ref(null);
 const isFormValid = ref(true);
 
 const addEvent = async () => {
-  if (!isSubscriptionValid.value) {
-    return router.push({ name: "pricing" });
-  }
   await form.value.validate();
   if (!isFormValid.value) return;
   const formData = new FormData();

@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "@/store";
-import { showToast } from "@/util";
+import { toast } from "vue-sonner";
 
 const $axios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -19,21 +19,21 @@ $axios.interceptors.response.use(
   (response) => {
     store.commit("setProgress", false);
 
-    let color = null;
+    let action = "info";
     if (response.data?.msg) {
       if (response.status >= 200 && response.status <= 299) {
-        color = "success";
+        action = "success";
       } else if (response.status >= 400 && response.status <= 499) {
-        color = "error";
+        action = "error";
       }
-      showToast(response.data.msg, color);
+      toast[action](response.data.msg);
     }
     return response;
   },
   (err) => {
     store.commit("setProgress", false);
     if (err.response?.data?.msg) {
-      showToast(err.response?.data?.msg, "error");
+      toast.error(err.response?.data?.msg);
     }
     return Promise.reject(err);
   }

@@ -129,7 +129,6 @@ CREATE TABLE user_settings
     FOREIGN KEY (user_id) REFERENCES cuser (id) ON DELETE CASCADE
 );
 
---added
 CREATE TABLE subscription_plan
 (
     id      int AUTO_INCREMENT PRIMARY KEY,
@@ -138,7 +137,6 @@ CREATE TABLE subscription_plan
     price   decimal(10, 2)
 );
 
---added
 CREATE TABLE subscription
 (
     id                     int AUTO_INCREMENT PRIMARY KEY,
@@ -155,6 +153,8 @@ CREATE TABLE subscription
     FOREIGN KEY (plan_id) REFERENCES subscription_plan (id)
 );
 
-ALTER DATABASE wayzaway COLLATE utf8mb4_unicode_ci;
-USE wayzaway;
+ALTER DATABASE wayzaway CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 ALTER TABLE event_comment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE INDEX idx_id ON cuser(id);
+CREATE INDEX idx_full_name ON cuser(full_name);
+CREATE INDEX idx_email ON cuser(email);

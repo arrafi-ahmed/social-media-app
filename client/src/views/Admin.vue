@@ -458,7 +458,9 @@ onMounted(() => {
                     label="Search by ID/Name/Email"
                     single-line
                     variant="solo"
+                    clearable
                     @click:append-inner="searchUser"
+                    @keyup.enter="searchUser"
                   ></v-text-field>
                 </div>
                 <v-divider class="my-2"></v-divider>

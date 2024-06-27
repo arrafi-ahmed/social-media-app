@@ -26,6 +26,7 @@ const routes = [
         component: () => import("@/views/Register.vue"),
         meta: {
           requiresNoAuth: true,
+          title: "Register",
         },
       },
       {
@@ -34,6 +35,7 @@ const routes = [
         component: () => import("@/views/Signin.vue"),
         meta: {
           requiresNoAuth: true,
+          title: "Signin",
         },
       },
       {
@@ -43,6 +45,7 @@ const routes = [
         props: true,
         meta: {
           requiresAuth: true,
+          title: "Add Event",
         },
       },
       {
@@ -52,6 +55,7 @@ const routes = [
         props: true,
         meta: {
           requiresAuth: true,
+          title: "Edit Event",
         },
       },
       {
@@ -61,6 +65,7 @@ const routes = [
         props: true,
         meta: {
           requiresAuth: true,
+          title: "Wall",
         },
       },
       {
@@ -70,6 +75,7 @@ const routes = [
         props: true,
         meta: {
           requiresAuth: true,
+          title: "Edit Event",
         },
       },
       {
@@ -78,6 +84,7 @@ const routes = [
         component: () => import("@/views/Browse.vue"),
         meta: {
           requiresAuth: true,
+          title: "Browse",
         },
       },
       {
@@ -86,6 +93,7 @@ const routes = [
         component: () => import("@/views/Friends.vue"),
         meta: {
           requiresAuth: true,
+          title: "Friends",
         },
       },
       {
@@ -94,6 +102,7 @@ const routes = [
         component: () => import("@/views/EventSingle.vue"),
         meta: {
           requiresAuth: true,
+          title: "Event",
         },
       },
       {
@@ -102,6 +111,7 @@ const routes = [
         component: () => import("@/views/Favorite.vue"),
         meta: {
           requiresAuth: true,
+          title: "Favorites",
         },
       },
       {
@@ -110,6 +120,7 @@ const routes = [
         component: () => import("@/views/WishlistEdit.vue"),
         meta: {
           requiresAuth: true,
+          title: "Edit Wishlist",
         },
       },
       {
@@ -118,6 +129,7 @@ const routes = [
         component: () => import("@/views/WishlistAdd.vue"),
         meta: {
           requiresAuth: true,
+          title: "Add Wishlist",
         },
       },
       {
@@ -126,6 +138,7 @@ const routes = [
         component: () => import("@/views/WishlistSingle.vue"),
         meta: {
           requiresAuth: true,
+          title: "Wishlist",
         },
       },
       {
@@ -134,6 +147,7 @@ const routes = [
         component: () => import("@/views/Wishlist.vue"),
         meta: {
           requiresAuth: true,
+          title: "Wishlist",
         },
       },
       {
@@ -142,37 +156,48 @@ const routes = [
         component: () => import("@/views/Settings.vue"),
         meta: {
           requiresAuth: true,
+          title: "Settings",
         },
       },
       {
         path: "blog",
         name: "blog",
         component: () => import("@/views/Blog.vue"),
-        meta: {},
+        meta: {
+          title: "Blog",
+        },
       },
       {
         path: "blog/:id",
         name: "blogSingle",
         component: () => import("@/views/BlogSingle.vue"),
-        meta: {},
+        meta: {
+          title: "Blog",
+        },
       },
       {
         path: "terms",
         name: "terms",
         component: () => import("@/views/Page.vue"),
-        meta: {},
+        meta: {
+          title: "Terms",
+        },
       },
       {
         path: "about",
         name: "about",
         component: () => import("@/views/Page.vue"),
-        meta: {},
+        meta: {
+          title: "About",
+        },
       },
       {
         path: "privacy",
         name: "privacy",
         component: () => import("@/views/Page.vue"),
-        meta: {},
+        meta: {
+          title: "Privacy",
+        },
       },
       {
         path: "reset-password",
@@ -180,6 +205,7 @@ const routes = [
         component: () => import("@/views/ResetPassword.vue"),
         meta: {
           requiresNoAuth: true,
+          title: "Reset Password",
         },
       },
       {
@@ -188,13 +214,16 @@ const routes = [
         component: () => import("@/views/Signout.vue"),
         meta: {
           requiresAuth: true,
+          title: "Signout",
         },
       },
       {
         path: "pricing",
         name: "pricing",
         component: () => import("@/views/Pricing.vue"),
-        meta: {},
+        meta: {
+          title: "Pricing",
+        },
       },
       {
         path: "/admin/dashboard",
@@ -202,6 +231,7 @@ const routes = [
         component: () => import("@/views/Admin.vue"),
         meta: {
           requiresAdmin: true,
+          title: "Admin Dashboard",
         },
       },
     ],
@@ -218,7 +248,9 @@ const routes = [
       status: route.params.status || 404,
       message: route.params.message || "Looks like you're lost!",
     }),
-    meta: {},
+    meta: {
+      title: "Not Found",
+    },
   },
   {
     path: "/:catchAll(.*)",

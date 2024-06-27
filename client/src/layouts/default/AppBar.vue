@@ -15,14 +15,26 @@ const currentUser = computed(() => store.getters["cuser/getCurrentUser"]);
 
 const drawer = ref(false);
 
-const items = [
-  { title: "Browse", to: { name: "browse" } },
-  { title: "Friends", to: { name: "friends" } },
-  { title: "Favourite", to: { name: "favorite" } },
-  { title: "Wishlist", to: { name: "wishlist" } },
-  { title: "Settings", to: { name: "settings" } },
-];
-const getFirstName = computed(() => currentUser.value.name.split(" ")[0]);
+const calcHome = computed(() => store.getters["cuser/calcHome"]);
+const menuItems = computed(() =>
+  [
+    currentUser.value.role === "admin"
+      ? { title: "Dashboard", to: { name: "adminDashboard" } }
+      : currentUser.value.role === "user" && currentUser.value.id
+      ? {
+          title: "Wall",
+          to: { name: "wall", params: { id: currentUser.value.id } },
+        }
+      : null,
+    { title: "Browse", to: { name: "browse" } },
+    { title: "Friends", to: { name: "friends" } },
+    { title: "Favourite", to: { name: "favorite" } },
+    { title: "Wishlist", to: { name: "wishlist" } },
+    { title: "Settings", to: { name: "settings" } },
+  ].filter((item) => item)
+);
+
+const getFirstName = computed(() => currentUser.value.name?.split(" ")[0]);
 const getGreetings = computed(() => {
   const hour = new Date().getHours();
   return `Good ${hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening"}!`;
@@ -31,15 +43,10 @@ const getGreetings = computed(() => {
 
 <template>
   <v-app-bar :order="1" class="px-2 px-md-5" color="grey-lighten-3" dense flat>
-    <logo custom-class="clickable" @click="router.push({ name: 'signin' })" />
+    <logo custom-class="clickable" @click="router.push(calcHome)" />
 
     <template v-slot:append>
-      <v-btn
-        v-if="signedin"
-        :size="mobile ? 'default' : 'large'"
-        icon
-        v-bind="props"
-      >
+      <v-btn v-if="signedin" :size="mobile ? 'default' : 'large'" icon>
         <user-avatar
           :imgSrc="currentUser.image"
           @click-avatar="drawer = !drawer"
@@ -72,21 +79,21 @@ const getGreetings = computed(() => {
         </div>
       </v-list-item>
       <v-divider class="mt-2 mb-2"></v-divider>
-      <v-list-item
-        v-if="currentUser.role === 'admin'"
-        :to="{ name: 'adminDashboard' }"
-        >Dashboard
-      </v-list-item>
+      <!--      <v-list-item-->
+      <!--        v-if="currentUser.role === 'admin'"-->
+      <!--        :to="{ name: 'adminDashboard' }"-->
+      <!--        >Dashboard-->
+      <!--      </v-list-item>-->
 
+      <!--      <v-list-item-->
+      <!--        :to="{-->
+      <!--          name: 'wall',-->
+      <!--          params: { id: currentUser.id },-->
+      <!--        }"-->
+      <!--        >Wall-->
+      <!--      </v-list-item>-->
       <v-list-item
-        :to="{
-          name: 'wall',
-          params: { id: currentUser.id },
-        }"
-        >Wall
-      </v-list-item>
-      <v-list-item
-        v-for="(item, index) in items"
+        v-for="(item, index) in menuItems"
         :key="index"
         :to="getToLink(item)"
       >

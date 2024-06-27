@@ -18,9 +18,15 @@ const store = useStore();
 
 const currentUser = store.getters["cuser/getCurrentUser"];
 const isAdmin = store.getters["cuser/isAdmin"];
-
-const openAddEvent = () => {
-  router.push({ name: "eventAdd" });
+const isSubscriptionValid = computed(
+  () => store.getters["subscription/isSubscriptionValid"]
+);
+const openAddEvent = async () => {
+  await store.dispatch("subscription/fetchPremiumSubscriptionData", {
+    userId: currentUser.id,
+  });
+  if (!isSubscriptionValid.value) return router.push({ name: "pricing" });
+  else return router.push({ name: "eventAdd" });
 };
 
 const events = computed(() => store.state.eventWall.events);
@@ -62,7 +68,6 @@ const loadEvents = async ({ done }) => {
       sort: findFormData.sort,
       page: page.value,
     };
-
     const result = await store.dispatch(`eventWall/${action}`, payload);
     store.commit("eventWall/setPage", page.value + 1);
 
@@ -92,20 +97,16 @@ const setFindFormData = async (filterValue, formOrCategory) => {
   filterActive.value = filterValue;
   if (filterValue === "findForm") {
     Object.assign(findFormData, formOrCategory);
-  } else if (filterValue === "category") {
-    findFormData.category = formOrCategory;
-  } else if (filterValue === "sort") {
-    findFormData.sort = formOrCategory;
   } else if (filterValue === "none") {
     nullifyFindFormData();
   }
 };
 
-const handleFindEvents = (form) => setFindFormData("findForm", form);
 const handleResetFindEvents = () => setFindFormData("none");
-const handleClickCategory = (category) => setFindFormData("category", category);
+const handleFindEvents = (form) => setFindFormData("findForm", form);
+const handleClickCategory = (category) => setFindFormData("findForm", category);
 const handleSort = (form) => {
-  setFindFormData("sort", form.sort);
+  setFindFormData("findForm", form);
   store.dispatch("cuser/updateSettings", {
     ...settings.value,
     sort: form.sort,

@@ -120,6 +120,10 @@ exports.getPriceId = async (planTitle) => {
 };
 
 exports.saveSubscriptionManually = async (planId, planTitle, userId) => {
+  const existingSubscription = await exports.getSubscription(userId);
+  if (existingSubscription && existingSubscription.pending_cancel === 0)
+    throw new CustomError("Already have a subscription!", 409);
+
   let priceId = await exports.getPriceId(planTitle.toLowerCase());
   const customer = await stripe.customers.create();
 
@@ -161,6 +165,10 @@ exports.saveSubscriptionManually = async (planId, planTitle, userId) => {
 };
 
 exports.saveSubscription = async (planId, planTitle, userId) => {
+  const existingSubscription = await exports.getSubscription(userId);
+  if (existingSubscription && existingSubscription.pending_cancel === 0)
+    throw new CustomError("Already have a subscription!", 409);
+
   planTitle = planTitle.toLowerCase();
   if (planTitle === "basic") {
     const newSubscription = {

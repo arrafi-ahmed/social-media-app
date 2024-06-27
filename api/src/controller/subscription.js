@@ -73,9 +73,13 @@ router.get("/saveSubscription", auth, (req, res) => {
       res.status(200).json(new ApiResponse(null, result));
     })
     .catch((err) => {
-      res
-        .status(500)
-        .json(new ApiResponse("Subscription activation failed!", null));
+      if (err instanceof CustomError) {
+        res.status(err.statusCode).json(new ApiResponse(err.message, null));
+      } else {
+        res
+          .status(500)
+          .json(new ApiResponse("Subscription activation failed!", null));
+      }
     });
 });
 

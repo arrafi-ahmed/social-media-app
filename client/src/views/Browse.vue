@@ -83,28 +83,26 @@ const resetPageNEvents = () => {
 
 const setFindFormData = async (filterValue, formOrCategory) => {
   resetPageNEvents();
+
   filterActive.value = filterValue;
   if (filterValue === "findForm") {
     Object.assign(findFormData, formOrCategory);
-  } else if (filterValue === "category") {
-    findFormData.category = formOrCategory;
-  } else if (filterValue === "sort") {
-    findFormData.sort = formOrCategory;
   } else if (filterValue === "none") {
     nullifyFindFormData();
   }
 };
 
-const handleFindEvents = (form) => setFindFormData("findForm", form);
 const handleResetFindEvents = () => setFindFormData("none");
-const handleClickCategory = (category) => setFindFormData("category", category);
+const handleFindEvents = (form) => setFindFormData("findForm", form);
+const handleClickCategory = (category) => setFindFormData("findForm", category);
 const handleSort = (form) => {
-  setFindFormData("sort", form.sort);
+  setFindFormData("findForm", form);
   store.dispatch("cuser/updateSettings", {
     ...settings.value,
     sort: form.sort,
   });
 };
+
 const fetchData = async () => {
   resetPageNEvents();
 

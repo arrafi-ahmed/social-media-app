@@ -1,15 +1,34 @@
 <script setup>
 import { Toaster } from "vue-sonner";
 import ProgressLoader from "@/components/ProgressLoader.vue";
+
+import { watch } from "vue";
+import { useRoute } from "vue-router";
+import { appName } from "@/util";
+
+const route = useRoute();
+
+watch(route, (to) => {
+  const tail = appName + " | Private Travel and Activity Journal";
+  document.title = (to.meta.title && to.meta.title + " | " + tail) || tail;
+});
 </script>
 <template>
   <progress-loader />
-  <Toaster :expand="true" closeButton position="bottom-left" rich-colors />
+  <Toaster
+    :expand="true"
+    closeButton
+    position="bottom-left"
+    richColors
+    theme="dark"
+    class="custom-toast"
+  />
   <router-view />
 </template>
 <style>
-body {
-  font-family: "Oxygen", sans-serif;
+body,
+.custom-toast {
+  font-family: "Oxygen", sans-serif !important;
 }
 
 .clickable {

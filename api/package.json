@@ -1,15 +1,16 @@
 {
   "name": "wayzaway",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "setup": "npm i && npm update",
+    "setup": "npm install && npm update --save",
     "dev": "NODE_ENV=development nodemon --delay 500ms app.js",
-    "dev-2": ". ~/.nvm/nvm.sh && nvm use v11 && npm install && forever stopall && NODE_ENV=development forever start -l forever.log -t -o out.log -e err.log -a --minUptime 5000 --spinSleepTime 2000 -c \"node\" app.js",
-    "prod": "forever stopall && NODE_ENV=production forever start -l forever.log -t -o out.log -e err.log -a --minUptime 5000 --spinSleepTime 2000 -c \"node\" app.js",
+    "prod": "pm2 stop all || true && NODE_ENV=production pm2 start app.js --name wayzaway-api --output \"logs/out.log\" --error \"logs/err.log\" --merge-logs --ignore-watch \"logs/*,public/*\"",
     "clean": "rm -rf node_modules && find public/blog -type f -delete && find public/event -type f -delete && find public/user -type f -delete && find public/temp -type f -delete && find public/page -type f -delete",
-    "build": "npm run clean"
+    "build": "npm run clean",
+    "prod-dev": "pm2 stop all || true && NODE_ENV=development pm2 start app.js --name wayzaway-api --log-date-format 'YYYY-MM-DD HH:mm' --output \"logs/out.log\" --error \"logs/err.log\" --merge-logs --ignore-watch \"logs/*,public/*\"",
+    "prod-legacy": "forever stopall && NODE_ENV=production forever start -l forever.log -t -o out.log -e err.log -a --minUptime 5000 --spinSleepTime 2000 -c \"node\" app.js"
   },
   "repository": {
     "type": "git",
@@ -28,10 +29,10 @@
     "express": "^4.19.2",
     "gm": "^1.25.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.10.0",
+    "mysql2": "^3.10.1",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.13",
-    "stripe": "^15.10.0",
+    "nodemailer": "^6.9.14",
+    "stripe": "^15.12.0",
     "uuid": "^9.0.1"
   }
 }

@@ -64,12 +64,12 @@ const deleteAccount = () => {
   store
     .dispatch("cuser/deleteAccount", { rmImage: profile.value?.image })
     .then(() => {
-      // router.push({ name: "signout" });
+      router.push({ name: "signout" });
     });
 };
 
 onMounted(() => {
-  store.dispatch("cuser/setProfileWSettings").then((res) => {
+  store.dispatch("cuser/setProfileWSettings").then(() => {
     fullname.value = profile.value?.full_name;
     newEmail.value = profile.value?.email;
     emailNewEventNotification.value =
@@ -249,6 +249,7 @@ onMounted(() => {
                 btn-variant="flat"
                 custom-class="ms-auto"
                 size="default"
+                message="Please cancel any existing subscription before you delete your account."
                 text="Delete"
                 @remove-entity="deleteAccount"
               ></remove-entity>

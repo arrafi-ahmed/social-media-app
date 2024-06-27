@@ -59,7 +59,7 @@ const handleSort = (sortInput) => {
   >
     <v-container>
       <v-row align="center" no-gutters>
-        <v-col class="d-flex" cols="12" md="10">
+        <v-col class="d-flex" cols="12" md="9">
           <v-row no-gutters>
             <v-col cols="12" md="3">
               <v-text-field
@@ -114,7 +114,7 @@ const handleSort = (sortInput) => {
             </v-col>
           </v-row>
         </v-col>
-        <v-col class="text-center d-flex" cols="12" md="2">
+        <v-col class="text-center d-flex" cols="12" md="3">
           <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn

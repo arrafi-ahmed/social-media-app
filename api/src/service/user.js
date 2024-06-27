@@ -13,6 +13,9 @@ const {
 } = require("../others/util");
 
 exports.register = async (payload, clientUrl) => {
+  const existingUser = await exports.getIdByEmail(payload.email);
+  if (existingUser) throw new CustomError("Email already taken!", 409);
+
   const sql =
     "INSERT INTO cuser (full_name, email, password, date_of_birth, country, role, created_at) VALUES ($1, $2, $3," +
     " $4, $5, $6, $7);";
@@ -31,7 +34,6 @@ exports.register = async (payload, clientUrl) => {
       const sql2 = "SELECT * FROM cuser WHERE id = ?;";
       return db.getRow(sql2, [result.insertId]);
     });
-
   // insert into user settings
   exports.createUserSettings(insertedUser.id);
 
@@ -291,10 +293,17 @@ exports.removeFriend = (userId, friendshipId) => {
 };
 
 exports.searchUser = (requestedUser) => {
-  const sql =
-    "SELECT id, full_name, email, date_of_birth, country, image FROM cuser" +
-    " WHERE (CAST(id AS CHAR) = ? OR LOWER(full_name) LIKE CONCAT('%', LOWER(?), '%') OR LOWER(email) = LOWER(?));";
-  return db.getRows(sql, [requestedUser, requestedUser, requestedUser]);
+  let sql = `SELECT id, full_name, email, date_of_birth, country, image
+               FROM cuser `;
+  sql += requestedUser
+    ? "WHERE (id = ? OR LOWER(email) = ?) OR LOWER(full_name) LIKE CONCAT('%', ?, '%')"
+    : "";
+
+  let params = requestedUser
+    ? [requestedUser, requestedUser.toLowerCase(), requestedUser.toLowerCase()]
+    : [];
+  console.log(sql, params);
+  return db.getRows(sql, params);
 };
 
 exports.deleteUser = (userId, rmImage) => {
@@ -536,14 +545,13 @@ const generateAuthData = (result) => {
 exports.getPendingInvitation = (email) => {
   const sql =
     "select * from invitation where receiver_email = $1 and is_accepted = true";
-  return db.getRowsgit(sql, [email]);
+  return db.getRows(sql, [email]);
 };
 
 exports.createUserSettings = (userId) => {
-  const sql =
-    "insert into user_settings (email_new_event_notification," +
-    " email_update_event_notification, email_new_comment_notification, sort, user_id)" +
-    " values (?, ?, ?, ?);";
+  const sql = `insert into user_settings (email_new_event_notification, email_update_event_notification,
+                                            email_new_comment_notification, sort, user_id)
+                 values (?, ?, ?, ?, ?)`;
   return db.execute(sql, [true, true, true, "DESC", userId]);
 };
 

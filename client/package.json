@@ -1,8 +1,8 @@
 {
   "name": "wayzaway",
-  "version": "1.1",
+  "version": "1.5.0",
   "scripts": {
-    "setup": "yarn install && yarn upgrade",
+    "setup": "npm install && npm update --save",
     "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint . --fix --ignore-path ../.gitignore",
@@ -10,22 +10,21 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "axios": "^1.5.0",
-    "core-js": "^3.29.0",
-    "roboto-fontface": "*",
+    "axios": "^1.7.2",
+    "core-js": "^3.37.1",
+    "roboto-fontface": "^0.10.0",
     "vue": "^3.4.27",
-    "vue-router": "^4.0.0",
-    "vue-sonner": "^1.0.2",
-    "vuetify": "^3.6.0",
+    "vue-router": "^4.4.0",
+    "vue-sonner": "^1.1.3",
+    "vuetify": "^3.6.10",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "eslint": "^8.37.0",
-    "eslint-plugin-vue": "^9.3.0",
-    "sass": "^1.60.0",
-    "unplugin-fonts": "^1.0.3",
-    "vite": "^4.2.0",
-    "vite-plugin-vuetify": "^1.0.0"
+    "@vitejs/plugin-vue": "^5.0.5",
+    "sass": "^1.77.6",
+    "unplugin-fonts": "^1.1.1",
+    "unplugin-vue-components": "^0.26.0",
+    "vite": "^5.3.1",
+    "vite-plugin-vuetify": "^2.0.3"
   }
 }

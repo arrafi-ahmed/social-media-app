@@ -1,9 +1,0 @@
-{
-  "appId": "com.wayzaway",
-  "appName": "wayzaway",
-  "webDir": "dist",
-  "server": {
-    "androidScheme": "https",
-    "cleartext": true
-  }
-}

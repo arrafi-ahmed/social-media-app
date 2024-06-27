@@ -2,6 +2,7 @@ import { countries } from "@/country-list";
 import router from "@/router";
 import { toast } from "vue-sonner";
 
+export const appName = "WayzAway";
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 export const isProd = import.meta.env.PROD;
@@ -88,7 +89,7 @@ export const getClientPublicImgUrl = (imageName) =>
   imageName ? `/img/${imageName}` : null;
 
 export const getApiPublicImgUrl = (imageName, type) =>
-  `${apiBaseUrl}/api/public/${type}/${imageName}`;
+  `${apiBaseUrl}/api/${type}/${imageName}`;
 
 export const getEventImageUrl = (imageName) => {
   return imageName == null || !imageName

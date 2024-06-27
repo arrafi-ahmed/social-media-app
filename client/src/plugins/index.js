@@ -24,9 +24,7 @@ function handleApiQueryMsg() {
 
 function handleAuthRoutes(to, isSignedin, userRole) {
   if (to.matched.some((record) => record.meta.requiresNoAuth) && isSignedin) {
-    return userRole === "admin"
-      ? { name: "adminDashboard" }
-      : { name: "browse" };
+    return store.getters["cuser/calcHome"];
   } else if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !isSignedin
@@ -36,7 +34,9 @@ function handleAuthRoutes(to, isSignedin, userRole) {
     to.matched.some((record) => record.meta.requiresAdmin) &&
     userRole !== "admin"
   ) {
-    return { name: "signin" };
+    return store.getters["cuser/calcHome"];
+  } else if (!to.name && isSignedin) {
+    return store.getters["cuser/calcHome"]; //undefined routes visited
   }
   return null;
 }

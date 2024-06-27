@@ -4,8 +4,9 @@ import { ref } from "vue";
 
 const { mobile } = useDisplay();
 const dialog = ref(false);
-const { id, text, btnVariant, customClass, size } = defineProps({
+const { id, message, text, btnVariant, customClass, size } = defineProps({
   id: {},
+  message: { default: "Are you sure?" },
   text: {},
   btnVariant: { default: "flat" },
   customClass: {},
@@ -60,7 +61,7 @@ const remove = (id) => {
       <v-card-title>
         <span>{{ text || "Remove" }}</span>
       </v-card-title>
-      <v-card-text> Are you sure?</v-card-text>
+      <v-card-text>{{ message }} </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn

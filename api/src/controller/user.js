@@ -39,9 +39,11 @@ router.post("/register", (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.code == "ER_DUP_ENTRY")
-        res.status(500).json(new ApiResponse("Email already taken!", null));
-      else res.status(500).json(new ApiResponse("Registration failed!", null));
+      if (err instanceof CustomError) {
+        res.status(err.statusCode).json(new ApiResponse(err.message, null));
+      } else {
+        res.status(500).json(new ApiResponse("Registration failed!", null));
+      }
     });
 });
 
@@ -204,7 +206,6 @@ router.post("/updateSettings", auth, (req, res) => {
       res.status(200).json(new ApiResponse(null, result));
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json(new ApiResponse("Settings update failed!", null));
     });
 });
