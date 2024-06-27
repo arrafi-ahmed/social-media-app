@@ -3,7 +3,6 @@ process.env.TZ = "UTC";
 const express = require("express");
 const app = express();
 const path = require("path");
-const userAgent = require("./src/middleware/userAgent");
 const customCors = require("./src/middleware/customCors");
 const {
   globalErrHandler,
@@ -13,7 +12,6 @@ const scheduleTasks = require("./src/others/scheduler");
 const port = process.env.PORT || 3000;
 
 //middlewares
-app.use(userAgent);
 app.use(customCors);
 app.use("/api/public", express.static(path.join(__dirname, "public")));
 // stripe webhook needs raw req.body

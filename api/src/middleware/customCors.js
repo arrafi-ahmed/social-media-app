@@ -1,12 +1,10 @@
 const cors = require("cors");
-const CustomError = require("../model/CustomError");
-const URL = require("url");
 
 const excludedUrls = ["/api/user/acceptInvite"];
 
 const customCors = (req, res, next) => {
   const baseUrl = process.env.VUE_BASE_URL;
-  const hostname = URL.parse(baseUrl).hostname;
+  const hostname = new URL(baseUrl).hostname;
   const corsOptions = {
     origin: (origin, callback) => {
       let urlwww = `https://www.${hostname}`;
@@ -17,7 +15,7 @@ const customCors = (req, res, next) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        res.status(403).send("Not allowed by CORS");
+        return res.status(403).send("Not allowed by CORS");
       }
     },
     exposedHeaders: "authorization",
