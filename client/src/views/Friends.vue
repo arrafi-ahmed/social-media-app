@@ -41,7 +41,6 @@ const removeFriend = (friendship_id) => {
 };
 onMounted(() => {
   store.dispatch("cuser/setFriends");
-  showApiQueryMsg("success");
 });
 </script>
 
@@ -51,69 +50,16 @@ onMounted(() => {
       <!-- Main content -->
       <v-col cols="12">
         <page-title :title="`Friends (${friends.length})`">
-          <v-dialog v-model="dialog" width="600">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                :density="mobile ? 'comfortable' : 'default'"
-                v-bind="props"
-                variant="flat"
-              >
-                <template v-slot:prepend>
-                  <v-icon color="primary">mdi-plus</v-icon>
-                </template>
-                Invite a friend
-              </v-btn>
+          <v-btn
+            :density="mobile ? 'comfortable' : 'default'"
+            @click="$router.push({ name: 'friends-invite' })"
+            variant="flat"
+          >
+            <template v-slot:prepend>
+              <v-icon color="primary">mdi-plus</v-icon>
             </template>
-
-            <v-card>
-              <v-card-title>
-                <span>Invite friend</span>
-              </v-card-title>
-              <v-card-text>
-                <v-form
-                  ref="form"
-                  v-model="isFormValid"
-                  fast-fail
-                  @submit.prevent="sendInvite"
-                >
-                  <v-text-field
-                    v-model="email"
-                    :rules="[
-                      (v) => !!v || 'Email is required!',
-                      (v) => isValidEmail(v) || 'Invalid Email',
-                    ]"
-                    class="mt-2"
-                    clearable
-                    density="compact"
-                    hide-details="auto"
-                    label="Recipient Email"
-                    required
-                    variant="solo"
-                  ></v-text-field>
-
-                  <v-textarea
-                    v-model="message"
-                    class="mt-2"
-                    clearable
-                    hide-details="auto"
-                    label="Message"
-                    rows="5"
-                    variant="solo"
-                  ></v-textarea>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      :density="mobile ? 'comfortable' : 'default'"
-                      color="primary"
-                      type="submit"
-                      >Submit
-                    </v-btn>
-                  </v-card-actions>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
+            Invite a friend
+          </v-btn>
         </page-title>
 
         <v-row justify="center">

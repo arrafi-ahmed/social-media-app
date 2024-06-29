@@ -159,9 +159,12 @@ export const removeQueryParams = (url, paramsToRemove) => {
   return parsedUrl.toString();
 };
 
-export const isValidEmail = (email) => {
+export const isValidEmail = (emails) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  if (typeof emails === "string") {
+    emails = [emails];
+  }
+  return emails.every((email) => emailRegex.test(email.trim()));
 };
 
 export const isValidImage = (file) => {

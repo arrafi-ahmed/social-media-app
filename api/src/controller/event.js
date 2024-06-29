@@ -5,11 +5,12 @@ const auth = require("../middleware/auth");
 const ApiResponse = require("../model/ApiResponse");
 const CustomError = require("../model/CustomError");
 const compressImages = require("../middleware/compress");
+const { VUE_BASE_URL } = require("../others/util");
 
 router.post("/save", auth, uploadEvent, compressImages, (req, res) => {
   const userId = req.currentUser.id;
   eventService
-    .saveEvent(req.body, req.files, userId, req.CLIENT_BASE_URL)
+    .saveEvent(req.body, req.files, userId, VUE_BASE_URL)
     .then((result) => {
       res
         .status(200)
@@ -24,7 +25,7 @@ router.post("/edit", auth, uploadEvent, compressImages, (req, res) => {
   const userId = req.currentUser.id;
 
   eventService
-    .editEvent(req.body, req.files, userId, req.CLIENT_BASE_URL)
+    .editEvent(req.body, req.files, userId, VUE_BASE_URL)
     .then((result) => {
       res
         .status(200)

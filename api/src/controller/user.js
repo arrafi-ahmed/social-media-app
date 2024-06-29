@@ -5,10 +5,11 @@ const auth = require("../middleware/auth");
 const { uploadUser } = require("../middleware/upload");
 const CustomError = require("../model/CustomError");
 const compressImages = require("../middleware/compress");
+const { VUE_BASE_URL } = require("../others/util");
 
 router.post("/register", (req, res) => {
   userService
-    .register(req.body, req.CLIENT_BASE_URL)
+    .register(req.body, VUE_BASE_URL)
     .then((result) => {
       if (
         result &&
@@ -214,12 +215,33 @@ router.post("/sendInvite", auth, (req, res) => {
   const userId = req.currentUser.id;
   userService
     .sendInvite(req.body, userId)
-    .then((result) => {
-      res.status(200).json(new ApiResponse("Invitation sent!", result));
+    .then(({ successfulInvites, failedInvites }) => {
+      console.log(2, successfulInvites, failedInvites);
+      let msg = "";
+      if (successfulInvites.length > 0) {
+        msg += "Invitation sent successfully to: " + "\n";
+        msg += successfulInvites.map((item) => item.email).join("\n");
+      }
+      if (successfulInvites.length > 0 && failedInvites.length > 0) {
+        msg += "\n\n";
+      }
+      if (failedInvites.length > 0) {
+        msg += "Invitation sending failed for: " + "\n";
+        msg += failedInvites
+          .map((item) => `${item.email}, Error: ${item.errorMessage}`)
+          .join("\n");
+        throw new CustomError(msg, 400, { successfulInvites, failedInvites });
+      }
+      res
+        .status(200)
+        .json(new ApiResponse(msg, { successfulInvites, failedInvites }));
     })
     .catch((err) => {
+      console.log(err);
       if (err instanceof CustomError) {
-        res.status(err.statusCode).json(new ApiResponse(err.message, null));
+        res
+          .status(err.statusCode)
+          .json(new ApiResponse(err.message, err.payload));
       } else {
         res
           .status(500)
@@ -231,7 +253,7 @@ router.post("/sendInvite", auth, (req, res) => {
 router.get("/acceptInvite", (req, res) => {
   const token = req.query && req.query.token;
 
-  let clientUrl = req.CLIENT_BASE_URL;
+  let clientUrl = VUE_BASE_URL;
   let apiQueryMsg = "";
   userService
     .acceptInvite(token)
@@ -260,7 +282,7 @@ router.get("/acceptInvite", (req, res) => {
 
 router.post("/requestResetPass", (req, res) => {
   userService
-    .requestResetPass(req.body.resetEmail, req.CLIENT_BASE_URL)
+    .requestResetPass(req.body.resetEmail, VUE_BASE_URL)
     .then((result) => {
       res
         .status(200)

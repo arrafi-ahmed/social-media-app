@@ -21,7 +21,7 @@ watch(route, (to) => {
     position="bottom-left"
     richColors
     theme="dark"
-    class="custom-toast"
+    class="custom-toast text-pre-wrap"
   />
   <router-view />
 </template>

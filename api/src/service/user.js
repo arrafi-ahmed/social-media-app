@@ -122,6 +122,11 @@ exports.getIdByEmail = (email) => {
   return db.getRow(sql, [email]);
 };
 
+exports.getIdsByEmails = (emails) => {
+  const sql = "select id from cuser where email in ($1)";
+  return db.getRows(sql, [emails]);
+};
+
 exports.getUserSettings = (userId) => {
   const sql = `select *
                  from user_settings
@@ -145,70 +150,79 @@ exports.checkFriends = (id1, id2) => {
   return db.getRow(sql, [id1, id2, id2, id1]);
 };
 
-exports.sendInvite = (body, userId) => {
-  let receiver_id = null;
-  let sender_id = userId;
+exports.sendInvite = async (body, userId) => {
+  const emails = Array.isArray(body.email) ? body.email : [body.email];
+  const sender_id = userId;
 
-  //check if ivnitation sent already
-  const sql =
-    "select * from invitation where sender_id = $1 and receiver_email = $2";
-  return db
-    .getRow(sql, [userId, body.email])
-    .then((result) => {
-      if (result && result.id) {
-        throw new CustomError("Already sent invitaion!", 409, result);
-      }
-      //find receiver's id from email
-      return exports.getIdByEmail(body.email);
-    })
-    .then((result) => {
-      // if email exist
-      if (result && result.id) {
-        //cant send invitation to ownself
-        if (result.id == userId) {
-          throw new CustomError("Can't send invitation to ownself!");
-        }
-        receiver_id = result.id;
-        //check if they are friends
-        return exports.checkFriends(receiver_id, sender_id);
-      }
-    })
-    .then((result) => {
-      // if they are friends already
-      if (result) {
-        throw new CustomError("User already in friendlist!");
-      }
-      //if not, insert in invitation
-      else {
-        //generate token
-        const token = uuidv4();
-        const sql =
-          "insert into invitation (sender_id, receiver_email, token, is_accepted, created_at) values ($1, $2, $3," +
-          " $4, $5);";
-        return db.execute(sql, [
-          sender_id,
-          body.email,
-          token,
-          false,
-          new Date(),
-        ]);
-      }
-    })
-    .then((result) => {
-      const sql2 = "SELECT * FROM invitation WHERE id = ?;";
-      return db.getRow(sql2, [result.insertId]);
-    })
-    .then(async (result) => {
-      const senderData = await exports.getUserById(sender_id);
-      return { senderData, token: result.token };
-    })
-    .then(({ senderData, token }) => {
-      const to = body.email;
+  const validations = emails.map(async (email) => {
+    //check if initation sent already
+    const existingInvite = await db.getRow(
+      "select * from invitation where sender_id = $1 and receiver_email = $2",
+      [userId, email]
+    );
+    if (existingInvite && existingInvite.id) {
+      throw new CustomError("Already sent invitation!", 409, email);
+    }
 
+    //find receiver's id from email
+    const receiver = await exports.getIdByEmail(email);
+
+    // if email exist
+    if (receiver && receiver.id) {
+      //cant send invitation to ownself
+      if (receiver.id === userId) {
+        throw new CustomError(
+          "Can't send invitation to own email!",
+          400,
+          email
+        );
+      }
+      const isFriend = await exports.checkFriends(receiver.id, sender_id);
+      // check if they are friends already
+      if (isFriend) {
+        throw new CustomError("User already in friend list!", 409, email);
+      }
+    }
+
+    //if not friends, insert in invitation
+    const token = uuidv4();
+    await db.execute(
+      "insert into invitation (sender_id, receiver_email, token, is_accepted, created_at) values ($1, $2, $3, $4, $5);",
+      [sender_id, email, token, false, new Date()]
+    );
+    const { full_name } = await exports.getUserById(sender_id);
+    return { senderData: { full_name }, token, email };
+  });
+
+  const results = await Promise.allSettled(validations);
+  console.log(9, results);
+
+  const successfulInvites = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => {
+      console.log(10, result);
+      return result.value;
+    });
+
+  const failedInvites = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => ({
+      email: result.reason.payload,
+      errorMessage: result.reason.message || "Unknown error", // Provide default message
+    }));
+
+  const emailPromises = successfulInvites.map(
+    ({ senderData, token, email }) => {
+      console.log(11, senderData, token, email);
       const subject = `Wayzaway invitation from ${senderData.full_name}`;
       const html = generateInvitationContent(senderData, body.message, token);
-      return sendMail(to, subject, html);
-    });
+      return sendMail(email, subject, html);
+    }
+  );
+
+  await Promise.all(emailPromises);
+
+  return { successfulInvites, failedInvites }; // Return details of successful invitations
 };
 
 exports.acceptInvite = (token) => {

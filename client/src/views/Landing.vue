@@ -165,7 +165,7 @@ onMounted(() => {
           </p>
         </v-animated>
         <v-row v-if="landing[3].image" justify="center">
-          <v-col class="my-5" cols="11" md="5">
+          <v-col class="my-5" cols="11" xl="5">
             <v-sheet :elevation="8">
               <v-img :src="getPageImageUrl(landing[3].image)"></v-img>
             </v-sheet>

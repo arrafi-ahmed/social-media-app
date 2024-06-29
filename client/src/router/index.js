@@ -88,6 +88,15 @@ const routes = [
         },
       },
       {
+        path: "friends/invite",
+        name: "friends-invite",
+        component: () => import("@/views/FriendsInvite.vue"),
+        meta: {
+          requiresAuth: true,
+          title: "Invite Friends",
+        },
+      },
+      {
         path: "friends",
         name: "friends",
         component: () => import("@/views/Friends.vue"),

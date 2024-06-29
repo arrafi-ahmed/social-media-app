@@ -48,11 +48,11 @@ const applink = `
   </a>
 `;
 
-const generatePassResetContent = (token, CLIENT_BASE_URL) => {
+const generatePassResetContent = (token, vueBaseUrl) => {
   return `
     <p>Hello</p>
     <p>Click the button to reset password, will be valid for 1 hour.</p>
-    <a href="${CLIENT_BASE_URL}/reset-password/?token=${token}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Reset Password</button></a>
+    <a href="${vueBaseUrl}/reset-password/?token=${token}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Reset Password</button></a>
     <p>Best wishes,<br>WayzAway</p>
     <br><br>${applink}
 `;
@@ -69,24 +69,24 @@ const generateInvitationContent = ({ full_name }, message, token) => {
 `;
 };
 
-const generateWelcomeContent = (name, id, CLIENT_BASE_URL) => {
+const generateWelcomeContent = (name, id, vueBaseUrl) => {
   return `
   <p>Hello ${name},</p>
   <p><strong>Welcome to WayzAway!</strong></p>
   <p>Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go?</p>
-  <a href="${CLIENT_BASE_URL}/wall/${id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Visit your account</button></a>
+  <a href="${vueBaseUrl}/wall/${id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Visit your account</button></a>
   <p>Best wishes,<br>WayzAway</p>
   <br><br>${applink}
 `;
 };
 
-const generatePostCreationContent = (user, type, CLIENT_BASE_URL) => {
+const generatePostCreationContent = (user, type, vueBaseUrl) => {
   return `
   <p>From <b>${user.full_name}:</b></p>
   <p>"I have ${
     type === "add" ? "uploaded" : "updated"
   } a new event to my WayzAway. Sign in below to have a look!"</p>
-  <a href="${CLIENT_BASE_URL}/wall/${
+  <a href="${vueBaseUrl}/wall/${
     user.id
   }"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
   <p>Best wishes,<br>WayzAway</p>
@@ -94,19 +94,19 @@ const generatePostCreationContent = (user, type, CLIENT_BASE_URL) => {
 `;
 };
 
-const generateNewCommentContent = (user, CLIENT_BASE_URL) => {
+const generateNewCommentContent = (user, vueBaseUrl) => {
   return `
   <p>Someone has commented on your event, log back into your account to have a look.</p>
-  <a href="${CLIENT_BASE_URL}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
+  <a href="${vueBaseUrl}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
   <p>Best wishes,<br>WayzAway</p>
   <br><br>${applink}
 `;
 };
 
-const generateTodaysEventContent = (user, CLIENT_BASE_URL) => {
+const generateTodaysEventContent = (user, vueBaseUrl) => {
   return `
   <p>You have an event scheduled for today. Sign into your Wayzaway account to have a look.</p>
-  <a href="${CLIENT_BASE_URL}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
+  <a href="${vueBaseUrl}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
   <p>Best wishes,<br>WayzAway</p>
   <br><br>${applink}
 `;

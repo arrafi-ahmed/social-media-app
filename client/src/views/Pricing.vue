@@ -72,7 +72,14 @@ const handleClickSubscriptionCancel = (stripeSubscriptionId) => {
     instantCancel: false,
   });
 };
+const routeInfo = computed(() => store.state.routeInfo);
 const showContinue = ref(false);
+const showBack = computed(
+  () =>
+    routeInfo.value?.from?.name !== undefined &&
+    routeInfo.value?.from?.name !== "friends-invite"
+);
+
 const processSuccessQueryParam = () => {
   const isSubscriptionSucceeded = getQueryParam("subscription_success");
   if (isSubscriptionSucceeded === "1") {
@@ -91,6 +98,7 @@ onMounted(async () => {
   <v-container>
     <page-title title="Pricing">
       <v-btn
+        v-if="showBack"
         icon="mdi-arrow-left"
         variant="text"
         @click="$router.back()"

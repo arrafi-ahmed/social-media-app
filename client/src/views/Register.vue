@@ -81,7 +81,8 @@ const registerUser = async () => {
     })
     .then(() => {
       router.push({
-        name: "pricing",
+        name: "friends-invite",
+        params: { ref: "register" },
       });
     });
 };
