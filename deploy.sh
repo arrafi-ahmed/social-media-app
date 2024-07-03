@@ -78,15 +78,15 @@ fi
 #After deployment change file permission of public folder:
 find "$HTML_DIR/node/public" -type f -exec chmod 777 {} \; && \
 find "$HTML_DIR/node/public" -type d -exec chmod 777 {} \; && \
-echo "Public dir & files permission modified."
+echo "----- Public dir & files permission modified..."
 
 # Function to check if ImageMagick is installed
 check_imagick_installed() {
     if dpkg-query -W -f='${Status}' imagemagick 2>/dev/null | grep -q "install ok installed"; then
-        echo "ImageMagick pre installed?: True"
+        echo "----- ImageMagick pre installed?: True..."
         return 0  # Return success
     else
-        echo "ImageMagick pre installed?: False"
+        echo "----- ImageMagick pre installed?: False..."
         return 1  # Return failure
     fi
 }
@@ -95,7 +95,7 @@ check_imagick_installed() {
 if ! check_imagick_installed; then
     # ImageMagick not installed, so install it
     DEBIAN_FRONTEND=noninteractive apt-get install -y imagemagick && \
-    echo "ImageMagick installed."
+    echo "----- ImageMagick installed..."
 fi
 
 echo "----- Deployment script ended ---"

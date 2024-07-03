@@ -127,7 +127,7 @@ router.get("/deleteSubscription", auth, (req, res) => {
     });
 });
 
-router.post("/stripeResponse", async (req, res) => {
+router.post("/stripe-response", async (req, res) => {
   subscriptionService
     .stripeWebhookResponse(req)
     .then((result) => {
