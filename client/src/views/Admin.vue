@@ -844,39 +844,6 @@ onMounted(() => {
                     rows="10"
                     variant="solo"
                   ></v-textarea>
-                  <div class="d-flex align-center">
-                    <v-avatar
-                      :image="getPageImageUrl(updatingLanding[3].image)"
-                      rounded="sm"
-                      size="x-large"
-                    ></v-avatar>
-                    <v-file-input
-                      :rules="[
-                        (v) =>
-                          !v ||
-                          (Array.isArray(v) ? v : [v]).every(
-                            (file) => file.size < 25 * 1024 * 1024
-                          ) ||
-                          'Max file size is 25MB!',
-                        (v) =>
-                          (Array.isArray(v) ? v : [v]).every((file) =>
-                            isValidImage(file)
-                          ) || 'Only jpeg/png allowed!',
-                      ]"
-                      accept="image/*"
-                      class="mx-1"
-                      clearable
-                      density="compact"
-                      hide-details
-                      label="Section 4 image"
-                      prepend-icon=""
-                      prepend-inner-icon="mdi-camera"
-                      variant="solo-filled"
-                      @update:modelValue="handleLandingImageChange(3, $event)"
-                      @click:clear="updatingLanding[3].image = null"
-                    >
-                    </v-file-input>
-                  </div>
                   <div class="d-flex justify-end mb-1">
                     <v-btn
                       :density="mobile ? 'comfortable' : 'default'"

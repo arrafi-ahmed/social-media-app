@@ -6,8 +6,13 @@ import VAnimated from "@/components/v-animated.vue";
 import { useStore } from "vuex";
 import { getPageImageUrl } from "@/util";
 import Applink from "@/components/Applink.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const initLanding = computed(() => store.state.page.landing);
+const subscriptionPlans = computed(
+  () => store.state.subscription.subscriptionPlans
+);
 const landing = reactive([
   { title: null, description: null, image: null },
   { title: null, description: null, image: null },
@@ -29,7 +34,40 @@ onMounted(() => {
       });
     }
   });
+  store.dispatch("subscription/setSubscriptionPlans");
 });
+
+// pricing
+const benefits = ref([
+  {
+    title: "Create Posts",
+    ultimate: true,
+    standard: true,
+    basic: false,
+  },
+  {
+    title: "Create a Wishlist",
+    ultimate: true,
+    standard: true,
+    basic: false,
+  },
+  {
+    title: "Tag Favourites",
+    ultimate: true,
+    standard: true,
+    basic: true,
+  },
+  {
+    title: "Comment on other Posts",
+    ultimate: true,
+    standard: true,
+    basic: true,
+  },
+]);
+
+const handleClickSubscription = (plan) => {
+  router.push({ name: "register" });
+};
 </script>
 
 <template>
@@ -164,28 +202,97 @@ onMounted(() => {
             {{ landing[3].description }}
           </p>
         </v-animated>
-        <v-row v-if="landing[3].image" justify="center">
-          <v-col class="my-5" cols="11" xl="5">
-            <v-sheet :elevation="8">
-              <v-img :src="getPageImageUrl(landing[3].image)"></v-img>
-            </v-sheet>
+
+        <!-- Pricing Content -->
+        <v-row class="mt-5" justify="center">
+          <v-col cols="12" md="10">
+            <v-table v-if="subscriptionPlans.length > 0">
+              <thead>
+                <tr>
+                  <th class="text-left"><h2>Benefits</h2></th>
+                  <template
+                    v-for="(item, index) in subscriptionPlans"
+                    :key="index"
+                  >
+                    <th class="text-center vertical-baseline">
+                      <div>
+                        <div
+                          :class="
+                            item.title.toLowerCase() === 'basic'
+                              ? 'bg-secondary'
+                              : 'bg-primary'
+                          "
+                          class="pa-2"
+                        >
+                          <h2>{{ item.title }}</h2>
+                        </div>
+                        <div class="my-3 mt-2">
+                          <h3>
+                            £{{ item.price
+                            }}{{
+                              (item.title.toLowerCase() == "ultimate" &&
+                                "/year") ||
+                              (item.title.toLowerCase() == "standard" &&
+                                "/month") ||
+                              (item.title.toLowerCase() == "basic" && "")
+                            }}
+                          </h3>
+                          <small>{{ item.tagline }}</small>
+                        </div>
+                      </div>
+                    </th>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in benefits" :key="item.title">
+                  <td class="text-start">{{ item.title }}</td>
+                  <td class="text-center">
+                    <v-icon
+                      v-if="item.ultimate"
+                      color="success"
+                      icon="mdi-check"
+                    ></v-icon>
+                    <v-icon v-else color="danger" icon="mdi-close"></v-icon>
+                  </td>
+                  <td class="text-center">
+                    <v-icon
+                      v-if="item.standard"
+                      color="success"
+                      icon="mdi-check"
+                    ></v-icon>
+                    <v-icon v-else color="error" icon="mdi-close"></v-icon>
+                  </td>
+                  <td class="text-center">
+                    <v-icon
+                      v-if="item.basic"
+                      color="success"
+                      icon="mdi-check"
+                    ></v-icon>
+                    <v-icon v-else color="error" icon="mdi-close"></v-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <template
+                    v-for="(item, index) in subscriptionPlans"
+                    :key="index"
+                  >
+                    <td class="text-center">
+                      <v-btn
+                        color="primary"
+                        rounded-sm
+                        variant="outlined"
+                        @click="handleClickSubscription(item)"
+                        >Select
+                      </v-btn>
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </v-table>
           </v-col>
         </v-row>
-        <h4>Are you ready?</h4>
-        <div class="mt-4">
-          <v-btn
-            :to="{ name: 'signin' }"
-            class="text-capitalize mt-2 mt-sm-0"
-            color="primary"
-            >Sign in
-          </v-btn>
-          <v-btn
-            :to="{ name: 'register' }"
-            class="text-capitalize ml-2 mt-2 mt-sm-0"
-            color="secondary"
-            >Join Wayzaway
-          </v-btn>
-        </div>
       </v-col>
     </v-row>
   </v-container>
