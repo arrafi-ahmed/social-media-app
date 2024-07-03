@@ -16,6 +16,9 @@ api/public/user/*
 .env.development
 .env.production
 
+# skip ignoring production env as its used in build on prod server
+!client/.env.production
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
