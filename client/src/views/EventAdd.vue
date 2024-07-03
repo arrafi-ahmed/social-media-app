@@ -36,6 +36,7 @@ const handleCoverImageChange = (file) => {
 };
 
 const handleEventImageChange = (files) => {
+  if (files.length < 1) return;
   if (newEvent.images.length === 0) newEvent.images.push(null);
   newEvent.images.splice(1, 0, ...files);
 };
