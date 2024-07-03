@@ -10,7 +10,7 @@ import router from "../router";
 import store from "../store";
 import $axios from "@/plugins/axios";
 import { getQueryParam, removeQueryParams } from "@/util";
-// import { createGtm } from "@gtm-support/vue-gtm";
+import { createGtm } from "@gtm-support/vue-gtm";
 
 function handleApiQueryMsg() {
   //check if message came from server through query params
@@ -58,12 +58,12 @@ export function registerPlugins(app) {
   });
 
   app.use(vuetify).use(router).use(store);
-  // app.use(
-  //   createGtm({
-  //     id: "GTM-TBCVHTXV",
-  //     vueRouter: router,
-  //   })
-  // );
+  app.use(
+    createGtm({
+      id: "GTM-TBCVHTXV",
+      vueRouter: router,
+    })
+  );
   app.provide("$axios", $axios);
   window.$axios = $axios;
 }
