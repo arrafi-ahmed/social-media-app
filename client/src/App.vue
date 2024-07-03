@@ -58,4 +58,8 @@ body,
 .z-index-max {
   z-index: 999999 !important;
 }
+
+.vertical-baseline {
+  vertical-align: baseline !important;
+}
 </style>

@@ -298,4 +298,4 @@ const handleClickSubscription = (plan) => {
   </v-container>
 </template>
 
-<style scoped></style>
+<style></style>

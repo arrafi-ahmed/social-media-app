@@ -226,8 +226,4 @@ onMounted(async () => {
   </v-container>
 </template>
 
-<style>
-.vertical-baseline {
-  vertical-align: baseline !important;
-}
-</style>
+<style></style>
