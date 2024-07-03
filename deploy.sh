@@ -12,6 +12,29 @@ HTML_DIR="$PROJECT_ROOT/html"
 # Exit immediately if a command exits with a non-zero status
 set -e
 
+# Function to remove existing files and directories in /usr/local/lsws/wayzaway/html
+remove_existing_files() {
+  local files=(
+    assets
+    favicon.ico
+    img
+    index.html
+    maintanance.html
+    site.webmanifest
+  )
+  for file in "${files[@]}"; do
+    if [ -e "$HTML_DIR/$file" ]; then
+      if [ -d "$HTML_DIR/$file" ]; then
+        rm -rf "$HTML_DIR/$file" && \
+        echo "----- Directory $HTML_DIR/$file removed..."
+      else
+        rm -f "$HTML_DIR/$file" && \
+        echo "----- File $HTML_DIR/$file removed..."
+      fi
+    fi
+  done
+}
+
 # Check if the project directory exists, and if it does, remove it
 if [ -d "$REPO_DIR" ]; then
   echo "----- Directory $REPO_DIR already exists..."
@@ -28,6 +51,7 @@ echo "----- Git clone done..."
 cd "$REPO_DIR/client" && \
 npm run setup && \
 npm run build && \
+remove_existing_files && \
 mv dist/* "$HTML_DIR" && \
 echo "----- Client build done..."
 
