@@ -216,7 +216,6 @@ router.post("/sendInvite", auth, (req, res) => {
   userService
     .sendInvite(req.body, userId)
     .then(({ successfulInvites, failedInvites }) => {
-      console.log(2, successfulInvites, failedInvites);
       let msg = "";
       if (successfulInvites.length > 0) {
         msg += "Invitation sent successfully to: " + "\n";
@@ -237,7 +236,6 @@ router.post("/sendInvite", auth, (req, res) => {
         .json(new ApiResponse(msg, { successfulInvites, failedInvites }));
     })
     .catch((err) => {
-      console.log(err);
       if (err instanceof CustomError) {
         res
           .status(err.statusCode)

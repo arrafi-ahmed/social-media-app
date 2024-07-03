@@ -195,12 +195,10 @@ exports.sendInvite = async (body, userId) => {
   });
 
   const results = await Promise.allSettled(validations);
-  console.log(9, results);
 
   const successfulInvites = results
     .filter((result) => result.status === "fulfilled")
     .map((result) => {
-      console.log(10, result);
       return result.value;
     });
 
@@ -213,7 +211,6 @@ exports.sendInvite = async (body, userId) => {
 
   const emailPromises = successfulInvites.map(
     ({ senderData, token, email }) => {
-      console.log(11, senderData, token, email);
       const subject = `Wayzaway invitation from ${senderData.full_name}`;
       const html = generateInvitationContent(senderData, body.message, token);
       return sendMail(email, subject, html);
@@ -316,7 +313,6 @@ exports.searchUser = (requestedUser) => {
   let params = requestedUser
     ? [requestedUser, requestedUser.toLowerCase(), requestedUser.toLowerCase()]
     : [];
-  console.log(sql, params);
   return db.getRows(sql, params);
 };
 

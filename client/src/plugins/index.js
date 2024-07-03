@@ -58,12 +58,12 @@ export function registerPlugins(app) {
   });
 
   app.use(vuetify).use(router).use(store);
-  app.use(
-    createGtm({
-      id: "GTM-TBCVHTXV",
-      vueRouter: router,
-    })
-  );
+  // app.use(
+  //   createGtm({
+  //     id: "GTM-TBCVHTXV",
+  //     vueRouter: router,
+  //   })
+  // );
   app.provide("$axios", $axios);
   window.$axios = $axios;
 }
