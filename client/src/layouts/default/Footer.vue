@@ -1,5 +1,5 @@
 <script setup>
-import { getToLink } from "@/util";
+import { appInfo, getToLink } from "@/util";
 
 const items = [
   { title: "Home", to: { name: "landing" } },
@@ -28,7 +28,8 @@ const items = [
       </v-btn>
       <v-col class="text-center mt-md-1" cols="12">
         <small>
-          &copy; {{ new Date().getFullYear() }} — <strong>WayzAway</strong> v1.5
+          &copy; {{ new Date().getFullYear() }} —
+          <strong> {{ appInfo.name }} </strong> v{{ appInfo.version }}
         </small>
       </v-col>
     </v-row>

@@ -112,11 +112,14 @@ const generateTodaysEventContent = (user, vueBaseUrl) => {
 `;
 };
 
+const appInfo = { name: "WayzAway", version: 1.6 };
+
 module.exports = {
   API_BASE_URL,
   VUE_BASE_URL,
   ANDROID_BASE_URL,
   dirMap,
+  appInfo,
   generatePassResetContent,
   generateInvitationContent,
   generateWelcomeContent,

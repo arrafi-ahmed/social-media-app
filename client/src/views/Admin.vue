@@ -453,12 +453,12 @@ onMounted(() => {
                     v-model="searchingUser"
                     append-inner-icon="mdi-magnify"
                     class="flex-grow-1 ml-5 ml-md-1 pa-0"
+                    clearable
                     density="compact"
                     hide-details="auto"
                     label="Search by ID/Name/Email"
                     single-line
                     variant="solo"
-                    clearable
                     @click:append-inner="searchUser"
                     @keyup.enter="searchUser"
                   ></v-text-field>

@@ -212,8 +212,4 @@ onMounted(() => {
   </v-container>
 </template>
 
-<style>
-.expansion-pa-0 .v-expansion-panel-text__wrapper {
-  //padding: 0;
-}
-</style>
+<style></style>

@@ -61,7 +61,7 @@ const remove = (id) => {
       <v-card-title>
         <span>{{ text || "Remove" }}</span>
       </v-card-title>
-      <v-card-text>{{ message }} </v-card-text>
+      <v-card-text>{{ message }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn

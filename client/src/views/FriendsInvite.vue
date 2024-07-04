@@ -3,12 +3,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import PageTitle from "@/components/PageTitle.vue";
-import {
-  getQueryParam,
-  isValidEmail,
-  showApiQueryMsg,
-  showToast,
-} from "@/util";
+import { isValidEmail, showApiQueryMsg } from "@/util";
 import { useDisplay } from "vuetify";
 
 const router = useRouter();
@@ -61,7 +56,7 @@ onMounted(() => {
   <v-container>
     <page-title title="Invite friend"></page-title>
 
-    <v-row justify="center" align="center" class="mt-2 mt-md-4">
+    <v-row align="center" class="mt-2 mt-md-4" justify="center">
       <v-col cols="12" md="6">
         <v-form
           ref="form"
@@ -79,22 +74,22 @@ onMounted(() => {
           <div>
             <v-combobox
               v-model="email"
+              :items="[]"
               :rules="[
                 (v) => !!v || 'Email is required!',
                 (v) => isValidEmail(v) || 'Invalid Email',
                 (v) => v.length <= 5 || 'Max 5',
               ]"
+              chips
               class="mt-2"
               clearable
               density="compact"
               hide-details="auto"
+              hint="Separate by enter"
               label="Recipient Emails"
+              multiple
               required
               variant="solo"
-              hint="Separate by enter"
-              chips
-              multiple
-              :items="[]"
             ></v-combobox>
 
             <v-textarea

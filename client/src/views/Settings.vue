@@ -248,8 +248,8 @@ onMounted(() => {
               <remove-entity
                 btn-variant="flat"
                 custom-class="ms-auto"
-                size="default"
                 message="Please cancel any existing subscription before you delete your account."
+                size="default"
                 text="Delete"
                 @remove-entity="deleteAccount"
               ></remove-entity>

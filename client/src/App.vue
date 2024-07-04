@@ -4,12 +4,12 @@ import ProgressLoader from "@/components/ProgressLoader.vue";
 
 import { watch } from "vue";
 import { useRoute } from "vue-router";
-import { appName } from "@/util";
+import { appInfo } from "@/util";
 
 const route = useRoute();
 
 watch(route, (to) => {
-  const tail = appName + " | Private Travel and Activity Journal";
+  const tail = appInfo.name + " | Private Travel and Activity Journal";
   document.title = (to.meta.title && to.meta.title + " | " + tail) || tail;
 });
 </script>
@@ -17,11 +17,11 @@ watch(route, (to) => {
   <progress-loader />
   <Toaster
     :expand="true"
+    class="custom-toast text-pre-wrap"
     closeButton
     position="bottom-left"
     richColors
     theme="dark"
-    class="custom-toast text-pre-wrap"
   />
   <router-view />
 </template>

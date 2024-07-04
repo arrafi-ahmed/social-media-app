@@ -119,9 +119,9 @@ const handleSort = (sortInput) => {
             <template v-slot:activator="{ props }">
               <v-btn
                 :density="mobile ? 'comfortable' : 'default'"
+                :icon="sortIcon"
                 class="mr-sm-1 rounded flex-grow-1"
                 color="primary"
-                :icon="sortIcon"
                 v-bind="props"
               >
               </v-btn>
@@ -130,24 +130,24 @@ const handleSort = (sortInput) => {
               <!--              LATEST-->
               <v-list-item
                 link
-                title="Recent Posts"
                 prepend-icon="mdi-sort-clock-descending-outline"
+                title="Recent Posts"
                 @click="handleSort('LATEST')"
               >
               </v-list-item>
               <!--              DESC-->
               <v-list-item
                 link
-                title="Newest Events First"
                 prepend-icon="mdi-sort-variant"
+                title="Newest Events First"
                 @click="handleSort('DESC')"
               >
               </v-list-item>
               <!--              ASC-->
               <v-list-item
                 link
-                title="Oldest Events First"
                 prepend-icon="mdi-sort-reverse-variant"
+                title="Oldest Events First"
                 @click="handleSort('ASC')"
               >
               </v-list-item>

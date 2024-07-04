@@ -2,7 +2,6 @@
 import NameCard from "@/components/NameCard.vue";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import { isValidEmail, showApiQueryMsg } from "@/util";
 import PageTitle from "@/components/PageTitle.vue";
 import { useDisplay } from "vuetify";
 import RemoveEntity from "@/components/RemoveEntity.vue";
@@ -52,8 +51,8 @@ onMounted(() => {
         <page-title :title="`Friends (${friends.length})`">
           <v-btn
             :density="mobile ? 'comfortable' : 'default'"
-            @click="$router.push({ name: 'friends-invite' })"
             variant="flat"
+            @click="$router.push({ name: 'friends-invite' })"
           >
             <template v-slot:prepend>
               <v-icon color="primary">mdi-plus</v-icon>

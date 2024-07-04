@@ -2,7 +2,8 @@ import { countries } from "@/country-list";
 import router from "@/router";
 import { toast } from "vue-sonner";
 
-export const appName = "WayzAway";
+export const appInfo = { name: "WayzAway", version: 1.6 };
+
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 export const isProd = import.meta.env.PROD;

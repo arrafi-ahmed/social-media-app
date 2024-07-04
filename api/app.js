@@ -9,6 +9,7 @@ const {
   uncaughtErrHandler,
 } = require("./src/middleware/errHandler");
 const scheduleTasks = require("./src/others/scheduler");
+const { appInfo } = require("./src/others/util");
 const port = process.env.PORT || 3000;
 
 //middlewares
@@ -30,8 +31,8 @@ app.use("/api/page", require("./src/controller/page"));
 app.use("/api/blog", require("./src/controller/blog"));
 app.use("/api/subscription", require("./src/controller/subscription"));
 
-app.get("/api/version", function (req, res) {
-  res.status(200).json({ version: 1.5 });
+app.get("/api/info", function (req, res) {
+  res.status(200).json(appInfo);
 });
 
 const server = app.listen(port, (err) => {
