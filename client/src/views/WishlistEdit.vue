@@ -45,9 +45,11 @@ const handleSubmitEditEvent = async () => {
   formData.append("imagesInit", JSON.stringify(imagesInit));
   formData.append("images", JSON.stringify(editingEvent.images));
 
-  editingEvent.images.forEach((item) => {
-    if (item && item instanceof File) formData.append("files", item);
-  });
+  if (editingEvent.images && Array.isArray(editingEvent.images)) {
+    editingEvent.images.forEach((item) => {
+      if (item && item instanceof File) formData.append("files", item);
+    });
+  }
 
   store.dispatch("eventWishlist/editEvent", formData).then(() => {
     router.push({ name: "wishlist" });
