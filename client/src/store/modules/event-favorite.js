@@ -14,6 +14,9 @@ export const mutations = {
   resetEvents(state) {
     state.events = [];
   },
+  resetPage(state) {
+    state.page = 1;
+  },
 };
 export const actions = {
   setEvents({ commit }, request) {

@@ -23,6 +23,7 @@ const routeInfo = computed(() => store.state.routeInfo);
 onMounted(() => {
   if (routeInfo.value.from?.name === "eventSingle") return;
   store.commit("eventFavorite/resetEvents");
+  store.commit("eventFavorite/resetPage");
 });
 </script>
 

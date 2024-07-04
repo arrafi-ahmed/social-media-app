@@ -52,7 +52,12 @@ const findFormData = reactive({
 });
 const page = computed(() => store.state.eventWall.page);
 
+let isLoading = false;
+let noMoreResults = false;
+
 const loadEvents = async ({ done }) => {
+  if (isLoading) return;
+  isLoading = true;
   try {
     const action =
       filterActive.value === "findForm" ? "findEvents" : "setEvents";
@@ -75,6 +80,8 @@ const loadEvents = async ({ done }) => {
     await store.dispatch("category/setCategories");
   } catch (error) {
     done("error");
+  } finally {
+    isLoading = false;
   }
 };
 
@@ -146,7 +153,6 @@ const routeInfo = computed(() => store.state.routeInfo);
 onMounted(() => {
   if (["eventSingle", "eventEdit-wall"].includes(routeInfo.value.from?.name))
     return;
-
   fetchData();
 });
 watch(

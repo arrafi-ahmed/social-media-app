@@ -90,13 +90,7 @@ const handleSubmitEditEvent = async () => {
   formData.append("rmImages", JSON.stringify(editingEvent.rmImages));
   store
     .dispatch(`${storeModule.value}/editEvent`, formData)
-    .then(() =>
-      route.fullPath.includes("browse")
-        ? router.push({ name: "browse" })
-        : route.fullPath.includes("wall")
-        ? router.push({ name: "wall", params: { id: currentUser.value.id } })
-        : null
-    );
+    .then(() => router.back());
 };
 
 onMounted(async () => {
