@@ -57,7 +57,6 @@ let isLoading = false;
 const loadEvents = async ({ done }) => {
   if (isLoading) return;
   isLoading = true;
-  console.log(page.value, routeInfo.value.from.name, routeInfo.value.to.name);
   try {
     const action =
       filterActive.value === "findForm" ? "findEvents" : "setEvents";
@@ -94,7 +93,6 @@ const nullifyFindFormData = () => {
 };
 
 const resetPageNEvents = () => {
-  console.log("inside reset");
   store.commit("eventWall/setPage", 1);
   store.commit("eventWall/resetEvents");
 };
@@ -152,9 +150,6 @@ const fetchData = async () => {
 
 const routeInfo = computed(() => store.state.routeInfo);
 onMounted(() => {
-  console.log("route.from: ", routeInfo.value.from?.name);
-  console.log("retrieved lastScrollY: ", routeInfo.value.lastScrollY);
-
   if (["eventSingle", "eventEdit-wall"].includes(routeInfo.value.from?.name)) {
     if (routeInfo.value.lastScrollY)
       window.scrollTo(0, routeInfo.value.lastScrollY);

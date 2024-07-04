@@ -36,7 +36,6 @@ const store = createStore({
     },
     setScrollY(state, payload) {
       state.routeInfo.lastScrollY = payload;
-      console.log("setScrollY: ", state.routeInfo);
     },
   },
   actions: {},

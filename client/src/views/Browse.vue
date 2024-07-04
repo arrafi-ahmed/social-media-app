@@ -115,8 +115,6 @@ const fetchData = async () => {
 const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
-  console.log("route.from: ", routeInfo.value.from?.name);
-  console.log("retrieved lastScrollY: ", routeInfo.value.lastScrollY);
   if (
     ["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name)
   ) {
