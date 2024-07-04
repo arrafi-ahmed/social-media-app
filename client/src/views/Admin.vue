@@ -110,6 +110,7 @@ const addBlog = async () => {
 const editingBlog = reactive({ ...blogInit, id: null });
 
 const openEditBlogDialog = (item) => {
+  editBlogDialog.value = !editBlogDialog.value;
   Object.assign(editingBlog, { ...item, newImage: null });
 };
 const handleEditBlogImageChange = (files) => {
@@ -138,7 +139,7 @@ const editBlog = async () => {
     if (editingBlog.image) formData.append("rmImage", editingBlog.image);
   }
   store.dispatch("blog/editBlog", formData).then(() => {
-    editBlogDialog.value = false;
+    editBlogDialog.value = !editBlogDialog.value;
   });
 };
 
@@ -558,106 +559,14 @@ onMounted(() => {
                 class="pb-3"
               >
                 <template v-slot:append>
-                  <v-dialog v-model="editBlogDialog" width="800">
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                        color="primary"
-                        icon="mdi-pencil"
-                        size="small"
-                        v-bind="props"
-                        variant="text"
-                        @click="openEditBlogDialog(item)"
-                      >
-                      </v-btn>
-                    </template>
-
-                    <v-card>
-                      <v-card-title>
-                        <span>Edit Blog</span>
-                      </v-card-title>
-                      <v-card-text>
-                        <v-form
-                          ref="editBlogForm"
-                          v-model="isEditBlogFormValid"
-                          fast-fail
-                          @submit.prevent="editBlog"
-                        >
-                          <v-text-field
-                            v-model="editingBlog.title"
-                            :rules="[(v) => !!v || 'Title is required!']"
-                            class="mt-2"
-                            clearable
-                            density="compact"
-                            hide-details="auto"
-                            label="Blog Title"
-                            required
-                            variant="solo"
-                          ></v-text-field>
-
-                          <v-textarea
-                            v-model="editingBlog.description"
-                            :rules="[(v) => !!v || 'Description is required!']"
-                            class="mt-2 text-pre-wrap"
-                            hide-details="auto"
-                            label="Description"
-                            rows="8"
-                            variant="solo"
-                          ></v-textarea>
-
-                          <div class="d-flex align-center mt-3">
-                            <v-avatar
-                              :image="getBlogImageUrl(editingBlog?.image)"
-                              rounded="sm"
-                              size="x-large"
-                            ></v-avatar>
-                            <v-file-input
-                              :rules="[
-                                (v) =>
-                                  isValidImage(v) || 'Only jpeg/png allowed!',
-                              ]"
-                              accept="image/*"
-                              class="ml-2"
-                              clearable
-                              density="compact"
-                              hide-details="auto"
-                              label="Upload image"
-                              prepend-icon=""
-                              prepend-inner-icon="mdi-camera"
-                              show-size
-                              variant="solo"
-                              @update:modelValue="handleEditBlogImageChange"
-                            >
-                              <template v-slot:selection="{ fileNames }">
-                                <template
-                                  v-for="fileName in fileNames"
-                                  :key="fileName"
-                                >
-                                  <v-chip
-                                    class="me-2"
-                                    color="primary"
-                                    label
-                                    size="small"
-                                  >
-                                    {{ fileName }}
-                                  </v-chip>
-                                </template>
-                              </template>
-                            </v-file-input>
-                          </div>
-
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              :density="mobile ? 'comfortable' : 'default'"
-                              color="primary"
-                              type="submit"
-                              >Submit
-                            </v-btn>
-                          </v-card-actions>
-                        </v-form>
-                      </v-card-text>
-                    </v-card>
-                  </v-dialog>
+                  <v-btn
+                    color="primary"
+                    icon="mdi-pencil"
+                    size="small"
+                    variant="text"
+                    @click="openEditBlogDialog(item)"
+                  >
+                  </v-btn>
 
                   <v-btn
                     color="primary"
@@ -1022,6 +931,84 @@ onMounted(() => {
               </template>
             </template>
           </v-file-input>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              :density="mobile ? 'comfortable' : 'default'"
+              color="primary"
+              type="submit"
+              >Submit
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="editBlogDialog" width="800">
+    <v-card>
+      <v-card-title>
+        <span>Edit Blog</span>
+      </v-card-title>
+      <v-card-text>
+        <v-form
+          ref="editBlogForm"
+          v-model="isEditBlogFormValid"
+          fast-fail
+          @submit.prevent="editBlog"
+        >
+          <v-text-field
+            v-model="editingBlog.title"
+            :rules="[(v) => !!v || 'Title is required!']"
+            class="mt-2"
+            clearable
+            density="compact"
+            hide-details="auto"
+            label="Blog Title"
+            required
+            variant="solo"
+          ></v-text-field>
+
+          <v-textarea
+            v-model="editingBlog.description"
+            :rules="[(v) => !!v || 'Description is required!']"
+            class="mt-2 text-pre-wrap"
+            hide-details="auto"
+            label="Description"
+            rows="8"
+            variant="solo"
+          ></v-textarea>
+
+          <div class="d-flex align-center mt-3">
+            <v-avatar
+              :image="getBlogImageUrl(editingBlog?.image)"
+              rounded="sm"
+              size="x-large"
+            ></v-avatar>
+            <v-file-input
+              :rules="[(v) => isValidImage(v) || 'Only jpeg/png allowed!']"
+              accept="image/*"
+              class="ml-2"
+              clearable
+              density="compact"
+              hide-details="auto"
+              label="Upload image"
+              prepend-icon=""
+              prepend-inner-icon="mdi-camera"
+              show-size
+              variant="solo"
+              @update:modelValue="handleEditBlogImageChange"
+            >
+              <template v-slot:selection="{ fileNames }">
+                <template v-for="fileName in fileNames" :key="fileName">
+                  <v-chip class="me-2" color="primary" label size="small">
+                    {{ fileName }}
+                  </v-chip>
+                </template>
+              </template>
+            </v-file-input>
+          </div>
 
           <v-card-actions>
             <v-spacer></v-spacer>

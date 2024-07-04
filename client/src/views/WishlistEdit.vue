@@ -60,7 +60,12 @@ const allEventCategories = computed(() =>
 
 onMounted(async () => {
   await store.dispatch("eventWishlist/setEditingEvent", route.params.eventId);
-  imagesInit = [...storedEditingEvent.value.images];
+
+  if (Array.isArray(storedEditingEvent.value.images)) {
+    imagesInit = [...storedEditingEvent.value.images];
+  } else {
+    imagesInit = [];
+  }
 
   Object.assign(editingEvent, { ...storedEditingEvent.value });
   if (storedEditingEvent.value.images?.length < 2) {
