@@ -115,7 +115,9 @@ const fetchData = async () => {
 const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
-  if (routeInfo.value.from?.name === "eventSingle") return;
+  if (["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name))
+    return;
+
   fetchData();
 });
 </script>
@@ -212,6 +214,6 @@ onMounted(() => {
 
 <style>
 .expansion-pa-0 .v-expansion-panel-text__wrapper {
-  padding: 0;
+  //padding: 0;
 }
 </style>

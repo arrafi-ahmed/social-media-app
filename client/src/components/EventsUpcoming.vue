@@ -15,7 +15,9 @@ const { events, type } = defineProps(["events", "type"]);
         <v-divider v-if="index !== events.length - 1" class="my-2"></v-divider>
       </div>
     </div>
-    <div v-else><small class="px-2">No upcoming events found</small></div>
+    <div v-else class="mx-4 my-2">
+      <small>No upcoming events found</small>
+    </div>
   </v-sheet>
 </template>
 

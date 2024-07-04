@@ -45,8 +45,8 @@ const { categories, selected, type } = defineProps([
         </v-list-item-title>
       </v-list-item>
     </v-list>
-    <div v-else>
-      <small class="px-2">No category found</small>
+    <div v-else class="mx-4 my-2">
+      <small>No category found</small>
     </div>
   </v-sheet>
 </template>

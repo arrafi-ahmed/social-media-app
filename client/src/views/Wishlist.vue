@@ -31,7 +31,8 @@ const openAddEvent = () => {
   router.push({ name: "wishlistAdd", params: { id: currentUser.id } });
 };
 onMounted(() => {
-  if (routeInfo.value.from?.name === "wishlistSingle") return;
+  if (["wishlistSingle", "wishlistEdit"].includes(routeInfo.value.from?.name))
+    return;
   // store.commit("eventWishlist/resetEvents");
   store.dispatch("category/setCategories");
 });

@@ -143,9 +143,11 @@ const fetchData = async () => {
 };
 
 const routeInfo = computed(() => store.state.routeInfo);
-onMounted(async () => {
-  if (routeInfo.value.from?.name === "eventSingle") return;
-  await fetchData();
+onMounted(() => {
+  if (["eventSingle", "eventEdit-wall"].includes(routeInfo.value.from?.name))
+    return;
+
+  fetchData();
 });
 watch(
   () => route.params.id,
