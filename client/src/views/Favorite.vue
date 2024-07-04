@@ -21,7 +21,11 @@ const loadEvents = async ({ done }) => {
 const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
-  if (routeInfo.value.from?.name === "eventSingle") return;
+  if (["eventSingle"].includes(routeInfo.value.from?.name)) {
+    if (routeInfo.value.lastScrollY)
+      window.scrollTo(0, routeInfo.value.lastScrollY);
+    return;
+  }
   store.commit("eventFavorite/resetEvents");
   store.commit("eventFavorite/resetPage");
 });

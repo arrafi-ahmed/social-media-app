@@ -52,11 +52,19 @@ const setEventNotification = (eventId) => {
       });
     });
 };
-const openEditEventDialog = (event) => {
+const goEditEvent = (event) => {
+  store.commit(`setScrollY`, window.scrollY);
   store.commit(`${storeModule.value}/setEditingEvent`, event);
   router.push({
     name: `eventEdit-${source}`,
     params: { eventId: event.id },
+  });
+};
+const goEventSingle = (eventId) => {
+  store.commit(`setScrollY`, window.scrollY);
+  router.push({
+    name: "eventSingle",
+    params: { id: eventId },
   });
 };
 </script>
@@ -84,11 +92,7 @@ const openEditEventDialog = (event) => {
           </v-btn>
         </template>
         <v-list density="compact">
-          <v-list-item
-            density="compact"
-            link
-            @click="() => openEditEventDialog(event)"
-          >
+          <v-list-item density="compact" link @click="goEditEvent(event)">
             <v-list-item-title>Edit</v-list-item-title>
           </v-list-item>
           <v-list-item
@@ -123,12 +127,7 @@ const openEditEventDialog = (event) => {
       aspect-ratio="1.16"
       class="clickable"
       cover
-      @click="
-        router.push({
-          name: 'eventSingle',
-          params: { id: event.id },
-        })
-      "
+      @click="goEventSingle(event.id)"
     >
       <v-chip
         v-if="event.date"
@@ -168,7 +167,7 @@ const openEditEventDialog = (event) => {
             v-if="isAdmin || isOwner"
             density="compact"
             link
-            @click="() => openEditEventDialog(event)"
+            @click="() => goEditEvent(event)"
           >
             <v-list-item-title>Edit</v-list-item-title>
           </v-list-item>
@@ -221,13 +220,10 @@ const openEditEventDialog = (event) => {
 
       <div class="d-flex justify-space-between">
         <v-btn
-          :to="{
-            name: 'eventSingle',
-            params: { id: event.id },
-          }"
           class="mt-4"
           density="comfortable"
           variant="tonal"
+          @click="goEventSingle(event.id)"
           >More Details
         </v-btn>
 

@@ -31,8 +31,11 @@ const openAddEvent = () => {
   router.push({ name: "wishlistAdd", params: { id: currentUser.id } });
 };
 onMounted(() => {
-  if (["wishlistSingle", "wishlistEdit"].includes(routeInfo.value.from?.name))
+  if (["wishlistSingle", "wishlistEdit"].includes(routeInfo.value.from?.name)) {
+    if (routeInfo.value.lastScrollY)
+      window.scrollTo(0, routeInfo.value.lastScrollY);
     return;
+  }
   // store.commit("eventWishlist/resetEvents");
   store.dispatch("category/setCategories");
 });

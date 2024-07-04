@@ -115,9 +115,15 @@ const fetchData = async () => {
 const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
-  if (["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name))
+  console.log("route.from: ", routeInfo.value.from?.name);
+  console.log("retrieved lastScrollY: ", routeInfo.value.lastScrollY);
+  if (
+    ["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name)
+  ) {
+    if (routeInfo.value.lastScrollY)
+      window.scrollTo(0, routeInfo.value.lastScrollY);
     return;
-
+  }
   fetchData();
 });
 </script>

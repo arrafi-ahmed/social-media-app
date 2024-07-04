@@ -11,8 +11,14 @@ const deleteEvent = (eventId) => {
   store.dispatch("eventWishlist/deleteEvent", eventId);
 };
 
-const openEditEvent = (eventId) => {
+const goEditEvent = (eventId) => {
+  store.commit(`setScrollY`, window.scrollY);
   router.push({ name: "wishlistEdit", params: { eventId } });
+};
+
+const goWishlistSingle = (eventId) => {
+  store.commit(`setScrollY`, window.scrollY);
+  router.push({ name: "wishlistSingle", params: { id: eventId } });
 };
 </script>
 
@@ -39,7 +45,7 @@ const openEditEvent = (eventId) => {
         <v-list-item
           density="compact"
           link
-          @click="() => openEditEvent(event.id)"
+          @click="() => goEditEvent(event.id)"
         >
           <v-list-item-title>Edit</v-list-item-title>
         </v-list-item>
@@ -69,13 +75,10 @@ const openEditEvent = (eventId) => {
 
       <div class="d-flex justify-space-between">
         <v-btn
-          :to="{
-            name: 'wishlistSingle',
-            params: { id: event.id },
-          }"
           class="mt-4"
           density="comfortable"
           variant="tonal"
+          @click="goWishlistSingle(event.id)"
           >More Details
         </v-btn>
       </div>
