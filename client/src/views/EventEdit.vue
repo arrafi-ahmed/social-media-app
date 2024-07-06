@@ -106,7 +106,10 @@ onMounted(async () => {
       route.params.eventId
     );
   }
-  Object.assign(editingEvent, { ...storedEditingEvent.value });
+  Object.assign(editingEvent, {
+    ...storedEditingEvent.value,
+    date: new Date(storedEditingEvent.value.date),
+  });
   imagesClone.value = [...editingEvent.images];
   editingEvent.newUploads = [null, null, null, null, null]; //reset image array everytime open dialog
   editingEvent.rmImages = []; //reset rmImages array everytime open dialog

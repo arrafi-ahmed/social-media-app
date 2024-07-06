@@ -8,7 +8,12 @@ const store = useStore();
 const events = computed(() => store.state.eventFavorite.events);
 
 const page = computed(() => store.state.eventFavorite.page);
+let isLoading = false;
+
 const loadEvents = async ({ done }) => {
+  if (isLoading) return;
+  isLoading = true;
+
   const payload = { page: page.value };
   try {
     const result = await store.dispatch("eventFavorite/setEvents", payload);
@@ -16,6 +21,8 @@ const loadEvents = async ({ done }) => {
     done(result && result.data?.payload?.length < 1 ? "empty" : "ok");
   } catch (error) {
     done("error");
+  } finally {
+    isLoading = false;
   }
 };
 const routeInfo = computed(() => store.state.routeInfo);

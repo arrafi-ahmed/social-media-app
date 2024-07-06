@@ -1,41 +1,46 @@
 <script setup>
-import { computed, defineEmits, defineProps, ref, watch } from "vue";
+import { defineEmits, defineProps, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { formatDate } from "@/util";
 
+//use new Date() in parent before passing v-model in child
+const model = defineModel();
 const { width, height, mobile } = useDisplay();
 const emit = defineEmits(["update:modelValue"]);
-const { label, color, modelValue, customClass, rules, variant } = defineProps([
-  "label",
-  "color",
-  "modelValue",
-  "customClass",
-  "rules",
-  "variant",
-]);
-const selectedDate = ref(new Date(modelValue));
+
+const { label, color, customClass, rules, variant } = defineProps({
+  label: { type: String },
+  color: { type: String },
+  customClass: { type: String },
+  rules: { type: Object },
+  variant: { type: String },
+});
+const selectedDate = ref();
 const menu = ref(false);
-const formattedSelectedDate = computed(() =>
-  selectedDate.value ? formatDate(selectedDate.value) : ""
-);
 
 const handleDateChange = (newDate) => {
-  selectedDate.value = newDate;
-  emit("update:modelValue", newDate);
+  emit("update:modelValue", new Date(newDate));
 };
 watch(
-  () => selectedDate.value,
+  () => model.value,
+  (newVal) => {
+    selectedDate.value = new Date(newVal);
+    selectedDate.value = newVal ? formatDate(newVal) : "";
+  }
+);
+watch(
+  () => model.value,
   () => {
     menu.value = false;
   }
 );
 </script>
 
-<template v-if="selectedDate.value">
+<template v-if="selectedDate">
   <v-menu v-model="menu" :close-on-content-click="false">
     <template v-slot:activator="{ props }">
       <v-text-field
-        v-model="formattedSelectedDate"
+        v-model="selectedDate"
         :class="customClass"
         :label="label"
         :rules="rules"
@@ -49,7 +54,7 @@ watch(
       />
     </template>
     <v-date-picker
-      v-model="selectedDate"
+      v-model="model"
       :color="color"
       :height="mobile ? height : 'auto'"
       :width="mobile ? width : 'auto'"

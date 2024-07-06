@@ -91,7 +91,7 @@ const handleSort = (sortInput) => {
                   (v) =>
                     !findForm.startDate ||
                     !findForm.endDate ||
-                    findForm.startDate < findForm.endDate ||
+                    findForm.startDate <= findForm.endDate ||
                     'Start Date must be less than End Date!',
                 ]"
                 color="primary"

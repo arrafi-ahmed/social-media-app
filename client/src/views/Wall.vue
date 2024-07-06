@@ -51,7 +51,6 @@ const findFormData = reactive({
   sort: settings.value?.sort,
 });
 const page = computed(() => store.state.eventWall.page);
-
 let isLoading = false;
 
 const loadEvents = async ({ done }) => {

@@ -15,8 +15,11 @@ const router = useRouter();
 const currentUser = store.getters["cuser/getCurrentUser"];
 
 const page = computed(() => store.state.eventWishlist.page);
+let isLoading = false;
 
 const loadEvents = async ({ done }) => {
+  if (isLoading) return;
+  isLoading = true;
   try {
     const payload = { page: page.value };
     const result = await store.dispatch("eventWishlist/setEvents", payload);
@@ -24,6 +27,8 @@ const loadEvents = async ({ done }) => {
     done(result && result.data?.payload?.length < 1 ? "empty" : "ok");
   } catch (error) {
     done("error");
+  } finally {
+    isLoading = false;
   }
 };
 const routeInfo = computed(() => store.state.routeInfo);

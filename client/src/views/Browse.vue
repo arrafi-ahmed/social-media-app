@@ -37,9 +37,12 @@ const findFormData = reactive({
   category: null,
   sort: settings.value?.sort,
 });
-
 const page = computed(() => moduleCore.value.page);
+let isLoading = false;
+
 const loadEvents = async ({ done }) => {
+  if (isLoading) return;
+  isLoading = true;
   try {
     const action =
       filterActive.value === "findForm" ? "findEvents" : "setEvents";
@@ -65,6 +68,8 @@ const loadEvents = async ({ done }) => {
     await store.dispatch("category/setCategories");
   } catch (error) {
     done("error");
+  } finally {
+    isLoading = false;
   }
 };
 
