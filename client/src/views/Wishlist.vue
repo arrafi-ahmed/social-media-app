@@ -10,7 +10,6 @@ const { mobile } = useDisplay();
 const store = useStore();
 
 const events = computed(() => store.state.eventWishlist.events);
-const dialog = ref(false);
 const router = useRouter();
 const currentUser = store.getters["cuser/getCurrentUser"];
 
