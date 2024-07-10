@@ -20,12 +20,11 @@ const menuItems = computed(() =>
   [
     currentUser.value.role === "admin"
       ? { title: "Dashboard", to: { name: "adminDashboard" } }
-      : currentUser.value.role === "user" && currentUser.value.id
-      ? {
-          title: "Wall",
-          to: { name: "wall", params: { id: currentUser.value.id } },
-        }
       : null,
+    {
+      title: "Wall",
+      to: { name: "wall", params: { id: currentUser.value?.id } },
+    },
     { title: "Browse", to: { name: "browse" } },
     { title: "Friends", to: { name: "friends" } },
     { title: "Favourite", to: { name: "favorite" } },

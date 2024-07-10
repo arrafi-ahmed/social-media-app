@@ -17,6 +17,18 @@ export const mutations = {
   resetPage(state) {
     state.page = 1;
   },
+  addEvent(state, payload) {
+    state.events.unshift(payload);
+    console.log(1, state.events);
+  },
+  removeEvent(state, payload) {
+    const targetItemIndex = state.events.findIndex(
+      (item) => item.id == payload
+    );
+    if (targetItemIndex === -1) return;
+    state.events.splice(targetItemIndex, 1);
+    console.log(2, state.events);
+  },
 };
 export const actions = {
   setEvents({ commit }, request) {

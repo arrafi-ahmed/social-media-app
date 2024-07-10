@@ -62,4 +62,8 @@ body,
 .vertical-baseline {
   vertical-align: baseline !important;
 }
+
+.limit-max-width-xl {
+  max-width: 1400px !important;
+}
 </style>
