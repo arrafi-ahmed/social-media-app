@@ -100,7 +100,6 @@ export const actions = {
         .then((response) => {
           commit("setIsFavorite", response.data.payload);
 
-          console.log(0, request.payload);
           // update favorites page without reloading
           request.payload
             ? commit(`eventFavorite/addEvent`, state.event, {

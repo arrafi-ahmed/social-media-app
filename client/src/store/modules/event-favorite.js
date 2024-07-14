@@ -19,7 +19,6 @@ export const mutations = {
   },
   addEvent(state, payload) {
     state.events.unshift(payload);
-    console.log(1, state.events);
   },
   removeEvent(state, payload) {
     const targetItemIndex = state.events.findIndex(
@@ -27,7 +26,6 @@ export const mutations = {
     );
     if (targetItemIndex === -1) return;
     state.events.splice(targetItemIndex, 1);
-    console.log(2, state.events);
   },
 };
 export const actions = {
