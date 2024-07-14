@@ -66,8 +66,6 @@ exports.saveEvent = (body, files, userId, clientUrl) => {
   return db
     .execute(sql, values)
     .then(async (result) => {
-      exports.sendPostCreationEmail(userId, "add", clientUrl);
-
       // return inserted event
       const sql2 = "SELECT * FROM event_post WHERE id = ?;";
       return db.getRow(sql2, [result.insertId]);
@@ -75,6 +73,8 @@ exports.saveEvent = (body, files, userId, clientUrl) => {
     .then((result) => {
       if (!result) return null;
       result.images = JSON.parse(result.images);
+
+      exports.sendPostCreationEmail(userId, "add", clientUrl);
       return result;
     });
 };

@@ -13,6 +13,7 @@ import {
 } from "@/util";
 import Cuser from "@/model/cuser";
 import { useDisplay } from "vuetify";
+import Applink from "@/components/Applink.vue";
 
 const { mobile } = useDisplay();
 const store = useStore();
@@ -235,6 +236,12 @@ onMounted(() => {
             </v-form>
           </v-card-text>
         </v-card>
+
+        <v-row justify="center" class="mt-2">
+          <v-col cols="auto">
+            <applink></applink>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>

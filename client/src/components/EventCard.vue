@@ -98,9 +98,11 @@ const goEventSingle = (eventId) => {
           <v-list-item density="compact" link @click="goEditEvent(event)">
             <v-list-item-title>Edit</v-list-item-title>
           </v-list-item>
+          <v-divider></v-divider>
           <v-list-item
             density="compact"
             link
+            class="text-error"
             @click="deleteEvent(event.id, event.images)"
           >
             <v-list-item-title>Delete</v-list-item-title>

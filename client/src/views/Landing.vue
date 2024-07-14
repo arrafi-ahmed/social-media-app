@@ -82,7 +82,7 @@ const handleClickSubscription = (plan) => {
           <v-col cols="11" md="7">
             <v-row :justify="xs ? 'center' : 'start'" no-gutters>
               <v-col cols="8" md="4" sm="6">
-                <applink></applink>
+                <applink v-if="!xs"></applink>
               </v-col>
             </v-row>
 

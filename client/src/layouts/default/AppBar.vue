@@ -78,19 +78,6 @@ const getGreetings = computed(() => {
         </div>
       </v-list-item>
       <v-divider class="mt-2 mb-2"></v-divider>
-      <!--      <v-list-item-->
-      <!--        v-if="currentUser.role === 'admin'"-->
-      <!--        :to="{ name: 'adminDashboard' }"-->
-      <!--        >Dashboard-->
-      <!--      </v-list-item>-->
-
-      <!--      <v-list-item-->
-      <!--        :to="{-->
-      <!--          name: 'wall',-->
-      <!--          params: { id: currentUser.id },-->
-      <!--        }"-->
-      <!--        >Wall-->
-      <!--      </v-list-item>-->
       <v-list-item
         v-for="(item, index) in menuItems"
         :key="index"
@@ -101,7 +88,13 @@ const getGreetings = computed(() => {
     </v-list>
     <template v-slot:append>
       <div class="ma-5">
-        <v-btn :to="{ name: 'signout' }" block color="primary">Signout</v-btn>
+        <v-btn
+          :to="{ name: 'signout' }"
+          block
+          color="primary"
+          prepend-icon="mdi-exit-to-app"
+          >Signout</v-btn
+        >
       </div>
     </template>
   </v-navigation-drawer>
