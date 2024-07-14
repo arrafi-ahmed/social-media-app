@@ -240,7 +240,8 @@ onMounted(async () => {
               >
                 <v-btn
                   v-if="imagesClone[n - 1]"
-                  class="position-absolute rounded-0"
+                  class="position-absolute"
+                  rounded
                   color="primary"
                   density="comfortable"
                   icon="mdi-delete"

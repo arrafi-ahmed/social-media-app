@@ -1,7 +1,7 @@
 <script setup>
 import { useDisplay } from "vuetify";
 
-const { mobile } = useDisplay();
+const { xs } = useDisplay();
 const { title, justify, customClass } = defineProps({
   title: {},
   justify: { default: "space-between" },
@@ -10,8 +10,13 @@ const { title, justify, customClass } = defineProps({
 </script>
 
 <template>
-  <v-row :class="customClass" :justify="justify" align="center">
-    <v-col cols="auto">
+  <v-row
+    :class="customClass"
+    :justify="justify"
+    align="center"
+    :no-gutters="!!xs"
+  >
+    <v-col cols="10">
       <h2>{{ title }}</h2>
     </v-col>
     <v-col cols="auto">

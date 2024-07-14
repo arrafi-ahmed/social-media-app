@@ -52,6 +52,7 @@ const setEventNotification = (eventId) => {
       });
     });
 };
+
 const goEditEvent = (event) => {
   store.commit(`setScrollY`, window.scrollY);
   store.commit(`${storeModule.value}/setEditingEvent`, event);
@@ -60,6 +61,7 @@ const goEditEvent = (event) => {
     params: { eventId: event.id },
   });
 };
+
 const goEventSingle = (eventId) => {
   store.commit(`setScrollY`, window.scrollY);
   router.push({
@@ -80,12 +82,13 @@ const goEventSingle = (eventId) => {
       <v-menu v-if="(isAdmin || isOwner) && source === 'browse'">
         <template v-slot:activator="{ props: menuProps }">
           <v-btn
-            class="pa-2 rounded-0"
+            class="pa-2"
             color="primary"
             icon="mdi-dots-vertical"
             location="top end"
             position="absolute"
             size="x-small"
+            rounded
             v-bind="menuProps"
             @click.stop=""
           >
@@ -152,35 +155,18 @@ const goEventSingle = (eventId) => {
           v-slot:activator="{ props: menuProps }"
         >
           <v-btn
-            class="pa-2 rounded-0"
+            class="pa-2"
             color="primary"
             icon="mdi-dots-vertical"
             location="top end"
             position="absolute"
             size="x-small"
+            rounded
             v-bind="menuProps"
           >
           </v-btn>
         </template>
         <v-list density="compact">
-          <v-list-item
-            v-if="isAdmin || isOwner"
-            density="compact"
-            link
-            @click="() => goEditEvent(event)"
-          >
-            <v-list-item-title>Edit</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item
-            v-if="isAdmin || isOwner"
-            density="compact"
-            link
-            @click="deleteEvent(event.id, event.images)"
-          >
-            <v-list-item-title>Delete</v-list-item-title>
-          </v-list-item>
-
           <v-list-item
             v-if="source === 'wall' && isOwner"
             density="compact"
@@ -196,6 +182,27 @@ const goEventSingle = (eventId) => {
               @click="handleUnsetFeaturedEvent(event.id)"
               >Unfeature
             </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            v-if="isAdmin || isOwner"
+            density="compact"
+            link
+            @click="() => goEditEvent(event)"
+          >
+            <v-list-item-title>Edit</v-list-item-title>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item
+            v-if="isAdmin || isOwner"
+            density="compact"
+            link
+            class="text-error"
+            @click="deleteEvent(event.id, event.images)"
+          >
+            <v-list-item-title>Delete</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>

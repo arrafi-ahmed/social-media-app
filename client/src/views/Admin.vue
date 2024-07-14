@@ -482,7 +482,7 @@ onMounted(() => {
                     <div class="d-flex justify-space-between align-center">
                       <name-card
                         :img-size="60"
-                        :isDetailed="true"
+                        :is-detailed="true"
                         :profile="item"
                         container-class="clickable"
                         img-class="rounded-circle"

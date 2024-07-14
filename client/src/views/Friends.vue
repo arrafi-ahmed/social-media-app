@@ -49,16 +49,26 @@ onMounted(() => {
       <!-- Main content -->
       <v-col cols="12">
         <page-title :title="`Friends (${friends.length})`">
-          <v-btn
-            :density="mobile ? 'comfortable' : 'default'"
-            variant="flat"
-            @click="$router.push({ name: 'friends-invite' })"
-          >
-            <template v-slot:prepend>
-              <v-icon color="primary">mdi-plus</v-icon>
+          <v-menu>
+            <template v-slot:activator="{ props: menuProps }">
+              <v-btn
+                rounded
+                variant="text"
+                icon="mdi-dots-vertical"
+                location="top end"
+                v-bind="menuProps"
+              >
+              </v-btn>
             </template>
-            Invite a friend
-          </v-btn>
+            <v-list density="compact">
+              <v-list-item
+                link
+                title="Invite a friend"
+                @click="$router.push({ name: 'friends-invite' })"
+              >
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </page-title>
 
         <v-row justify="center">

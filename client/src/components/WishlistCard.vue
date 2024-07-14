@@ -31,7 +31,8 @@ const goWishlistSingle = (eventId) => {
     <v-menu>
       <template v-slot:activator="{ props: menuProps }">
         <v-btn
-          class="pa-2 rounded-0"
+          class="pa-2"
+          rounded
           color="primary"
           icon="mdi-dots-vertical"
           location="top end"

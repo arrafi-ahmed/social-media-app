@@ -11,7 +11,7 @@ import { useDisplay } from "vuetify";
 import Lightbox from "@/components/Lightbox.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
 
-const { mobile } = useDisplay();
+const { xs, mobile } = useDisplay();
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
@@ -173,8 +173,8 @@ onMounted(() => {
         <v-divider />
 
         <!-- Comment Input -->
-        <v-row :no-gutters="!!mobile" align="center" class="mt-2 mt-md-4">
-          <v-col class="mr-2 ml-md-0" cols="auto">
+        <v-row :no-gutters="!!xs" align="center" class="mt-2 mt-md-4">
+          <v-col v-if="!xs" class="mr-2 ml-md-0" cols="auto">
             <user-avatar
               :clickable="false"
               :imgSrc="currentUser.image"
@@ -191,14 +191,16 @@ onMounted(() => {
               required
               rows="1"
               variant="solo"
+              @keyup.enter="addComment"
             ></v-textarea>
           </v-col>
           <v-col cols="auto">
             <v-btn
-              :density="mobile ? 'comfortable' : 'default'"
+              :density="xs ? 'comfortable' : 'default'"
               color="primary"
+              icon="mdi-send"
               @click="addComment"
-              >Post
+            >
             </v-btn>
           </v-col>
         </v-row>
@@ -226,10 +228,10 @@ onMounted(() => {
                           isHovering && (isAdmin || isOwner(comment.user_id))
                         "
                         color="error"
-                        icon="mdi-close"
+                        icon="mdi-delete"
                         location="top end"
                         position="absolute"
-                        rounded="0"
+                        rounded
                         size="x-small"
                         variant="flat"
                         @click="deleteComment(comment.id)"

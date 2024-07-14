@@ -6,7 +6,7 @@ import { useDisplay } from "vuetify";
 import EventInfinite from "@/components/EventInfinite.vue";
 import { useRouter } from "vue-router";
 
-const { mobile } = useDisplay();
+const { xs } = useDisplay();
 const store = useStore();
 
 const events = computed(() => store.state.eventWishlist.events);
@@ -52,18 +52,31 @@ onMounted(() => {
       <v-col cols="12">
         <page-title title="Wishlist">
           <v-btn
-            v-if="mobile"
+            v-if="xs"
             color="primary"
-            density="compact"
             icon="mdi-plus-circle-outline"
-            v-bind="props"
             variant="text"
+            tile
+            rounded
             @click="openAddEvent"
           >
           </v-btn>
-          <v-btn v-else color="primary" @click="openAddEvent">
-            Add Event
-          </v-btn>
+          <v-menu v-else>
+            <template v-slot:activator="{ props: menuProps }">
+              <v-btn
+                rounded
+                variant="text"
+                icon="mdi-dots-vertical"
+                location="top end"
+                v-bind="menuProps"
+              >
+              </v-btn>
+            </template>
+            <v-list density="compact">
+              <v-list-item link title="Add Event" @click="openAddEvent">
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </page-title>
 
         <!-- Event Card Feed -->

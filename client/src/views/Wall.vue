@@ -11,7 +11,7 @@ import EventsUpcoming from "@/components/EventsUpcoming.vue";
 import EventInfinite from "@/components/EventInfinite.vue";
 import { isObjEmpty } from "@/util";
 
-const { mobile } = useDisplay();
+const { xs } = useDisplay();
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
@@ -170,42 +170,53 @@ watch(
   <v-container>
     <div class="d-flex justify-space-between align-center">
       <name-card
-        :imgSize="80"
-        :isDetailed="false"
+        :img-size="120"
+        :is-detailed="false"
         :profile="user"
         img-class="rounded-xl"
       ></name-card>
 
-      <v-divider v-if="mobile" inset vertical></v-divider>
+      <v-divider v-if="xs" inset vertical></v-divider>
 
       <v-btn
-        v-if="mobile && route.params.id == currentUser.id"
+        v-if="xs && route.params.id == currentUser.id"
         color="primary"
-        density="compact"
         icon="mdi-plus-circle-outline"
         variant="text"
+        tile
+        rounded
         @click="openAddEvent"
       >
       </v-btn>
-      <v-btn
-        v-else-if="!mobile && route.params.id == currentUser.id"
-        color="primary"
-        @click="openAddEvent"
-        >Add Event
-      </v-btn>
+      <v-menu v-else-if="!xs && route.params.id == currentUser.id">
+        <template v-slot:activator="{ props: menuProps }">
+          <v-btn
+            rounded
+            variant="text"
+            icon="mdi-dots-vertical"
+            location="top end"
+            v-bind="menuProps"
+          >
+          </v-btn>
+        </template>
+        <v-list density="compact">
+          <v-list-item link title="Add Event" @click="openAddEvent">
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
     <v-divider class="my-3"></v-divider>
 
-    <v-row :no-gutters="!!mobile">
+    <v-row :no-gutters="!!xs">
       <!-- Sidebar -->
       <v-col
-        :class="{ 'flex-sticky top-60': !mobile }"
+        :class="{ 'flex-sticky top-60': !xs }"
         cols="12"
         lg="3"
         order-lg="2"
       >
-        <!--        for mobile screen-->
-        <div v-if="mobile">
+        <!--        for xs screen-->
+        <div v-if="xs">
           <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
             <v-expansion-panel>
               <v-expansion-panel-title>Featured Event</v-expansion-panel-title>
@@ -284,7 +295,7 @@ watch(
       <v-col cols="12" lg="9" order-lg="1">
         <!-- Filter Form -->
         <find-event-form
-          v-if="!mobile"
+          v-if="!xs"
           @find-events="handleFindEvents"
           @reset-find-events="handleResetFindEvents"
           @sort-events="handleSort"

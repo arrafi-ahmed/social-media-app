@@ -50,10 +50,10 @@ watch(
     <page-title :title="getPageTitle"></page-title>
 
     <v-row class="mt-2" justify="center">
-      <v-col md="7">
+      <v-col md="9">
         <v-row justify="start" no-gutters>
           <v-col cols="8" md="4" sm="6">
-            <!--            <applink v-if="route.name === 'about'"></applink>-->
+            <applink v-if="route.name === 'about'"></applink>
           </v-col>
         </v-row>
 

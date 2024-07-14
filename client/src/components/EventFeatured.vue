@@ -50,7 +50,7 @@ const handleUnsetFeaturedEvent = (eventId) => {
         <v-menu>
           <template v-if="isOwner" v-slot:activator="{ props: menuProps }">
             <v-btn
-              class="rounded-0"
+              rounded
               color="primary"
               density="compact"
               icon="mdi-dots-vertical"
@@ -74,7 +74,7 @@ const handleUnsetFeaturedEvent = (eventId) => {
       </v-img>
 
       <div
-        class="pb-1 px-2 clickable"
+        class="pa-2 clickable"
         @click="
           $router.push({
             name: 'eventSingle',

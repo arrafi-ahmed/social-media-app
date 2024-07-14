@@ -65,13 +65,14 @@ const switchFullsize = () => {
     <v-card class="position-relative">
       <v-btn
         :block="false"
-        :max-width="20"
-        class="rounded-sm z-index-max"
+        :max-width="25"
+        class="z-index-max"
         color="primary"
         icon="mdi-close"
         location="top end"
         position="absolute"
         size="sm"
+        rounded
         @click="dialog = !dialog"
       ></v-btn>
 
