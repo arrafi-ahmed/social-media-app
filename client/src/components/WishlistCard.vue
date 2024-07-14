@@ -50,8 +50,13 @@ const goWishlistSingle = (eventId) => {
         >
           <v-list-item-title>Edit</v-list-item-title>
         </v-list-item>
-
-        <v-list-item density="compact" link @click="deleteEvent(event.id)">
+        <v-divider></v-divider>
+        <v-list-item
+          density="compact"
+          link
+          class="text-error"
+          @click="deleteEvent(event.id)"
+        >
           <v-list-item-title>Delete</v-list-item-title>
         </v-list-item>
       </v-list>

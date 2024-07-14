@@ -25,7 +25,7 @@ const store = createStore({
   },
   state: () => ({
     progress: null,
-    routeInfo: { to: null, from: null, lastScrollY: null },
+    routeInfo: { to: null, from: null, lastScrollY: null, actionSource: null },
   }),
   mutations: {
     setProgress(state, payload) {
@@ -36,6 +36,9 @@ const store = createStore({
     },
     setScrollY(state, payload) {
       state.routeInfo.lastScrollY = payload;
+    },
+    setActionSource(state, payload) {
+      state.routeInfo.actionSource = payload;
     },
   },
   actions: {},

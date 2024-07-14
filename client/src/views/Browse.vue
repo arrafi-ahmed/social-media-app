@@ -121,7 +121,8 @@ const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
   if (
-    ["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name)
+    ["eventSingle", "eventEdit-browse"].includes(routeInfo.value.from?.name) &&
+    routeInfo.value.actionSource === "back"
   ) {
     if (routeInfo.value.lastScrollY)
       window.scrollTo(0, routeInfo.value.lastScrollY);

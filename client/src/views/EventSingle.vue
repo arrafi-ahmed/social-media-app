@@ -64,6 +64,14 @@ onMounted(() => {
       }
     });
 });
+const goBack = () => {
+  store.commit("setActionSource", "back");
+  router.back();
+};
+const goProfile = (userId) => {
+  store.commit("setActionSource", "namecard");
+  goUserProfile(userId);
+};
 </script>
 
 <template>
@@ -72,7 +80,7 @@ onMounted(() => {
       <v-col class="d-flex align-center" cols="auto">
         <user-avatar
           :imgSrc="event?.image"
-          @click-avatar="goUserProfile(event.user_id)"
+          @click-avatar="goProfile(event.user_id)"
         ></user-avatar>
 
         <div class="pl-3">
@@ -85,11 +93,7 @@ onMounted(() => {
         </div>
       </v-col>
       <v-col cols="auto">
-        <v-btn
-          icon="mdi-arrow-left"
-          variant="text"
-          @click="$router.back()"
-        ></v-btn>
+        <v-btn icon="mdi-arrow-left" variant="text" @click="goBack"></v-btn>
       </v-col>
     </v-row>
 
@@ -216,7 +220,7 @@ onMounted(() => {
               <v-col class="mr-2 mr-md-0" cols="auto">
                 <user-avatar
                   :imgSrc="comment?.image"
-                  @click-avatar="goUserProfile(comment.user_id)"
+                  @click-avatar="goProfile(comment.user_id)"
                 ></user-avatar>
               </v-col>
               <v-col>

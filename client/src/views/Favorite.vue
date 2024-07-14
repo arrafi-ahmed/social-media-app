@@ -28,7 +28,10 @@ const loadEvents = async ({ done }) => {
 const routeInfo = computed(() => store.state.routeInfo);
 
 onMounted(() => {
-  if (["eventSingle"].includes(routeInfo.value.from?.name)) {
+  if (
+    ["eventSingle"].includes(routeInfo.value.from?.name) &&
+    routeInfo.value.actionSource === "back"
+  ) {
     if (routeInfo.value.lastScrollY)
       window.scrollTo(0, routeInfo.value.lastScrollY);
     return;

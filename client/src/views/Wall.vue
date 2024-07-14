@@ -149,16 +149,22 @@ const fetchData = async () => {
 
 const routeInfo = computed(() => store.state.routeInfo);
 onMounted(() => {
-  if (["eventSingle", "eventEdit-wall"].includes(routeInfo.value.from?.name)) {
+  console.log(10, routeInfo.value.from?.name);
+  if (
+    ["eventSingle", "eventEdit-wall"].includes(routeInfo.value.from?.name) &&
+    routeInfo.value.actionSource === "back"
+  ) {
     if (routeInfo.value.lastScrollY)
       window.scrollTo(0, routeInfo.value.lastScrollY);
     return;
   }
+  console.log(11);
   fetchData();
 });
 watch(
   () => route.params.id,
   (newItem, oldItem) => {
+    console.log(12, route.name, newItem, oldItem);
     if (route.name === "wall" && newItem && newItem !== oldItem) {
       fetchData();
     }
