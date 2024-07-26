@@ -5,11 +5,15 @@ dist/
 api/public/blog/*
 api/public/event/*
 api/public/user/*
+api/public/page/*
+api/public/temp/*
 
 # allow all the folders themselves to be tracked
 !api/public/blog/.gitkeep
 !api/public/event/.gitkeep
 !api/public/user/.gitkeep
+!api/public/page/.gitkeep
+!api/public/temp/.gitkeep
 
 # env files
 .env
