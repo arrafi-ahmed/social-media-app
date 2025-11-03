@@ -1,18 +1,17 @@
 {
+  "name": "quick-starter",
+  "version": "1.0.0",
   "scripts": {
-    "setup": "cd client && npm run setup && cd ../api && npm run setup",
-    "dev": "npm i && concurrently \"cd client && npm run dev\" \"cd api && npm run dev\"",
-    "setup-dev": "npm run setup && npm run dev",
-    "build:client": "cd client && npm run build",
-    "copy:client-htaccess": "cp client/htaccess client/dist/.htaccess",
-    "build:api": "cd api && npm run clean",
-    "copy:api-to-client": "cp -r api client/dist/api",
-    "rename:api-htaccess": "mv client/dist/api/htaccess client/dist/api/.htaccess",
-    "process:dist": "cd client && mv dist build && zip -r project.zip build .htaccess && rm -rf build",
-    "move:zip-to-root": "mv client/project.zip ./",
-    "build:full": "npm run build:client && npm run copy:client-htaccess && npm run build:api && npm run copy:api-to-client && npm run rename:api-htaccess && npm run process:dist && npm run move:zip-to-root"
+    "in": "npm i && npm in --prefix frontend && npm in --prefix backend",
+    "up": "npm update && npm up --prefix frontend && npm up --prefix backend",
+    "dev": "concurrently --names \"frontend,backend\" \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "setup": "npm run in && npm run dev",
+    "upgrade": "npm run up && npm run dev"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
   }
 }

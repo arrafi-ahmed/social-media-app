@@ -1,0 +1,10 @@
+class CustomError extends Error {
+  constructor(message, statusCode, payload) {
+    super(message);
+    this.statusCode = statusCode || 500; // Default status code is 500
+    this.payload = payload || null;
+    this.name = this.constructor.name;
+  }
+}
+
+module.exports = CustomError;

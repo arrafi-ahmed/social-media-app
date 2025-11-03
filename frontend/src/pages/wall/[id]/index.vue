@@ -1,0 +1,378 @@
+<script setup>
+  import { computed, onMounted, reactive, ref, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useDisplay } from 'vuetify'
+  import { useStore } from 'vuex'
+  import CategoryList from '@/components/CategoryList.vue'
+  import EventFeatured from '@/components/EventFeatured.vue'
+  import EventFilter from '@/components/EventFilter.vue'
+  import EventInfinite from '@/components/EventInfinite.vue'
+  import EventsUpcoming from '@/components/EventsUpcoming.vue'
+  import NameCard from '@/components/NameCard.vue'
+  import { isObjEmpty } from '@/others/util.js'
+
+  definePage({
+    name: 'wall',
+    meta: {
+      requiresAuth: true,
+      title: 'Wall',
+      layout: 'default',
+    },
+  })
+
+  const { xs } = useDisplay()
+  const route = useRoute()
+  const router = useRouter()
+  const store = useStore()
+
+  const currentUser = store.getters['auth/getCurrentUser']
+  const isAdmin = store.getters['auth/isAdmin']
+  const isSubscriptionValid = computed(
+    () => store.getters['subscription/isSubscriptionValid'],
+  )
+
+  async function openAddEvent () {
+    await store.dispatch('subscription/fetchPremiumSubscriptionData', {
+      userId: currentUser.id,
+    })
+    return isSubscriptionValid.value
+      ? router.push({ name: 'eventAdd' })
+      : router.push({ name: 'pricing' })
+  }
+
+  const events = computed(() => store.state.eventWall.events)
+  const user = computed(() => store.state.eventWall.user)
+  const featuredEvent = computed(() => store.state.eventWall.featuredEvent)
+  const upcomingEvents = computed(() => store.state.eventWall.upcomingEvents)
+  const mountedEventCategories = computed(
+    () => store.getters['eventWall/getMountedEventCategories'],
+  )
+
+  const settings = computed(() => store.state.user.settings)
+  if (isObjEmpty(settings.value?.sort)) {
+    store.dispatch('user/setUserSettings')
+  }
+
+  const filterActive = ref('none')
+  const findFormData = reactive({
+    searchKeyword: null,
+    startDate: null,
+    endDate: null,
+    category: null,
+    sort: settings.value?.sort,
+  })
+  const page = computed(() => store.state.eventWall.page)
+  let isLoading = false
+
+  async function loadEvents ({ done }) {
+    if (isLoading) return
+    isLoading = true
+    try {
+      const action
+        = filterActive.value === 'findForm' ? 'findEvents' : 'setEvents'
+
+      // Use the actual userId from the user object, ensure it's a valid number
+      let userId = user.value?.id
+      
+      // If user.value.id is not available, check if route.params.id is numeric
+      if (!userId) {
+        const routeId = route.params.id
+        // Only use route.params.id if it's numeric (userId), not a slug
+        if (routeId && /^\d+$/.test(routeId)) {
+          userId = parseInt(routeId, 10)
+        }
+      }
+      
+      // Ensure userId is a valid number before making the API call
+      if (!userId || isNaN(userId)) {
+        done('error')
+        isLoading = false
+        return
+      }
+      
+      const payload = {
+        userId: userId,
+        searchKeyword:
+          filterActive.value === 'findForm' ? findFormData.searchKeyword : null,
+        startDate:
+          filterActive.value === 'findForm' ? findFormData.startDate : null,
+        endDate: filterActive.value === 'findForm' ? findFormData.endDate : null,
+        category: findFormData.category,
+        sort: findFormData.sort,
+        page: page.value,
+      }
+      const result = await store.dispatch(`eventWall/${action}`, payload)
+      store.commit('eventWall/setPage', page.value + 1)
+
+      done(result && result.data?.payload?.length < 1 ? 'empty' : 'ok')
+      await store.dispatch('category/setCategories')
+    } catch {
+      done('error')
+    } finally {
+      isLoading = false
+    }
+  }
+
+  function nullifyFindFormData () {
+    findFormData.searchKeyword
+      = findFormData.startDate
+      = findFormData.endDate
+      = findFormData.category
+      = null
+  }
+
+  function resetPageNEvents () {
+    store.commit('eventWall/setPage', 1)
+    store.commit('eventWall/resetEvents')
+  }
+
+  async function setFindFormData (filterValue, formOrCategory) {
+    resetPageNEvents()
+
+    filterActive.value = filterValue
+    if (filterValue === 'findForm') {
+      Object.assign(findFormData, formOrCategory)
+    } else if (filterValue === 'none') {
+      nullifyFindFormData()
+    }
+  }
+
+  const handleResetFindEvents = () => setFindFormData('none')
+  const handleFindEvents = form => setFindFormData('findForm', form)
+  const handleClickCategory = category => setFindFormData('findForm', category)
+
+  function handleSort (form) {
+    setFindFormData('findForm', form)
+    store.dispatch('user/updateSettings', {
+      ...settings.value,
+      sort: form.sort,
+    })
+  }
+
+  async function fetchData () {
+    resetPageNEvents()
+    
+    // Try to fetch user by slug or id
+    let userData
+    let userId
+    
+    try {
+      // Check if route.params.id is a number (userId) or string (slug)
+      const isNumeric = /^\d+$/.test(route.params.id)
+      
+      if (isNumeric) {
+        // It's a userId, use getUserById
+        const response = await store.dispatch('eventWall/getUserById', route.params.id)
+        userData = response.data?.payload
+        userId = route.params.id
+      } else {
+        // It's a slug, use getUserBySlug
+        const response = await store.dispatch('eventWall/getUserBySlug', route.params.id)
+        userData = response.data?.payload
+        userId = userData?.id
+      }
+      
+      if (!userData) {
+        router.push({ name: 'notFound' })
+        return
+      }
+      
+      // Check if current user has access to this profile
+      const validFriends = userId == currentUser.id
+        ? true
+        : await store
+          .dispatch('user/checkFriends', userId)
+          .then(result => result.data.payload)
+
+      if (validFriends || isAdmin) {
+        // Fetch profile data
+        await Promise.all([
+          store.dispatch('eventWall/getFeaturedEvent', userId),
+          store.dispatch('eventWall/getUpcomingEvents', {
+            userId: userId,
+            source: 'own',
+          }),
+        ])
+      } else {
+        router.push({
+          name: 'notFound',
+          params: {
+            status: 401,
+            message: 'You don\'t have access to the profile!',
+          },
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+      router.push({ name: 'notFound' })
+    }
+  }
+
+  const routeInfo = computed(() => store.state.routeInfo)
+  const isOwnProfile = computed(() => user.value?.id === currentUser.id)
+  
+  onMounted(() => {
+    // fix: going other profile from event single - comment namecard, then return to event single - back btn. dont update new profile info
+    // if (user.value?.id && user.value?.id != route.params.id) {
+    //   fetchData()
+    // }
+    if (
+      ['eventSingle', 'eventEdit'].includes(routeInfo.value.from?.name)
+      && routeInfo.value.actionSource === 'back'
+    ) {
+      if (routeInfo.value.lastScrollY)
+        window.scrollTo(0, routeInfo.value.lastScrollY)
+      return
+    }
+    fetchData()
+  })
+  watch(
+    () => route.params.id,
+    (newItem, oldItem) => {
+      if (route.name === 'wall' && newItem && newItem !== oldItem) {
+        fetchData()
+      }
+    },
+  )
+</script>
+
+<template>
+  <v-container>
+    <div class="d-flex justify-space-between align-center">
+      <!--      {{user}}-->
+      <name-card
+        :img-size="100"
+        :is-detailed="false"
+        :profile="user"
+        rounded="lg"
+      />
+
+      <v-divider v-if="xs" inset vertical />
+
+      <v-btn
+        v-if="xs && isOwnProfile"
+        color="primary"
+        icon="mdi-plus-circle-outline"
+        rounded
+        tile
+        variant="text"
+        @click="openAddEvent"
+      />
+      <v-menu v-else-if="!xs && isOwnProfile">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            icon="mdi-dots-vertical"
+            location="top end"
+            rounded
+            v-bind="menuProps"
+            variant="text"
+          />
+        </template>
+        <v-list density="compact">
+          <v-list-item link title="Add Event" @click="openAddEvent" />
+        </v-list>
+      </v-menu>
+    </div>
+    <v-divider class="my-3" />
+
+    <v-row :no-gutters="!!xs">
+      <!-- Sidebar -->
+      <v-col
+        :class="{ 'flex-sticky top-60': !xs }"
+        cols="12"
+        lg="3"
+        order-lg="2"
+      >
+        <!--        for xs screen-->
+        <div v-if="xs">
+          <v-expansion-panels class="mb-4 expansion-pa-0" variant="popout">
+            <v-expansion-panel>
+              <v-expansion-panel-title>Featured Event</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <event-featured
+                  v-if="featuredEvent?.id"
+                  :event="featuredEvent"
+                  type="headerless"
+                />
+                <div v-else>
+                  <small>No featured event set</small>
+                </div>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Event Categories
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <category-list
+                  :categories="mountedEventCategories"
+                  :selected="findFormData.category"
+                  type="headerless"
+                  @click-category="handleClickCategory"
+                />
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <events-upcoming :events="upcomingEvents" type="headerless" />
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel class="find-events">
+              <v-expansion-panel-title>Find Events</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <event-filter
+                  @find-events="handleFindEvents"
+                  @reset-find-events="handleResetFindEvents"
+                  @sort-events="handleSort"
+                />
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </div>
+
+        <!--        for large screen-->
+        <div v-else>
+          <!-- Featured event -->
+          <event-featured
+            v-if="featuredEvent?.id"
+            :event="featuredEvent"
+            type="has-header"
+          />
+
+          <!-- Categories Section -->
+          <category-list
+            :categories="mountedEventCategories"
+            :selected="findFormData.category"
+            type="has-header"
+            @click-category="handleClickCategory"
+          />
+
+          <!-- Upcoming Events Section -->
+          <events-upcoming :events="upcomingEvents" type="has-header" />
+        </div>
+      </v-col>
+
+      <!-- Main content -->
+      <v-col cols="12" lg="9" order-lg="1">
+        <!-- Filter Form -->
+        <event-filter
+          v-if="!xs"
+          @find-events="handleFindEvents"
+          @reset-find-events="handleResetFindEvents"
+          @sort-events="handleSort"
+        />
+
+        <!-- Event Posts Feed -->
+        <event-infinite
+          :events="events"
+          :grid="{ sm: 6 }"
+          source="wall"
+          type="headerless"
+          @fetch-events="loadEvents"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<style scoped></style>

@@ -1,0 +1,584 @@
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+const db = require("../db");
+const CustomError = require("../model/CustomError");
+const {
+  removeImages,
+  generateNewCommentContent,
+  generateTodaysEventContent,
+  generateInvitationContent, adminRole,
+  generateSlug,
+} = require("../others/util");
+const { sendMail } = require("./sendMail");
+
+// Helper to generate random string for slug uniqueness
+function generateRandomString(length = 6) {
+  return uuidv4().replace(/-/g, '').slice(0, length);
+}
+
+// Creates a new user and returns the inserted user row
+exports.createUser = async (payload) => {
+  // Generate a unique slug from the user's full name
+  let baseSlug = generateSlug(payload.fullName);
+  let slug = baseSlug;
+  let counter = 1;
+  let isSlugUnique = false;
+
+  // If slug is empty or only numbers, use a fallback
+  if (!slug || /^\d+$/.test(slug)) {
+    slug = `user${counter}`;
+  }
+
+  // Check if slug already exists and make it unique
+  while (!isSlugUnique) {
+    const existingUser = await getIdBySlug(slug);
+    if (!existingUser) {
+      isSlugUnique = true;
+    } else {
+      // Combine base slug with random characters for uniqueness
+      if (counter === 1 && baseSlug) {
+        slug = `${baseSlug}${generateRandomString(6)}`;
+      } else {
+        slug = `${baseSlug || 'user'}${generateRandomString(6)}`;
+      }
+      counter++;
+      // Fallback if slug still conflicts after many attempts
+      if (counter > 100) {
+        slug = `user${Date.now()}`;
+        isSlugUnique = true;
+      }
+    }
+  }
+
+  const sql = `
+    INSERT INTO users (full_name, email, password, date_of_birth, country, role, slug, created_at) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING *
+  `;
+
+  return await db.getRow(sql, [
+    payload.fullName,
+    payload.email,
+    payload.password,
+    null, // new Date(payload.dateOfBirth).toISOString().slice(0, 10),
+    null, // payload.country,
+    payload.role,
+    slug,
+    new Date(),
+  ]);
+};
+
+exports.addAllUsersToAdminFriendlist = async (adminId) => {
+  const users = await exports.getUsers();
+
+  const friends = await exports.getFriends(adminId);
+  const notFriends = users.filter(
+    (user) =>
+      !friends.some((friend) => friend.id === user.id) && user.id !== adminId,
+  );
+
+  const userToAdd = notFriends.map((notFriend) => ({
+    userId1: adminId,
+    userId2: notFriend.id,
+  }));
+
+  await bulkInsertFriendships(userToAdd);
+};
+
+exports.getUserById = async (userId) => {
+  const sql = `
+    SELECT id, full_name, email, date_of_birth, country, image, slug, created_at 
+    FROM users 
+    WHERE id = $1
+  `;
+  return await db.getRow(sql, [userId]);
+};
+
+exports.getIdByEmail = async (email) => {
+  const sql = `SELECT id FROM users WHERE email = $1`;
+  return await db.getRow(sql, [email]);
+};
+
+// Helper function used internally to check if slug exists
+async function getIdBySlug(slug) {
+  const sql = `SELECT id FROM users WHERE slug = $1`;
+  return await db.getRow(sql, [slug]);
+}
+
+exports.getIdsByEmails = async (emails) => {
+  const sql = `SELECT id FROM users WHERE email IN ($1)`;
+  return await db.getRows(sql, [emails]);
+};
+
+exports.getUserBySlug = async (slug) => {
+  const sql = `
+    SELECT id, full_name, email, date_of_birth, country, image, slug, created_at 
+    FROM users 
+    WHERE slug = $1
+  `;
+  return await db.getRow(sql, [slug]);
+};
+
+exports.getUserSettings = async (userId) => {
+  const sql = `
+    SELECT *
+    FROM user_settings
+    WHERE user_id = $1
+  `;
+  return await db.getRow(sql, [userId]);
+};
+
+exports.getAdmins = async () => {
+  const sql = `SELECT * FROM users WHERE role = $1`;
+  return await db.getRows(sql, [adminRole]);
+};
+
+exports.getUsers = async () => {
+  const sql = `SELECT * FROM users`;
+  return await db.getRows(sql, []);
+};
+
+exports.checkFriends = async (id1, id2) => {
+  const sql = `
+    SELECT id 
+    FROM friendship 
+    WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $3 AND user_id_2 = $4)
+  `;
+  return await db.getRow(sql, [id1, id2, id2, id1]);
+};
+
+exports.sendInvite = async (body, userId) => {
+  const emails = Array.isArray(body.email) ? body.email : [body.email];
+  const senderId = userId;
+
+  const validations = emails.map(async (email) => {
+    //check if initation sent already
+    const existingInvite = await db.getRow(
+      `SELECT * FROM invitation WHERE sender_id = $1 AND receiver_email = $2`,
+      [userId, email],
+    );
+    if (existingInvite && existingInvite.id) {
+      throw new CustomError("Already sent invitation!", 409, email);
+    }
+
+    //find receiver's id from email
+    const receiver = await exports.getIdByEmail(email);
+
+    // if email exist
+    if (receiver && receiver.id) {
+      //cant send invitation to ownself
+      if (receiver.id === userId) {
+        throw new CustomError(
+          "Can't send invitation to own email!",
+          400,
+          email,
+        );
+      }
+      const isFriend = await exports.checkFriends(receiver.id, senderId);
+      // check if they are friends already
+      if (isFriend) {
+        throw new CustomError("User already in friend list!", 409, email);
+      }
+    }
+
+    //if not friends, insert in invitation
+    const token = uuidv4();
+    await db.execute(
+      `INSERT INTO invitation (sender_id, receiver_email, token, is_accepted, created_at) VALUES ($1, $2, $3, $4, $5)`,
+      [senderId, email, token, false, new Date()],
+    );
+    const { fullName } = await exports.getUserById(senderId);
+    return { senderData: { fullName }, token, email };
+  });
+
+  const results = await Promise.allSettled(validations);
+
+  const successfulInvites = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => {
+      return result.value;
+    });
+
+  const failedInvites = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => ({
+      email: result.reason.payload,
+      errorMessage: result.reason.message || "Unknown error", // Provide default message
+    }));
+
+  const emailPromises = successfulInvites.map(
+    ({ senderData, token, email }) => {
+      const subject = `Wayzaway invitation from ${senderData.fullName}`;
+      const html = generateInvitationContent(senderData, body.message, token);
+      return sendMail(email, subject, html);
+    },
+  );
+
+  await Promise.all(emailPromises);
+
+  return { successfulInvites, failedInvites }; // Return details of successful invitations
+};
+
+exports.acceptInvite = async (token) => {
+  try {
+    const sql = `SELECT * FROM invitation WHERE token = $1`;
+    const invitation = await db.getRow(sql, [token]);
+
+    //if valid invitation
+    if (invitation) {
+      //destructure 'id' event its undefined
+      const { id: receiverId } =
+        (await exports.getIdByEmail(invitation.receiverEmail)) || {};
+      // if receiver id exist then no need to register
+      if (receiverId) {
+        //  check if friends and throw err
+        const areFriends = await exports.checkFriends(
+          invitation.senderId,
+          receiverId,
+        );
+
+        if (areFriends) {
+          throw new CustomError("User already in friendlist!");
+        }
+
+        //  insert into friendship
+        const sql2 = `INSERT INTO friendship (user_id_1, user_id_2, created_at) VALUES ($1, $2, $3)`;
+        await db.execute(sql2, [invitation.senderId, receiverId, new Date()]);
+
+        //  delete record from invitation by id
+        const sql3 = `DELETE FROM invitation WHERE id = $1`;
+        await db.execute(sql3, [invitation.id]);
+
+        //  redirect to friends page
+        return { redirect: "friends" };
+      }
+      // if receiver id doesn't exist
+      else {
+        //  1 invitation with is_accepted=true if user doesnt exist,
+        const sql = `UPDATE invitation SET is_accepted = true WHERE id = $1`;
+        await db.execute(sql, [invitation.id]);
+        //  redirect to register page
+        return { redirect: "register" };
+      }
+    }
+    //invalid invitation
+    else {
+      throw new CustomError("Invalid invitation!");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getFriends = async (userId) => {
+  const sql = `
+    SELECT f.id as friendship_id, c.id, c.full_name, c.image, c.email, c.slug 
+    FROM users c 
+    JOIN (
+      SELECT id, user_id_1 as friend_id, created_at 
+      FROM friendship 
+      WHERE user_id_2 = $1 
+      UNION 
+      SELECT id, user_id_2 as friend_id, created_at 
+      FROM friendship 
+      WHERE user_id_1 = $2
+    ) as f ON c.id = f.friend_id 
+    ORDER BY f.created_at DESC
+  `;
+  return await db.getRows(sql, [userId, userId]);
+};
+
+exports.getFriendsWSettings = async (userId) => {
+  const sql = `
+    SELECT f.id as friendship_id, c.id, c.full_name, c.image, c.email, 
+           us.email_new_event_notification, us.email_update_event_notification, 
+           us.email_new_comment_notification 
+    FROM users c 
+    JOIN (
+      SELECT id, user_id_1 as friend_id, created_at 
+      FROM friendship 
+      WHERE user_id_2 = $1 
+      UNION 
+      SELECT id, user_id_2 as friend_id, created_at 
+      FROM friendship 
+      WHERE user_id_1 = $2
+    ) as f ON c.id = f.friend_id 
+    JOIN user_settings us ON c.id = us.user_id
+  `;
+  return await db.getRows(sql, [userId, userId]);
+};
+
+exports.removeFriend = async (userId, friendshipId) => {
+  const sql = `DELETE FROM friendship WHERE id = $1 AND (user_id_1 = $2 OR user_id_2 = $2)`;
+  return await db.execute(sql, [friendshipId, userId, userId]);
+};
+
+exports.searchUser = async (requestedUser) => {
+  let sql = `SELECT id, full_name, email, date_of_birth, country, image, slug FROM users`;
+  sql += requestedUser
+    ? ` WHERE ((CASE WHEN $1 ~ '^[0-9]+$' THEN id = CAST($1 AS INT) ELSE FALSE END)
+          OR LOWER(email) = $2
+          OR LOWER(full_name) LIKE '%' || $3 || '%')`
+    : "";
+
+  const params = requestedUser
+    ? [requestedUser, requestedUser.toLowerCase(), requestedUser.toLowerCase()]
+    : [];
+  return await db.getRows(sql, params);
+};
+
+exports.deleteUser = async (userId, rmImage) => {
+  const sql = `SELECT images FROM event_post WHERE user_id = $1`;
+  const sql1 = `DELETE FROM event_favorite WHERE user_id = $1`;
+  const sql2 = `DELETE FROM event_comment WHERE user_id = $1`;
+  const sql3 = `DELETE FROM event_wishlist WHERE user_id = $1`;
+  const sql4 = `DELETE FROM event_post WHERE user_id = $1`;
+  const sql5 = `DELETE FROM friendship WHERE user_id_1 = $1 OR user_id_2 = $2`;
+  const sql6 = `DELETE FROM users WHERE id = $1`;
+
+  const results = await Promise.all([
+    db.getRows(sql, [userId]),
+    db.execute(sql1, [userId]),
+    db.execute(sql2, [userId]),
+    db.execute(sql3, [userId]),
+    db.execute(sql4, [userId]),
+    db.execute(sql5, [userId, userId]),
+    db.execute(sql6, [userId]),
+  ]);
+
+  // remove all events images
+  const rows = results[0];
+  if (rows.length > 0) {
+    let rmImages = [];
+    for (const row of rows) {
+      let images;
+      try {
+        images = JSON.parse(row.images);
+      } catch {
+        console.error("deleteUser() - Invalid JSON:", row);
+        continue; // Skip this row
+      }
+      // const images = JSON.parse(row);
+      if (images.length > 0) {
+        // Ignore empty arrays
+        rmImages = rmImages.concat(images);
+      }
+    }
+
+    if (rmImage) {
+      await removeImages([rmImage]);
+    } //remove user img
+    if (rmImages.length > 0) {
+      await removeImages(rmImages);
+    } //remove all event images by user
+  }
+  return results;
+};
+
+exports.updateProfile = async (body, files, userId) => {
+  let sql = "UPDATE users SET";
+  const values = [];
+  const columns = [];
+  
+  if (body.fullName !== undefined) {
+    columns.push("full_name");
+    values.push(body.fullName);
+  }
+  if (body.email !== undefined) {
+    columns.push("email");
+    values.push(body.email);
+  }
+  if (body.password !== undefined) {
+    // Hash password before updating
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+    columns.push("password");
+    values.push(hashedPassword);
+  }
+  if (body.slug !== undefined) {
+    // Validate slug uniqueness before updating
+    const existingUser = await getIdBySlug(body.slug);
+    if (existingUser && existingUser.id !== userId) {
+      throw new CustomError("Slug already taken! Please choose a different one.", 409);
+    }
+    columns.push("slug");
+    values.push(body.slug);
+  }
+  if (files) {
+    columns.push("image");
+    values.push(files[0].filename);
+  }
+  
+  if (columns.length === 0) {
+    // No fields to update
+    return await exports.getUserById(userId);
+  }
+  
+  sql += " " + columns.map((col, index) => `${col} = $${index + 1}`).join(", ");
+  values.push(userId);
+  sql += ` WHERE id = $${values.length} RETURNING full_name, email, image, slug`;
+
+  const updated = await db.getRow(sql, values);
+  if (!updated) {
+    throw new CustomError("Profile update failed!", 500);
+  }
+  if (body.rmImage) {
+    await removeImages([body.rmImage]);
+  }
+  return updated;
+};
+
+exports.getUsersWNewCommentsInDays = async (day) => {
+  const sql = `
+    SELECT c.id, c.full_name, c.email, us.email_new_comment_notification, 
+           COUNT(event_comment.id) as comment_count 
+    FROM event_comment 
+    JOIN event_post ON event_comment.event_id = event_post.id 
+    JOIN users c ON event_post.user_id = c.id 
+    JOIN user_settings us ON us.user_id = c.id 
+    WHERE event_comment.created_at > CURRENT_TIMESTAMP - INTERVAL '$1 days' 
+      AND event_comment.user_id != event_post.user_id 
+    GROUP BY c.id, us.email_new_comment_notification
+  `;
+
+  return await db.getRows(sql, [day]);
+};
+
+exports.getUsersPostedEventsToday = async () => {
+  const currentDate = new Date().toISOString().split("T")[0];
+  const sql = `
+    SELECT DISTINCT c.id, c.email
+    FROM users as c
+    JOIN event_post as e ON c.id = e.user_id
+    WHERE DATE(e.date) = $1
+  `;
+
+  return await db.getRows(sql, [currentDate]);
+};
+
+exports.sendNewCommentEmail = async (clientUrl) => {
+  // find friends & send notification email to friends
+  const users = await exports.getUsersWNewCommentsInDays(1);
+  // Generate email and send emails in parallel
+  const sendEmailPromises = users
+    .filter((user) => user.emailNewCommentNotification)
+    .map(async (user) => {
+      const to = user.email;
+      const subject = `You have new ${user.commentCount} comment(s) on WayzAway!`;
+      const html = generateNewCommentContent(user, clientUrl);
+      return sendMail(to, subject, html);
+    });
+  // Wait for all emails to be sent
+  return await Promise.all(sendEmailPromises);
+};
+
+exports.sendTodaysEventEmail = async (clientUrl) => {
+  // find friends & send notification email to friends
+  const users = await exports.getUsersPostedEventsToday();
+  // Generate email and send emails in parallel
+  const sendEmailPromises = users.map(async (user) => {
+    const to = user.email;
+    const subject = `You have an event scheduled for today!`;
+    const html = generateTodaysEventContent(user, clientUrl);
+
+    return sendMail(to, subject, html);
+  });
+  // Wait for all emails to be sent
+  return await Promise.all(sendEmailPromises);
+};
+
+exports.getProfileWSettings = async (userId) => {
+  const sql = `
+    SELECT c.id, c.full_name, c.email, c.date_of_birth, c.country, c.image, c.slug, c.created_at,
+           us.email_new_event_notification, us.email_update_event_notification, 
+           us.email_new_comment_notification, us.theme
+    FROM users as c
+    JOIN user_settings as us ON c.id = us.user_id
+    WHERE c.id = $1
+  `;
+  return await db.getRow(sql, [userId]);
+};
+
+exports.updateEmailNewEventNotification = async (payload, userId) => {
+  const sql = `UPDATE user_settings SET email_new_event_notification = $1 WHERE user_id = $2`;
+  return await db.execute(sql, [payload, userId]);
+};
+
+exports.updateEmailUpdateEventNotification = async (payload, userId) => {
+  const sql = `UPDATE user_settings SET email_update_event_notification = $1 WHERE user_id = $2`;
+  return await db.execute(sql, [payload, userId]);
+};
+
+exports.updateEmailNewCommentNotification = async (payload, userId) => {
+  const sql = `UPDATE user_settings SET email_new_comment_notification = $1 WHERE user_id = $2`;
+  return await db.execute(sql, [payload, userId]);
+};
+
+exports.getPendingInvitation = async (email) => {
+  const sql = `SELECT * FROM invitation WHERE receiver_email = $1 AND is_accepted = true`;
+  return await db.getRows(sql, [email]);
+};
+
+exports.createUserSettings = async (userId) => {
+  const sql = `
+    INSERT INTO user_settings (
+      email_new_event_notification, email_update_event_notification,
+      email_new_comment_notification, sort, theme, user_id
+    )
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `;
+  return await db.execute(sql, [true, true, true, "DESC", "light", userId]);
+};
+
+exports.updateSettings = async (payload, userId) => {
+  let sql = "UPDATE user_settings SET";
+  const values = [];
+  let paramIndex = 1;
+
+  if (payload.emailNewEventNotification !== undefined) {
+    sql += ` email_new_event_notification = $${paramIndex++},`;
+    values.push(payload.emailNewEventNotification);
+  }
+  if (payload.emailUpdateEventNotification !== undefined) {
+    sql += ` email_update_event_notification = $${paramIndex++},`;
+    values.push(payload.emailUpdateEventNotification);
+  }
+  if (payload.emailNewCommentNotification !== undefined) {
+    sql += ` email_new_comment_notification = $${paramIndex++},`;
+    values.push(payload.emailNewCommentNotification);
+  }
+  if (payload.sort !== undefined) {
+    sql += ` sort = $${paramIndex++},`;
+    values.push(payload.sort);
+  }
+  if (payload.theme !== undefined) {
+    sql += ` theme = $${paramIndex++},`;
+    values.push(payload.theme);
+  }
+
+  // Remove the trailing comma and add the WHERE clause
+  sql = sql.slice(0, -1) + ` WHERE user_id = $${paramIndex}`;
+  values.push(userId);
+
+  return await db.execute(sql, values);
+};
+
+async function bulkInsertFriendships(records) {
+  if (records.length === 0) {
+    return;
+  }
+
+  const values = [];
+  const placeholders = [];
+  let paramIndex = 1;
+
+  for (const record of records) {
+    placeholders.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
+    values.push(record.userId1, record.userId2, new Date());
+  }
+
+  const query = `
+    INSERT INTO friendship (user_id_1, user_id_2, created_at)
+    VALUES ${placeholders.join(", ")}
+  `;
+  return await db.execute(query, values);
+}

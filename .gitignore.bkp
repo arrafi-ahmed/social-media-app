@@ -1,0 +1,39 @@
+.DS_Store
+node_modules/
+dist/
+
+backend/public/blog/*
+backend/public/event/*
+backend/public/user/*
+backend/public/page/*
+backend/public/temp/*
+
+# allow all the folders themselves to be tracked
+!backend/public/blog/.gitkeep
+!backend/public/event/.gitkeep
+!backend/public/user/.gitkeep
+!backend/public/page/.gitkeep
+!backend/public/temp/.gitkeep
+
+# env files
+.env
+.env.development
+.env.production
+
+# skip ignoring production env as its used in build on prod server
+!frontend/.env.production
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

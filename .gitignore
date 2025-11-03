@@ -1,27 +1,29 @@
 .DS_Store
-node_modules/
-dist/
+node_modules
+frontend/dist
 
-api/public/blog/*
-api/public/event/*
-api/public/user/*
-api/public/page/*
-api/public/temp/*
+backend/public/product-certificates/*
+backend/public/product-images/*
+backend/public/product-manuals/*
+backend/public/user-images/*
+backend/public/tmp/*
+backend/public/qr/*
 
 # allow all the folders themselves to be tracked
-!api/public/blog/.gitkeep
-!api/public/event/.gitkeep
-!api/public/user/.gitkeep
-!api/public/page/.gitkeep
-!api/public/temp/.gitkeep
+!backend/public/product-certificates/.gitkeep
+!backend/public/product-images/.gitkeep
+!backend/public/product-manuals/.gitkeep
+!backend/public/user-images/.gitkeep
+!backend/public/tmp/.gitkeep
+!backend/public/qr/.gitkeep
 
 # env files
 .env
 .env.development
-.env.production
+**/.env.production
 
 # skip ignoring production env as its used in build on prod server
-!client/.env.production
+#!frontend/.env.production
 
 # Log files
 npm-debug.log*
@@ -37,3 +39,4 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+

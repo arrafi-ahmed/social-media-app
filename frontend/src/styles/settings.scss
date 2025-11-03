@@ -1,0 +1,49 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $color-pack: false
+// );
+
+// Font variables
+$oxygen-font: 'Oxygen', sans-serif;
+
+$default-font: $oxygen-font;
+
+// Apply Oxygen font globally to all elements
+* {
+  font-family: $default-font !important;
+}
+
+// Placeholder styles for better cross-browser compatibility
+::placeholder {
+  font-family: $default-font !important;
+}
+
+::-webkit-input-placeholder {
+  font-family: $default-font !important;
+}
+
+::-moz-placeholder {
+  font-family: $default-font !important;
+}
+
+:-ms-input-placeholder {
+  font-family: $default-font !important;
+}
+
+// Container with border and spacing
+.container-border {
+  border-radius: 4px;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  padding: 16px;
+  margin-top: 8px;
+  
+  @media (min-width: 960px) {
+    margin-top: 16px;
+  }
+}
