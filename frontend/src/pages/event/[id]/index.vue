@@ -3,10 +3,34 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
-  import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
-  import Lightbox from '@/components/Lightbox.vue'
-  import UserAvatar from '@/components/UserAvatar.vue'
-  import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserProfile } from '@/others/util.js'
+import DOMPurify from 'dompurify'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+import Lightbox from '@/components/Lightbox.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
+import ReactionButtons from '@/components/ReactionButtons.vue'
+import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserProfile, getDaysUntilExpiration, formatExpirationDate } from '@/others/util.js'
+
+  // Helper to check if content is HTML and sanitize it
+  function getSanitizedDescription(html) {
+    if (!html) return ''
+    // Check if content contains HTML tags (from rich editor)
+    const hasHtmlTags = /<[a-z][\s\S]*>/i.test(html)
+    if (hasHtmlTags) {
+      return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: ['href', 'target', 'rel'],
+        ALLOW_DATA_ATTR: false
+      })
+    }
+    // Plain text - escape HTML and convert newlines to <br>
+    const escaped = html
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+    return escaped.replace(/\n/g, '<br>')
+  }
+
+  const sanitizedDescription = computed(() => getSanitizedDescription(event.value?.description))
 
   definePage({
     name: 'eventSingle',
@@ -27,10 +51,21 @@
 
   const isAdmin = computed(() => store.getters['auth/isAdmin'])
   const isOwner = commenterId => commenterId == currentUser.value.id
+  const isEventOwner = computed(() => event.value?.userId === currentUser.value?.id)
 
   // Helper to get user identifier (slug preferred, fallback to userId)
   const getUserIdentifier = computed(() => {
     return event.value?.slug || event.value?.userId
+  })
+  
+  // Calculate days until expiration
+  const daysUntilExpiration = computed(() => {
+    return getDaysUntilExpiration(event.value?.expiresAt)
+  })
+  
+  // Format expiration date
+  const expirationDateFormatted = computed(() => {
+    return formatExpirationDate(event.value?.expiresAt)
   })
 
   function handleFavoriteEvent (payload) {
@@ -67,10 +102,11 @@
         return Promise.all([
           store.dispatch('eventSingle/setIsFavorite', route.params.id),
           store.dispatch('eventSingle/getCommentsByEventId', route.params.id),
+          store.dispatch('eventSingle/getReactions', route.params.id),
         ])
       })
       .finally(() => {
-        if (!event.value.id) {
+        if (!event.value || !event.value.id) {
           router.push({ name: 'notFound' })
         }
       })
@@ -85,10 +121,17 @@
     store.commit('setActionSource', 'namecard')
     goUserProfile(userId)
   }
+
+  function goEditEvent () {
+    if (!event.value?.id) return
+    store.commit('setScrollY', window.scrollY)
+    store.commit('eventSingle/setEditingEvent', event.value)
+    router.push({ name: 'eventEdit', params: { id: event.value.id }, query: { src: 'single' } })
+  }
 </script>
 
 <template>
-  <v-container v-if="event.id">
+  <v-container v-if="event?.id">
     <v-row align="center" class="pb-1" justify="space-between">
       <v-col class="d-flex align-center" cols="auto">
         <v-btn icon="mdi-arrow-left" variant="text" @click="goBack" />
@@ -105,7 +148,20 @@
           <small>Posted on {{ formatDateFromTimestamp(event?.createdAt) }}</small>
         </div>
       </v-col>
-      <v-col cols="auto">
+      <v-col class="d-flex align-center justify-end" cols="auto">
+        <v-btn
+          color="primary"
+          :icon="event.isFavorite ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
+          variant="text"
+          @click="handleFavoriteEvent(event.isFavorite)"
+        />
+        <v-btn
+          v-if="isEventOwner || isAdmin"
+          color="primary"
+          icon="mdi-pencil"
+          variant="text"
+          @click="goEditEvent"
+        />
       </v-col>
     </v-row>
 
@@ -117,67 +173,84 @@
           :img-src="getEventImageUrl(event?.images?.[0])"
         />
 
-        <h2 class="mt-8">{{ event?.title }}</h2>
-
-        <div class="d-flex justify-space-between mt-4">
-          <div>
-            <div v-if="event?.date" class="d-flex">
-              <v-icon
-                class="mt-half"
-                color="primary"
-                size="small"
-              >mdi-calendar
-              </v-icon>
-              <span class="ml-3">{{
-                formatDateFromTimestamp(event?.date)
-              }}</span>
-            </div>
-            <div v-if="event?.startTime && event?.endTime" class="d-flex">
-              <v-icon
-                class="mt-half"
-                color="primary"
-                size="small"
-              >mdi-clock
-              </v-icon>
-              <span class="ml-3">{{ formatTimeFromTime(event?.startTime) }} -
-                {{ formatTimeFromTime(event?.endTime) }}</span>
-            </div>
-            <div v-if="event?.location" class="d-flex">
-              <v-icon
-                class="mt-half"
-                color="primary"
-                size="small"
-              >mdi-map-marker
-              </v-icon>
-              <span class="ml-3">{{ event?.location }}</span>
-            </div>
-            <div v-if="event?.category" class="d-flex">
-              <v-icon
-                class="mt-half"
-                color="primary"
-                size="small"
-              >mdi-list-box
-              </v-icon>
-              <span class="ml-3">{{ event?.category }}</span>
-            </div>
-          </div>
-          <v-btn
+        <div class="mt-6 mb-4">
+          <v-chip
+            v-if="event?.category"
+            class="mb-3"
             color="primary"
-            :icon="event.isFavorite ? 'mdi-heart' : 'mdi-heart-outline'"
-            variant="text"
-            @click="handleFavoriteEvent(event.isFavorite)"
-          />
+            size="small"
+            variant="tonal"
+          >
+            {{ event?.category }}
+          </v-chip>
+          <h2 class="mb-4" style="font-weight: 600; line-height: 1.3;">{{ event?.title }}</h2>
         </div>
 
-        <p v-if="event?.description" class="mt-6 text-pre-wrap">
-          {{ event?.description }}
-        </p>
+        <v-card class="mb-4">
+          <v-card-text class="pa-4">
+            <div class="d-flex flex-column" style="gap: 16px;">
+              <div v-if="event?.date" class="d-flex align-center">
+                <v-icon class="mr-3" color="primary" size="small">mdi-calendar</v-icon>
+                <div>
+                  <div class="text-body-2 font-weight-medium">{{ formatDateFromTimestamp(event?.date) }}</div>
+                  <div v-if="event?.startTime" class="text-caption text-medium-emphasis mt-1">
+                    {{ formatTimeFromTime(event?.startTime) }}
+                    <span v-if="event?.endTime"> - {{ formatTimeFromTime(event?.endTime) }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <v-divider v-if="event?.location" />
+              
+              <div v-if="event?.location" class="d-flex align-center">
+                <v-icon class="mr-3" color="primary" size="small">mdi-map-marker</v-icon>
+                <div class="text-body-2">{{ event?.location }}</div>
+              </div>
+              
+              <v-divider v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" />
 
-        <v-row v-if="event?.images?.length > 1" class="mt-6" justify="start">
+              <div 
+                v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" 
+                class="d-flex align-center"
+              >
+                <v-icon class="mr-3" color="warning" size="small">mdi-clock-alert</v-icon>
+                <div>
+                  <div class="text-body-2 text-warning font-weight-medium">
+                    Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? 'day' : 'days' }}
+                  </div>
+                  <div class="text-caption text-medium-emphasis mt-1">
+                    {{ expirationDateFormatted }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <v-card v-if="event?.description" class="mb-4">
+          <v-card-text class="pa-5">
+            <div class="rich-text-content" v-html="sanitizedDescription" />
+          </v-card-text>
+        </v-card>
+
+        <!-- Reactions Section -->
+        <v-card class="pa-1 mb-4" density="compact">          
+            <reaction-buttons
+              :event-id="event?.id"
+              :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
+              :user-reaction="event?.userReaction"
+              :compact="false"
+              store-module="eventSingle"
+            />          
+        </v-card>
+
+        <v-row v-if="event?.images?.length > 1" class="mb-4" justify="start">
           <v-col
             v-for="(image, index) in event?.images?.slice(1)"
             :key="index"
-            cols="4"
+            cols="12"
+            md="4"
+            sm="6"
           >
             <!--              loop started from second item-->
             <lightbox
@@ -242,7 +315,7 @@
                 />
               </v-col>
               <v-col>
-                <v-sheet class="pa-3" color="grey-lighten-3" :elevation="5">
+                <v-card class="pa-3" variant="tonal" :elevation="1">
                   <v-hover v-slot="{ isHovering, props }">
                     <div class="position-relative" v-bind="props">
                       <confirmation-dialog
@@ -273,10 +346,10 @@
                         <v-list-item-subtitle class="ml-2">{{ formatDateFromTimestamp(comment.createdAt) }}
                         </v-list-item-subtitle>
                       </div>
-                      <p class="text-pre-wrap">{{ comment.text }}</p>
+                      <p class="text-pre-wrap text-body-2 mt-2">{{ comment.text }}</p>
                     </div>
                   </v-hover>
-                </v-sheet>
+                </v-card>
               </v-col>
             </v-row>
           </v-list-item>
@@ -285,4 +358,60 @@
     </v-row>
   </v-container>
 </template>
-<style></style>
+<style scoped>
+.rich-text-content {
+  line-height: 1.6;
+}
+
+.rich-text-content :deep(h1),
+.rich-text-content :deep(h2),
+.rich-text-content :deep(h3) {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.rich-text-content :deep(h1) {
+  font-size: 2em;
+}
+
+.rich-text-content :deep(h2) {
+  font-size: 1.5em;
+}
+
+.rich-text-content :deep(h3) {
+  font-size: 1.25em;
+}
+
+.rich-text-content :deep(p) {
+  margin-bottom: 0.75em;
+}
+
+.rich-text-content :deep(ul),
+.rich-text-content :deep(ol) {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.rich-text-content :deep(ul) {
+  list-style-type: disc;
+}
+
+.rich-text-content :deep(ol) {
+  list-style-type: decimal;
+}
+
+.rich-text-content :deep(li) {
+  margin-bottom: 0.25em;
+}
+
+.rich-text-content :deep(a) {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: underline;
+}
+
+.rich-text-content :deep(a:hover) {
+  opacity: 0.8;
+}
+</style>

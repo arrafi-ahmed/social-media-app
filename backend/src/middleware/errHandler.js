@@ -33,4 +33,4 @@ const uncaughtErrHandler = () => {
   });
 };
 
-module.exports = {globalErrHandler, uncaughtErrHandler};
+module.exports = { globalErrHandler, uncaughtErrHandler };

@@ -63,7 +63,7 @@ exports.deleteSubscription = async (userId) => {
     return result.rowCount > 0 ? "basic_deleted" : null;
   }
   const deletedSubscription = await stripeService.cancelStripeSubscription(subscription.stripeSubscriptionId);
-  
+
   return deletedSubscription ? "premium_deleted" : null;
 };
 

@@ -11,7 +11,7 @@ const pool = new Pool({
   ssl: false,
   max: 20,
   idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 2000
 });
 
 // Helper function to convert snake_case to camelCase
@@ -28,7 +28,7 @@ function toCamelCase(obj) {
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         const camelKey = key.replace(/_([a-z])/g, (match, letter) =>
-          letter.toUpperCase(),
+          letter.toUpperCase()
         );
         newObj[camelKey] = toCamelCase(obj[key]);
       }
@@ -43,7 +43,7 @@ async function query(text, params) {
   const result = await pool.query(text, params);
   return {
     ...result,
-    rows: toCamelCase(result.rows),
+    rows: toCamelCase(result.rows)
   };
 }
 

@@ -10,7 +10,7 @@
   ])
 </script>
 <template>
-  <v-sheet
+  <v-card
     v-if="categories"
     :class="{
       'pa-2 mb-2 rounded': type === 'has-header',
@@ -47,7 +47,7 @@
       icon="mdi-tag-outline"
       variant="text"
     />
-  </v-sheet>
+  </v-card>
 </template>
 
 <style scoped>

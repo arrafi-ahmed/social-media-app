@@ -49,14 +49,14 @@ exports.save = async (body, files, userId) => {
     category,
     userId,
     new Date(),
-    fileNames,
+    fileNames
   ];
   return await db.getRow(sql, values);
 };
 
 exports.edit = async (body, files, userId) => {
   const fileNames =
-    files ? files.map((file) => file.filename) : []
+    files ? files.map((file) => file.filename) : [];
 
   const images = body.images ? JSON.parse(body.images) : [];
   const combinedImages = [...images, ...fileNames];

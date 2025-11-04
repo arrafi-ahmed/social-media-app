@@ -6,6 +6,7 @@
   import { useStore } from 'vuex'
   import ImageManager from '@/components/ImageManager.vue'
   import PageTitle from '@/components/PageTitle.vue'
+  import RichTextEditor from '@/components/RichTextEditor.vue'
   import { Event } from '@/models'
   import { getEventImageUrl, isObjEmpty, toLocalISOString } from '@/others/util.js'
 
@@ -31,6 +32,41 @@
 
   const form = ref(null)
   const isFormValid = ref(true)
+  const isTemporary = ref(false)
+  const autoDeleteDays = ref(null)
+  const isCustomDays = ref(false)
+  const customDays = ref(null)
+  
+  const dayOptions = [1, 7, 14, 30, 60, 90, { title: 'Custom', value: 'custom' }]
+  
+  const calculatedExpirationDate = computed(() => {
+    if (!isTemporary.value) return null
+    const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
+    if (!days) return null
+    // Calculate from current date (not original created_at) when editing
+    const currentDate = new Date()
+    const date = new Date(currentDate)
+    date.setDate(date.getDate() + parseInt(days))
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  })
+  
+  const currentExpirationDate = computed(() => {
+    if (editingEvent.expiresAt) {
+      return new Date(editingEvent.expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    }
+    return null
+  })
+  
+  function handleDaysChange(value) {
+    if (value === 'custom') {
+      isCustomDays.value = true
+      autoDeleteDays.value = null
+    } else {
+      isCustomDays.value = false
+      autoDeleteDays.value = value
+      customDays.value = null
+    }
+  }
   const allEventCategories = computed(() =>
     store.state.category.categories.map(item => item.name),
   )
@@ -38,6 +74,7 @@
   const storeModule = computed(() => {
     if (route.query.src === 'browse') return 'eventBrowse'
     if (route.query.src === 'wall') return 'eventWall'
+    if (route.query.src === 'single') return 'eventSingle'
     // Fallback to wall module if source is missing on reload
     return 'eventWall'
   })
@@ -78,9 +115,36 @@
     newUploads.value.push(...files)
   }
 
+  // Helper to strip HTML tags and get text length for validation
+  function getTextLength(html) {
+    if (!html) return 0
+    const temp = document.createElement('div')
+    temp.innerHTML = html
+    return (temp.textContent || temp.innerText || '').length
+  }
+
   async function handleSubmitEditEvent () {
-    await form.value.validate()
-    if (!isFormValid.value) return
+    const { valid } = await form.value.validate()
+    if (!valid) {
+      await store.commit('addSnackbar', {
+        text: 'Please fill in all required fields correctly',
+        color: 'error'
+      })
+      return
+    }
+
+    // Validate description
+    const descLength = getTextLength(editingEvent.description)
+    if (!editingEvent.description || descLength === 0) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description is required!', color: 'error' })
+      return
+    }
+    if (descLength > 1000) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description must not exceed 1000 characters!', color: 'error' })
+      return
+    }
 
     // Validate total image count
     const totalCount = editingEvent.images.length + newUploads.value.length
@@ -103,6 +167,21 @@
     formData.append('category', editingEvent.category)
     formData.append('images', JSON.stringify(editingEvent.images))
     formData.append('rmImages', JSON.stringify(rmImages.value))
+    if (isTemporary.value) {
+      const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
+      if (days && parseInt(days) > 0) {
+        formData.append('autoDeleteDays', days)
+      } else {
+        formData.append('autoDeleteDays', '')
+      }
+    } else {
+      // If temporary is disabled, send empty string to remove expiration
+      formData.append('autoDeleteDays', '')
+    }
+    // Send createdAt for accurate calculation
+    if (editingEvent.createdAt) {
+      formData.append('createdAt', editingEvent.createdAt)
+    }
 
     for (const item of newUploads.value) {
       formData.append('files', item)
@@ -110,13 +189,25 @@
 
     store
       .dispatch(`${storeModule.value}/editEvent`, formData)
-      .then(() =>
-        route.fullPath.includes('browse')
-          ? router.push({ name: 'browse' })
-          : (route.fullPath.includes('wall')
-            ? router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
-            : null),
-      )
+      .then(() => {
+        if (route.query.src === 'single') {
+          router.push({ name: 'eventSingle', params: { id: editingEvent.id } })
+        } else if (route.query.src === 'browse') {
+          router.push({ name: 'browse' })
+        } else if (route.query.src === 'wall') {
+          router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
+        } else {
+          // Fallback to wall if src is missing
+          router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
+        }
+      })
+      .catch((error) => {
+        console.error('Error editing event:', error)
+        store.commit('addSnackbar', {
+          text: error?.response?.data?.message || 'Failed to update event',
+          color: 'error'
+        })
+      })
   }
 
   onMounted(async () => {
@@ -131,6 +222,37 @@
       ...storedEditingEvent.value,
       date: new Date(storedEditingEvent.value.date),
     })
+    
+    // Set temporary post state if expiresAt exists
+    if (editingEvent.expiresAt) {
+      isTemporary.value = true
+      // Calculate days remaining from NOW until expiration (not from created_at)
+      // This way when user selects a new value, it calculates from current date
+      const now = new Date()
+      const expires = new Date(editingEvent.expiresAt)
+      // Normalize both to UTC midnight for accurate day calculation
+      const nowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0))
+      const expiresUTC = new Date(Date.UTC(expires.getUTCFullYear(), expires.getUTCMonth(), expires.getUTCDate(), 0, 0, 0, 0))
+      const diffTime = expiresUTC - nowUTC
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
+      const standardDays = [1, 7, 14, 30, 60, 90]
+      if (diffDays > 0 && standardDays.includes(diffDays)) {
+        autoDeleteDays.value = diffDays
+        isCustomDays.value = false
+        customDays.value = null
+      } else if (diffDays > 0) {
+        // If not in standard options, use custom value
+        isCustomDays.value = true
+        customDays.value = diffDays
+        autoDeleteDays.value = 'custom'
+      } else {
+        // If expired or 0 days, default to 7 days
+        autoDeleteDays.value = 7
+        isCustomDays.value = false
+        customDays.value = null
+      }
+    }
+    
     newUploads.value = []
     rmImages.value = []
   })
@@ -170,28 +292,68 @@
             clearable
             hide-details="auto"
             label="Location"
-            required
             :rules="[
-              (v) => !!v || 'Location is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+              (v) => !v || (v && v.length <= 50) || 'Must not exceed 50 characters',
             ]"
             variant="solo"
           />
 
-          <v-textarea
-            v-model="editingEvent.description"
-            class="mt-2"
-            clearable
-            hide-details="auto"
-            label="Description"
-            rows="5"
-            :rules="[
-              (v) => !!v || 'Description is required!',
-              (v) =>
-                (v && v.length <= 1000) || 'Must not exceed 1000 characters',
-            ]"
-            variant="solo"
-          />
+          <div class="mt-2">
+            <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+            <rich-text-editor
+              v-model="editingEvent.description"
+              placeholder="Describe your event..."
+            />
+            <div class="text-caption text-medium-emphasis mt-1">
+              {{ getTextLength(editingEvent.description) }} / 1000 characters
+            </div>
+          </div>
+          
+          <!-- Temporary Post Option -->
+          <v-card class="mt-4">
+            <v-card-text>
+              <div class="d-flex align-center mb-2">
+                <v-switch
+                  v-model="isTemporary"
+                  color="primary"
+                  hide-details="auto"
+                  label="Make this post temporary"
+                />
+              </div>
+              <div v-if="currentExpirationDate && !isTemporary" class="text-caption text-medium-emphasis mb-2">
+                Current expiration: <strong>{{ currentExpirationDate }}</strong>
+              </div>
+              <div v-if="isTemporary" class="mt-3">
+                <v-select
+                  v-model="autoDeleteDays"
+                  :items="dayOptions.map(d => typeof d === 'object' ? d : { title: `${d} ${d === 1 ? 'day' : 'days'}`, value: d })"
+                  label="Auto-delete after"
+                  variant="solo"
+                  hide-details="auto"
+                  @update:model-value="handleDaysChange"
+                />
+                <v-number-input
+                  v-if="isCustomDays"
+                  v-model="customDays"
+                  label="Enter number of days"
+                  variant="solo"
+                  min="1"
+                  max="365"
+                  :rules="[
+                    (v) => !!v || 'Number of days is required',
+                    (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
+                    (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
+                  ]"
+                  class="mt-3"
+                  hide-details="auto"
+                />
+                <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
+                  This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+          
           <v-row :no-gutters="!!mobile">
             <v-col class="mt-2" cols="12" md="6">
               <v-select
@@ -233,7 +395,6 @@
               <time-picker
                 v-model="editingEvent.endTime"
                 label="End Time"
-                :rules="[(v) => !!v || 'End Time is required!']"
                 :show-icon="true"
                 variant="solo"
               />

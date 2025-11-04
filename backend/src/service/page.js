@@ -9,9 +9,9 @@ exports.getPage = (pageName) => {
 
 function safeJsonParse(value, fallback) {
   try {
-    if (value == null || value === '') return fallback;
+    if (value == null || value === "") return fallback;
     // If value is already an object (from JSON column), return it directly
-    if (typeof value === 'object') return value;
+    if (typeof value === "object") return value;
     // If value is a string, parse it
     return JSON.parse(value);
   } catch (e) {
@@ -21,7 +21,7 @@ function safeJsonParse(value, fallback) {
 
 exports.updatePage = async (body, files) => {
   const sql = `SELECT * FROM pages WHERE name = $1`;
-  
+
   // Convert description to consistent object format for all pages
   if (body.pageName === "landing") {
     // const descriptionInit = safeJsonParse(body.descriptionInit, []);
@@ -34,16 +34,16 @@ exports.updatePage = async (body, files) => {
         if (item) {
           let parsedItem = item;
           // Only parse if item is a string, otherwise it's already an object
-          if (typeof item === 'string') {
+          if (typeof item === "string") {
             try {
               parsedItem = JSON.parse(item);
               updatingLandingImages[index] = parsedItem;
             } catch (e) {
-              console.error('Failed to parse updatingLandingImages item:', e);
+              console.error("Failed to parse updatingLandingImages item:", e);
               return; // Skip this item if parsing fails
             }
           }
-          
+
           if (parsedItem.rmImage) {
             rmImages.push(parsedItem.rmImage);
           }
@@ -65,11 +65,11 @@ exports.updatePage = async (body, files) => {
   } else {
     // For other pages (about/terms/privacy), convert string to minimal object
     body.description = {
-      content: body.description || ''
+      content: body.description || ""
     };
   }
   const result = await db.getRow(sql, [body.pageName]);
-  
+
   if (result) {
     const updateSql = `
       UPDATE pages 

@@ -33,10 +33,10 @@ router.post("/register", async (req, res, next) => {
 router.post("/signin", async (req, res, next) => {
   try {
     const { token, currentUser } = await authService.signin(req.body);
-    res
-      .status(200)
-      .header("authorization", token)
-      .json(new ApiResponse("Sign in successful!", { currentUser }));
+      res
+        .status(200)
+        .header("authorization", token)
+        .json(new ApiResponse("Sign in successful!", { currentUser }));
   } catch (error) {
     return next(error);
   }

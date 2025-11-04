@@ -26,7 +26,7 @@ const dirMap = {
   blog: path.join(__dirname, "..", "..", "public", "blog"),
   page: path.join(__dirname, "..", "..", "public", "page"),
   temp: path.join(__dirname, "..", "..", "public", "temp"),
-  wishlist: path.join(__dirname, "..", "..", "public", "wishlist"),
+  wishlist: path.join(__dirname, "..", "..", "public", "wishlist")
 };
 
 function getPrefix(filename) {
@@ -62,7 +62,7 @@ const removeImages = async (imageArr) => {
         console.error(`Failed to delete file: ${filePath}. Error:`, error);
         return false;
       }
-    }),
+    })
   );
 
   return deletionResults; // Array of booleans
@@ -81,70 +81,6 @@ const applink = `
   </a>
 `;
 
-function generatePassResetContent(token, vueBaseUrl) {
-  return `
-    <p>Hello</p>
-    <p>Click the button to reset password, will be valid for 1 hour.</p>
-    <a href="${vueBaseUrl}/reset-password/?token=${token}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Reset Password</button></a>
-    <p>Best wishes,<br>WayzAway</p>
-    <br><br>${applink}
-`;
-}
-
-function generateInvitationContent({ fullName }, message, token) {
-  return `
-    <p>Hello</p>
-    <p>You got a new invitation from ${fullName}</p>
-    <p style="padding: 12px; border-left: 4px solid #d0d0d0; font-style: italic;">${message}</p>
-    <a href="${API_BASE_URL}/api/user/acceptInvite/?token=${token}"><button style="background-color: #e40046;color:white;border:none;padding:10px">Accept Invitation</button></a>
-    <p>Best wishes,<br>WayzAway</p>
-    <br><br>${applink}
-`;
-}
-
-function generateWelcomeContent(name, id, vueBaseUrl) {
-  return `
-  <p>Hello ${name},</p>
-  <p><strong>Welcome to WayzAway!</strong></p>
-  <p>Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go?</p>
-  <a href="${vueBaseUrl}/wall/${id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Visit your account</button></a>
-  <p>Best wishes,<br>WayzAway</p>
-  <br><br>${applink}
-`;
-}
-
-function generatePostCreationContent(user, type, vueBaseUrl) {
-  return `
-  <p>From <b>${user.fullName}:</b></p>
-  <p>"I have ${
-    type === "add" ? "uploaded" : "updated"
-  } a new event to my WayzAway. Sign in below to have a look!"</p>
-  <a href="${vueBaseUrl}/wall/${
-    user.id
-  }"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
-  <p>Best wishes,<br>WayzAway</p>
-  <br><br>${applink}
-`;
-}
-
-function generateNewCommentContent(user, vueBaseUrl) {
-  return `
-  <p>Someone has commented on your event, log back into your account to have a look.</p>
-  <a href="${vueBaseUrl}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
-  <p>Best wishes,<br>WayzAway</p>
-  <br><br>${applink}
-`;
-}
-
-function generateTodaysEventContent(user, vueBaseUrl) {
-  return `
-  <p>You have an event scheduled for today. Sign into your Wayzaway account to have a look.</p>
-  <a href="${vueBaseUrl}/wall/${user.id}"><button style="background-color: #e40046; color: white; border: none; padding: 10px;">Sign in</button></a>
-  <p>Best wishes,<br>WayzAway</p>
-  <br><br>${applink}
-`;
-}
-
 const appInfo = { name: "WayzAway", version: 1.6 };
 
 /**
@@ -153,16 +89,16 @@ const appInfo = { name: "WayzAway", version: 1.6 };
  * @returns {string} - The generated slug
  */
 function generateSlug(text) {
-  if (!text) return '';
-  
+  if (!text) return "";
+
   return text
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')        // Replace spaces with hyphens
-    .replace(/[^\w\s-]/g, '')    // Remove special characters
-    .replace(/[-]+/g, '-')       // Replace multiple hyphens with single hyphen
-    .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
+    .replace(/\s+/g, "-")        // Replace spaces with hyphens
+    .replace(/[^\w\s-]/g, "")    // Remove special characters
+    .replace(/[-]+/g, "-")       // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, "");    // Remove leading/trailing hyphens
 }
 
 module.exports = {
@@ -175,12 +111,6 @@ module.exports = {
   isProd,
   appInfo,
   generateSlug,
-  generatePassResetContent,
-  generateInvitationContent,
-  generateWelcomeContent,
-  generatePostCreationContent,
-  generateNewCommentContent,
-  generateTodaysEventContent,
   moveImage,
   getFilePath,
   getDirPath,

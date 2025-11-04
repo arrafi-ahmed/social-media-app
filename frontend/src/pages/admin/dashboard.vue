@@ -6,6 +6,7 @@
   import NameCard from '@/components/NameCard.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
+  import RichTextEditor from '@/components/RichTextEditor.vue'
   import { formatDateFromTimestamp, getBlogImageUrl, getPageImageUrl, isValidImage } from '@/others/util.js'
   import $axios from '@/plugins/axios.js'
 
@@ -308,22 +309,26 @@
 
     store.dispatch('page/setPage', 'about').then(() => {
       updatingAboutTitle.value = initAbout.value.title
-      updatingAboutText.value = initAbout.value.description?.content || initAbout.value.description || ''
+      // Handle both HTML (from rich editor) and plain text (legacy)
+      const content = initAbout.value.description?.content || initAbout.value.description || ''
+      updatingAboutText.value = content
     })
     store.dispatch('page/setPage', 'terms').then(() => {
       updatingTermsTitle.value = initTerms.value.title
-      updatingTermsText.value = initTerms.value.description?.content || initTerms.value.description || ''
+      const content = initTerms.value.description?.content || initTerms.value.description || ''
+      updatingTermsText.value = content
     })
     store.dispatch('page/setPage', 'privacy').then(() => {
       updatingPrivacyTitle.value = initPrivacy.value.title
-      updatingPrivacyText.value = initPrivacy.value.description?.content || initPrivacy.value.description || ''
+      const content = initPrivacy.value.description?.content || initPrivacy.value.description || ''
+      updatingPrivacyText.value = content
     })
   })
 </script>
 
 <template>
   <v-container>
-    <page-title subtitle="Manage your site" title="Admin Panel" />
+    <page-title :show-back-button="false" subtitle="Manage your site" title="Admin Panel" />
     <v-row justify="center">
       <v-col cols="12">
         <v-tabs v-model="tab" bg-color="primary" density="comfortable">
@@ -854,12 +859,9 @@
                     :rules="[(v) => !!v || 'Title is required!']"
                     variant="solo"
                   />
-                  <v-textarea
+                  <rich-text-editor
                     v-model="updatingAboutText"
-                    class="text-pre-wrap"
-                    label="Edit About Us"
-                    rows="10"
-                    variant="solo"
+                    placeholder="Start typing your About Us content..."
                   />
                   <div class="d-flex justify-end mb-1">
                     <v-btn
@@ -887,12 +889,9 @@
                     :rules="[(v) => !!v || 'Title is required!']"
                     variant="solo"
                   />
-                  <v-textarea
+                  <rich-text-editor
                     v-model="updatingTermsText"
-                    class="text-pre-wrap"
-                    label="Edit Terms & Conditions"
-                    rows="10"
-                    variant="solo"
+                    placeholder="Start typing your Terms & Conditions..."
                   />
                   <div class="d-flex justify-end mb-1">
                     <v-btn
@@ -920,12 +919,9 @@
                     :rules="[(v) => !!v || 'Title is required!']"
                     variant="solo"
                   />
-                  <v-textarea
+                  <rich-text-editor
                     v-model="updatingPrivacyText"
-                    class="text-pre-wrap"
-                    label="Edit Privacy Policy"
-                    rows="10"
-                    variant="solo"
+                    placeholder="Start typing your Privacy Policy..."
                   />
                   <div class="d-flex justify-end mb-1">
                     <v-btn
@@ -1047,15 +1043,13 @@
             variant="solo"
           />
 
-          <v-textarea
-            v-model="newBlog.description"
-            class="mt-2 text-pre-wrap"
-            hide-details="auto"
-            label="Description"
-            rows="8"
-            :rules="[(v) => !!v || 'Description is required!']"
-            variant="solo"
-          />
+          <div class="mt-2">
+            <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+            <rich-text-editor
+              v-model="newBlog.description"
+              placeholder="Write your blog post..."
+            />
+          </div>
 
           <v-file-upload
             v-model="newBlog.image"
@@ -1113,15 +1107,13 @@
             variant="solo"
           />
 
-          <v-textarea
-            v-model="editingBlog.description"
-            class="mt-2 text-pre-wrap"
-            hide-details="auto"
-            label="Description"
-            rows="8"
-            :rules="[(v) => !!v || 'Description is required!']"
-            variant="solo"
-          />
+          <div class="mt-2">
+            <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+            <rich-text-editor
+              v-model="editingBlog.description"
+              placeholder="Write your blog post..."
+            />
+          </div>
 
           <ImageManager
             v-if="editingBlog.image"

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {auth} = require("../middleware/auth");
+const { auth } = require("../middleware/auth");
 const { upload } = require("../middleware/upload");
 const ApiResponse = require("../model/ApiResponse");
 const pageService = require("../service/page");
@@ -28,7 +28,7 @@ router.post(
     } catch (error) {
       return next(error);
     }
-  },
+  }
 );
 
 module.exports = router;

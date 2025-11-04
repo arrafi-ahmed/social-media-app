@@ -8,7 +8,7 @@
     name: 'favorite',
     meta: {
       requiresAuth: true,
-      title: 'Favorites',
+      title: 'Saved Events',
       layout: 'default',
     },
   })
@@ -57,7 +57,7 @@
     <v-row v-if="events">
       <!-- Main content -->
       <v-col cols="12">
-        <page-title :back-url="calcHome" subtitle="Your saved events" title="Favourite" />
+        <page-title :back-url="calcHome" subtitle="Your saved events" title="Saved Events" />
 
         <!-- Event Card Feed -->
         <event-infinite

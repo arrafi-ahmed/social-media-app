@@ -62,24 +62,26 @@
       <!-- Main content -->
       <v-col cols="12">
         <page-title :back-url="calcHome" :subtitle="`${friends.length} friends`" title="Friends">
-          <v-menu>
-            <template #activator="{ props: menuProps }">
-              <v-btn
-                icon="mdi-dots-vertical"
-                location="top end"
-                rounded
-                v-bind="menuProps"
-                variant="text"
-              />
-            </template>
-            <v-list density="compact">
-              <v-list-item
-                link
-                title="Invite a friend"
-                @click="$router.push({ name: 'friendsInvite' })"
-              />
-            </v-list>
-          </v-menu>
+          <template #actions>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn
+                  icon="mdi-dots-vertical"
+                  location="top end"
+                  rounded
+                  v-bind="menuProps"
+                  variant="text"
+                />
+              </template>
+              <v-list density="compact">
+                <v-list-item
+                  link
+                  title="Invite a friend"
+                  @click="$router.push({ name: 'friendsInvite' })"
+                />
+              </v-list>
+            </v-menu>
+          </template>
         </page-title>
 
         <v-row align="center" justify="center">
@@ -97,10 +99,10 @@
                   v-model="friendSearch"
                   class="mb-2 mb-md-4"
                   clearable
-                  rounded="sm"
                   hide-details
                   placeholder="Search friends"
                   prepend-inner-icon="mdi-magnify"
+                  rounded="sm"
                 />
               </template>
 

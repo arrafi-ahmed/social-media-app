@@ -3,12 +3,8 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const db = require("../db");
 const CustomError = require("../model/CustomError");
-const {
-  generatePassResetContent,
-  generateWelcomeContent,
-} = require("../others/util");
 const eventService = require("./event");
-const { sendMail } = require("./sendMail");
+const emailService = require("../email");
 const userService = require("./user");
 
 exports.register = async (payload, clientUrl) => {
@@ -24,21 +20,18 @@ exports.register = async (payload, clientUrl) => {
   await userService.createUserSettings(insertedUser.id);
 
   // Send welcome email
-  const to = payload.email;
-  const subject = `Welcome to WayzAway ${payload.fullName}!`;
-  const html = generateWelcomeContent(
-    payload.fullName,
-    insertedUser.id,
-    clientUrl,
-  );
-  sendMail(to, subject, html);
+  emailService.sendWelcomeEmail(payload.email, {
+    name: payload.fullName,
+    id: insertedUser.id,
+    vueBaseUrl: clientUrl
+  });
 
   const admins = await userService.getAdmins();
 
   //add new user to all admins friend list
   const records = admins.map((admin) => ({
     userId1: admin.id,
-    userId2: insertedUser.id,
+    userId2: insertedUser.id
   }));
   await bulkInsertFriendships(records);
 
@@ -50,7 +43,7 @@ exports.register = async (payload, clientUrl) => {
 
   // Get pending invitations for the registered user
   const pendingInvitations = await userService.getPendingInvitation(
-    insertedUser.email,
+    insertedUser.email
   );
 
   // if no invitation return only registered data
@@ -64,17 +57,17 @@ exports.register = async (payload, clientUrl) => {
     // Prepare friendship records for bulk insertion
     const friendshipRecords = pendingInvitations.map((item) => ({
       userId1: insertedUser.id,
-      userId2: item.senderId,
+      userId2: item.senderId
     }));
 
     await Promise.all([
       bulkInsertFriendships(friendshipRecords),
-      bulkDeleteInvitations(pendingInvitationIds),
+      bulkDeleteInvitations(pendingInvitationIds)
     ]);
     return {
       newFriendsCount: friendshipRecords.length,
       authData,
-      welcomeEvent,
+      welcomeEvent
     };
   }
 };
@@ -88,18 +81,18 @@ exports.signin = async (payload) => {
     WHERE u.email = $1
   `;
   const result = await db.getRow(sql, [payload.email]);
-  
+
   if (!result) {
     throw new CustomError("User not found!", 401);
   }
-  
+
   // Compare provided password with hashed password
   const isPasswordValid = await bcrypt.compare(payload.password, result.password);
-  
+
   if (!isPasswordValid) {
     throw new CustomError("Incorrect email/password!", 401);
   }
-  
+
   return generateAuthData(result);
 };
 
@@ -116,12 +109,12 @@ exports.requestResetPass = async (resetEmail, clientUrl) => {
   const token = uuidv4();
   const values = [resetEmail, token, new Date()];
 
-  const passwordResetRecord = await db.getRow(sql + ' RETURNING *', values);
+  const passwordResetRecord = await db.getRow(sql + " RETURNING *", values);
 
-  const to = resetEmail;
-  const subject = "Wayzaway password reset link";
-  const html = generatePassResetContent(passwordResetRecord.token, clientUrl);
-  return await sendMail(to, subject, html);
+  return await emailService.sendPasswordResetEmail(resetEmail, {
+    token: passwordResetRecord.token,
+    vueBaseUrl: clientUrl
+  });
 };
 
 exports.submitResetPass = async ({ token, newPass }) => {
@@ -161,7 +154,7 @@ function generateAuthData(result) {
       fullName: result.fullName,
       image: result.image,
       slug: result.slug,
-      theme: result.theme || 'light',
+      theme: result.theme || "light"
     };
     token = jwt.sign({ currentUser }, process.env.TOKEN_SECRET);
   }

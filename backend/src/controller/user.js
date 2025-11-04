@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {auth} = require("../middleware/auth");
+const { auth } = require("../middleware/auth");
 const { upload } = require("../middleware/upload");
 const ApiResponse = require("../model/ApiResponse");
 const CustomError = require("../model/CustomError");
@@ -127,8 +127,8 @@ router.post(
       const userId = req.currentUser.id;
       const result = await userService.updateProfile(
         req.body,
-        req.files,
-        userId,
+        req.processedFiles || req.files,
+        userId
       );
       res
         .status(200)
@@ -136,7 +136,7 @@ router.post(
     } catch (error) {
       return next(error);
     }
-  },
+  }
 );
 
 router.post("/updateSettings", auth, async (req, res, next) => {
@@ -154,7 +154,7 @@ router.post("/sendInvite", auth, async (req, res, next) => {
     const userId = req.currentUser.id;
     const { successfulInvites, failedInvites } = await userService.sendInvite(
       req.body,
-      userId,
+      userId
     );
 
     const messages = [];
@@ -227,7 +227,7 @@ router.get("/updateEmailNewEventNotification", auth, async (req, res, next) => {
   try {
     const result = await userService.updateEmailNewEventNotification(
       req.query.payload,
-      req.currentUser.id,
+      req.currentUser.id
     );
     res
       .status(200)
@@ -241,7 +241,7 @@ router.get("/updateEmailUpdateEventNotification", auth, async (req, res, next) =
   try {
     const result = await userService.updateEmailUpdateEventNotification(
       req.query.payload,
-      req.currentUser.id,
+      req.currentUser.id
     );
     res
       .status(200)
@@ -255,7 +255,7 @@ router.get("/updateEmailNewCommentNotification", auth, async (req, res, next) =>
   try {
     const result = await userService.updateEmailNewCommentNotification(
       req.query.payload,
-      req.currentUser.id,
+      req.currentUser.id
     );
     res
       .status(200)
@@ -268,7 +268,7 @@ router.get("/updateEmailNewCommentNotification", auth, async (req, res, next) =>
 router.get("/addAllUsersToAdminFriendlist", auth, async (req, res, next) => {
   try {
     const result = await userService.addAllUsersToAdminFriendlist(
-      req.currentUser.id,
+      req.currentUser.id
     );
     res
       .status(200)

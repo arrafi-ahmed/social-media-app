@@ -44,7 +44,7 @@ router.post("/edit", auth, upload("event"), compress("event"), async (req, res, 
 router.get("/getEvent", auth, async (req, res, next) => {
   try {
     const eventId = req.query?.eventId ? parseInt(req.query.eventId, 10) : undefined;
-    const result = await eventService.getEvent(eventId);
+    const result = await eventService.getEvent(eventId, req.currentUser.id);
     res.status(200).json(new ApiResponse(null, result));
   } catch (error) {
     return next(error);
@@ -131,11 +131,41 @@ router.get("/switchFavoriteEvent", auth, async (req, res, next) => {
       .json(
         new ApiResponse(
           "Event " +
-          (result === true ? "added to" : "removed from") +
-          " favourites!",
+          (result === true ? "saved to" : "removed from") +
+          " saved events!",
           result
         )
       );
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post("/reaction", auth, async (req, res, next) => {
+  try {
+    const { eventId, reactionType } = req.body;
+    if (!eventId || !reactionType) {
+      return next(new CustomError("Event ID and reaction type are required!", 400));
+    }
+    const result = await eventService.toggleReaction(
+      parseInt(eventId),
+      reactionType,
+      req.currentUser.id
+    );
+    const message = result.isActive 
+      ? `Reaction ${result.reactionType} added!`
+      : "Reaction removed!";
+    res.status(200).json(new ApiResponse(message, result));
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get("/reactions/:eventId", auth, async (req, res, next) => {
+  try {
+    const eventId = parseInt(req.params.eventId);
+    const result = await eventService.getEventReactions(eventId, req.currentUser.id);
+    res.status(200).json(new ApiResponse(null, result)); // No message to suppress snackbar
   } catch (error) {
     return next(error);
   }

@@ -64,29 +64,32 @@
       <!-- Main content -->
       <v-col cols="12">
         <page-title :back-url="calcHome" subtitle="Your future plans" title="Wishlist">
-          <v-btn
-            v-if="xs"
-            color="primary"
-            icon="mdi-plus-circle-outline"
-            rounded
-            tile
-            variant="text"
-            @click="openAddEvent"
-          />
-          <v-menu v-else>
-            <template #activator="{ props: menuProps }">
-              <v-btn
-                icon="mdi-dots-vertical"
-                location="top end"
-                rounded
-                v-bind="menuProps"
-                variant="text"
-              />
-            </template>
-            <v-list density="compact">
-              <v-list-item link title="Add Event" @click="openAddEvent" />
-            </v-list>
-          </v-menu>
+          <template #mobile-actions>
+            <v-btn
+              color="primary"
+              icon="mdi-plus-circle-outline"
+              rounded
+              tile
+              variant="text"
+              @click="openAddEvent"
+            />
+          </template>
+          <template #actions>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn
+                  icon="mdi-dots-vertical"
+                  location="top end"
+                  rounded
+                  v-bind="menuProps"
+                  variant="text"
+                />
+              </template>
+              <v-list density="compact">
+                <v-list-item link title="Add Event" @click="openAddEvent" />
+              </v-list>
+            </v-menu>
+          </template>
         </page-title>
 
         <!-- Event Card Feed -->

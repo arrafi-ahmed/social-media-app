@@ -34,7 +34,7 @@ const light = {
   colors: {
     'header': '#ffffff', // clean white header
     'background': '#f9f9fb', // light neutral page background
-    'surface': '#ffffff', // cards/panels stay white
+    'surface': '#fefefe', // subtle warm off-white for cards/panels (was pure white)
     'primary': '#e40046', // your brand red, unchanged
     'secondary': '#595959', // neutral gray for secondary UI
     'success': '#4CAF50', // standard green
@@ -45,7 +45,7 @@ const light = {
 }
 
 // Get initial theme from localStorage
-const getStoredTheme = () => {
+function getStoredTheme () {
   try {
     const storedUser = JSON.parse(localStorage.getItem('currentUser') || '{}')
     return storedUser.theme || 'light'

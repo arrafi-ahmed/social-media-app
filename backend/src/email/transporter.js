@@ -1,6 +1,5 @@
 const nodeMailer = require("nodemailer");
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-// let html = ``;
 
 const transporter = nodeMailer.createTransport({
   host: SMTP_HOST,
@@ -8,8 +7,8 @@ const transporter = nodeMailer.createTransport({
   secure: true,
   auth: {
     user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
+    pass: SMTP_PASS
+  }
 });
 
 async function sendMail(to, subject, html) {
@@ -17,10 +16,12 @@ async function sendMail(to, subject, html) {
     from: `WayzAway <${SMTP_USER}>`,
     to,
     subject,
-    html,
+    html
   });
 }
 
 module.exports = {
   sendMail,
+  transporter
 };
+

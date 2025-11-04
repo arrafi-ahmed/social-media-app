@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { raw } = require("express");
-const {auth} = require("../middleware/auth");
+const { auth } = require("../middleware/auth");
 const ApiResponse = require("../model/ApiResponse");
 const CustomError = require("../model/CustomError");
 const subscriptionService = require("../service/subscription");
@@ -59,7 +59,7 @@ router.get("/saveSubscription", auth, async (req, res, next) => {
     const result = await subscriptionService.saveSubscription(
       planId,
       planTitle,
-      req.currentUser.id,
+      req.currentUser.id
     );
     res.status(200).json(new ApiResponse(null, result));
   } catch (error) {
@@ -75,7 +75,7 @@ router.get("/saveSubscriptionManually", auth, async (req, res, next) => {
     const result = await subscriptionService.saveSubscriptionManually(
       planId,
       planTitle,
-      userId,
+      userId
     );
     res.status(200).json(new ApiResponse("Subscription added!", result));
   } catch (error) {
@@ -88,7 +88,7 @@ router.get("/cancelSubscription", auth, async (req, res, next) => {
     const stripeSubscriptionId = req.query?.stripeSubscriptionId;
     const result =
       await subscriptionService.cancelSubscription(stripeSubscriptionId);
-      
+
     res.status(200).json(new ApiResponse("Subscription cancelled!", result));
   } catch (error) {
     return next(error);

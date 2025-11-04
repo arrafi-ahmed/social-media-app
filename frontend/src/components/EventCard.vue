@@ -2,21 +2,34 @@
 <script setup>
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useTheme } from 'vuetify'
   import { useStore } from 'vuex'
-  import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
-  import UserAvatar from '@/components/UserAvatar.vue'
-  import {
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
+import {
     formatDateFromTimestamp,
     formatMonthYear,
     getDate,
     goUserProfile,
     loadEventThumb,
     to12hTime,
+    getDaysUntilExpiration,
   } from '@/others/util.js'
 
   const store = useStore()
   const router = useRouter()
+  const theme = useTheme()
   const { event, type, source } = defineProps(['event', 'type', 'source'])
+
+  // Computed styles for date chip based on theme
+  const dateChipStyles = computed(() => {
+    const isDark = theme.current.value.dark
+    return {
+      dateBg: '#e40046', // Primary color for date (consistent across themes)
+      monthBg: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.9)', // Semi-transparent overlay
+      monthText: isDark ? '#ffffff' : '#e40046', // White text in dark, primary text in light
+    }
+  })
 
   const currentUser = computed(() => store.getters['auth/getCurrentUser'])
   const isAdmin = computed(() => store.getters['auth/isAdmin'])
@@ -32,6 +45,11 @@
   // Helper to get user identifier (slug preferred, fallback to userId)
   const getUserIdentifier = computed(() => {
     return event.slug || event.userId
+  })
+  
+  // Calculate days until expiration
+  const daysUntilExpiration = computed(() => {
+    return getDaysUntilExpiration(event.expiresAt)
   })
 
   function deleteEvent (eventId, images) {
@@ -79,7 +97,7 @@
 </script>
 
 <template>
-  <v-sheet v-if="event" class="rounded" :elevation="3">
+  <v-sheet v-if="event" class="rounded event-card-sheet" :elevation="2">
     <div
       v-if="type === 'has-header'"
       class="d-flex align-center position-relative clickable pa-2"
@@ -135,15 +153,26 @@
     >
       <v-chip
         v-if="event.date"
-        class="mt-4 absolute high-z-index v-chip-0-padding rounded-0"
+        class="mt-4 absolute high-z-index v-chip-0-padding"
         label
         variant="text"
       >
-        <div class="d-flex">
-          <div class="text-overline bg-primary pa-2">
+        <div class="d-flex overflow-hidden" style="border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+          <div
+            class="text-overline pa-2 text-white font-weight-bold"
+            style="border-radius: 4px 0 0 4px;"
+            :style="{ backgroundColor: dateChipStyles.dateBg }"
+          >
             {{ getDate(event.date) }}
           </div>
-          <div class="text-overline text-primary pa-2">
+          <div
+            class="text-overline pa-2 font-weight-medium"
+            style="border-radius: 0 4px 4px 0;"
+            :style="{
+              backgroundColor: dateChipStyles.monthBg,
+              color: dateChipStyles.monthText
+            }"
+          >
             {{ formatMonthYear(event.date) }}
           </div>
         </div>
@@ -204,31 +233,50 @@
       </v-menu>
     </v-img>
 
-    <div class="pa-3">
-      <div class="text-primary text-overline">
-        {{ event.category }}
-      </div>
-      <h4 class="mb-2">{{ event.title }}</h4>
-      <div v-if="event.startTime" class="d-flex align-center">
-        <v-icon class="mr-2" color="primary" size="small">mdi-clock</v-icon>
-        <span>{{ to12hTime(event.startTime) }}</span>
-        <span v-if="event.endTime"> - {{ to12hTime(event.endTime) }}</span>
-      </div>
-      <div v-if="event.location" class="d-flex align-center">
-        <v-icon
-          class="mr-2"
+    <div class="pa-4">
+      <div class="d-flex align-center mb-2" style="gap: 8px;">
+        <v-chip
+          v-if="event.category"
           color="primary"
           size="small"
-        >mdi-map-marker
-        </v-icon>
-        <span>{{ event.location }}</span>
+          variant="tonal"
+        >
+          {{ event.category }}
+        </v-chip>
+        <v-chip
+          v-if="event.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0"
+          color="warning"
+          size="small"
+          variant="tonal"
+        >
+          Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? 'day' : 'days' }}
+        </v-chip>
+      </div>
+      <h5 class="mb-4" style="font-weight: 600; line-height: 1.3;">{{ event.title }}</h5>
+      
+      <div v-if="event.startTime || event.location" class="mb-3">
+        <div v-if="event.startTime" class="d-flex align-center mb-2">
+          <v-icon class="mr-2" color="primary" size="small">mdi-clock</v-icon>
+          <span class="text-body-2">{{ to12hTime(event.startTime) }}</span>
+          <span v-if="event.endTime" class="text-body-2"> - {{ to12hTime(event.endTime) }}</span>
+        </div>
+        <div v-if="event.location" class="d-flex align-center">
+          <v-icon
+            class="mr-2"
+            color="primary"
+            size="small"
+          >mdi-map-marker
+          </v-icon>
+          <span class="text-body-2">{{ event.location }}</span>
+        </div>
       </div>
 
-      <div class="d-flex justify-space-between">
+      <div class="d-flex justify-space-between align-center">
         <v-btn
-          class="mt-4"
+          class="mt-2"
+          color="primary"
           density="comfortable"
-          variant="tonal"
+          variant="flat"
           @click="goEventSingle(event.id)"
         >More Details
         </v-btn>
@@ -253,4 +301,13 @@
   </v-sheet>
 </template>
 
-<style scoped></style>
+<style scoped>
+.event-card-sheet {
+  transition: box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.event-card-sheet:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+</style>

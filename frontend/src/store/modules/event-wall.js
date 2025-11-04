@@ -75,6 +75,47 @@ export const mutations = {
     }
     state.events[targetItemIndex].newNotification = payload.payload
   },
+  updateEventReaction (state, { eventId, reactionType, isActive, previousReaction }) {
+    const targetItemIndex = state.events.findIndex(
+      item => item.id == eventId,
+    )
+    if (targetItemIndex === -1) {
+      return
+    }
+    const event = state.events[targetItemIndex]
+    if (!event.reactions) {
+      event.reactions = { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }
+    }
+    
+    // Update user reaction first
+    if (isActive && reactionType) {
+      // If same reaction was clicked, it means we're removing it
+      if (previousReaction === reactionType) {
+        event.userReaction = null
+        // Remove count only if removing
+        if (event.reactions[reactionType] > 0) {
+          event.reactions[reactionType]--
+        }
+      } else {
+        // Change to different reaction
+        event.userReaction = reactionType
+        // Remove previous reaction count
+        if (previousReaction && previousReaction !== reactionType) {
+          if (event.reactions[previousReaction] > 0) {
+            event.reactions[previousReaction]--
+          }
+        }
+        // Add new reaction count
+        event.reactions[reactionType]++
+      }
+    } else {
+      // Remove reaction
+      event.userReaction = null
+      if (event.reactions[reactionType] > 0) {
+        event.reactions[reactionType]--
+      }
+    }
+  },
   setEditingEvent (state, payload) {
     state.editingEvent = new Event(payload || {})
   },

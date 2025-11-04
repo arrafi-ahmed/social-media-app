@@ -1,41 +1,41 @@
 <script setup>
-import { computed } from 'vue'
-import { useDisplay } from 'vuetify'
-import { useRouter } from 'vue-router'
+  import { computed } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useDisplay } from 'vuetify'
 
-// Props
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-  subtitle: {
-    type: String,
-    default: '',
-  },
-  showBackButton: {
-    type: Boolean,
-    default: true,
-  },
-  backUrl: {
-    type: Object,
-    default: null,
-  },
-})
+  // Props
+  const props = defineProps({
+    title: {
+      type: String,
+      required: true,
+    },
+    subtitle: {
+      type: String,
+      default: '',
+    },
+    showBackButton: {
+      type: Boolean,
+      default: true,
+    },
+    backUrl: {
+      type: Object,
+      default: null,
+    },
+  })
 
-const router = useRouter()
+  const router = useRouter()
 
-// Computed
-const { mobile } = useDisplay()
-const isMobile = computed(() => mobile.value)
+  // Computed
+  const { mobile } = useDisplay()
+  const isMobile = computed(() => mobile.value)
 
-function handleBack () {
-  if (props.backUrl) {
-    router.push(props.backUrl)
-  } else {
-    router.back()
+  function handleBack () {
+    if (props.backUrl) {
+      router.push(props.backUrl)
+    } else {
+      router.back()
+    }
   }
-}
 </script>
 
 <template>

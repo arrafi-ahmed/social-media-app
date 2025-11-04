@@ -13,6 +13,9 @@ export default class Event {
                 newNotification = false,
                 userId = null,
                 createdAt = null,
+                expiresAt = null,
+                reactions = { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 },
+                userReaction = null,
               } = {}) {
     this.id = id
     this.title = title
@@ -27,5 +30,8 @@ export default class Event {
     this.newNotification = newNotification
     this.userId = userId
     this.createdAt = createdAt
+    this.expiresAt = expiresAt
+    this.reactions = reactions
+    this.userReaction = userReaction
   }
 }

@@ -4,16 +4,14 @@ const db = require("../db");
 const CustomError = require("../model/CustomError");
 const {
   removeImages,
-  generateNewCommentContent,
-  generateTodaysEventContent,
-  generateInvitationContent, adminRole,
-  generateSlug,
+  adminRole,
+  generateSlug
 } = require("../others/util");
-const { sendMail } = require("./sendMail");
+const emailService = require("../email");
 
 // Helper to generate random string for slug uniqueness
 function generateRandomString(length = 6) {
-  return uuidv4().replace(/-/g, '').slice(0, length);
+  return uuidv4().replace(/-/g, "").slice(0, length);
 }
 
 // Creates a new user and returns the inserted user row
@@ -39,7 +37,7 @@ exports.createUser = async (payload) => {
       if (counter === 1 && baseSlug) {
         slug = `${baseSlug}${generateRandomString(6)}`;
       } else {
-        slug = `${baseSlug || 'user'}${generateRandomString(6)}`;
+        slug = `${baseSlug || "user"}${generateRandomString(6)}`;
       }
       counter++;
       // Fallback if slug still conflicts after many attempts
@@ -64,7 +62,7 @@ exports.createUser = async (payload) => {
     null, // payload.country,
     payload.role,
     slug,
-    new Date(),
+    new Date()
   ]);
 };
 
@@ -74,12 +72,12 @@ exports.addAllUsersToAdminFriendlist = async (adminId) => {
   const friends = await exports.getFriends(adminId);
   const notFriends = users.filter(
     (user) =>
-      !friends.some((friend) => friend.id === user.id) && user.id !== adminId,
+      !friends.some((friend) => friend.id === user.id) && user.id !== adminId
   );
 
   const userToAdd = notFriends.map((notFriend) => ({
     userId1: adminId,
-    userId2: notFriend.id,
+    userId2: notFriend.id
   }));
 
   await bulkInsertFriendships(userToAdd);
@@ -155,7 +153,7 @@ exports.sendInvite = async (body, userId) => {
     //check if initation sent already
     const existingInvite = await db.getRow(
       `SELECT * FROM invitation WHERE sender_id = $1 AND receiver_email = $2`,
-      [userId, email],
+      [userId, email]
     );
     if (existingInvite && existingInvite.id) {
       throw new CustomError("Already sent invitation!", 409, email);
@@ -171,7 +169,7 @@ exports.sendInvite = async (body, userId) => {
         throw new CustomError(
           "Can't send invitation to own email!",
           400,
-          email,
+          email
         );
       }
       const isFriend = await exports.checkFriends(receiver.id, senderId);
@@ -185,7 +183,7 @@ exports.sendInvite = async (body, userId) => {
     const token = uuidv4();
     await db.execute(
       `INSERT INTO invitation (sender_id, receiver_email, token, is_accepted, created_at) VALUES ($1, $2, $3, $4, $5)`,
-      [senderId, email, token, false, new Date()],
+      [senderId, email, token, false, new Date()]
     );
     const { fullName } = await exports.getUserById(senderId);
     return { senderData: { fullName }, token, email };
@@ -203,15 +201,18 @@ exports.sendInvite = async (body, userId) => {
     .filter((result) => result.status === "rejected")
     .map((result) => ({
       email: result.reason.payload,
-      errorMessage: result.reason.message || "Unknown error", // Provide default message
+      errorMessage: result.reason.message || "Unknown error" // Provide default message
     }));
 
   const emailPromises = successfulInvites.map(
     ({ senderData, token, email }) => {
-      const subject = `Wayzaway invitation from ${senderData.fullName}`;
-      const html = generateInvitationContent(senderData, body.message, token);
-      return sendMail(email, subject, html);
-    },
+      return emailService.sendInvitationEmail(email, {
+        senderName: senderData.fullName,
+        message: body.message,
+        token,
+        apiBaseUrl: process.env.API_BASE_URL
+      });
+    }
   );
 
   await Promise.all(emailPromises);
@@ -228,13 +229,13 @@ exports.acceptInvite = async (token) => {
     if (invitation) {
       //destructure 'id' event its undefined
       const { id: receiverId } =
-        (await exports.getIdByEmail(invitation.receiverEmail)) || {};
+      (await exports.getIdByEmail(invitation.receiverEmail)) || {};
       // if receiver id exist then no need to register
       if (receiverId) {
         //  check if friends and throw err
         const areFriends = await exports.checkFriends(
           invitation.senderId,
-          receiverId,
+          receiverId
         );
 
         if (areFriends) {
@@ -343,7 +344,7 @@ exports.deleteUser = async (userId, rmImage) => {
     db.execute(sql3, [userId]),
     db.execute(sql4, [userId]),
     db.execute(sql5, [userId, userId]),
-    db.execute(sql6, [userId]),
+    db.execute(sql6, [userId])
   ]);
 
   // remove all events images
@@ -379,7 +380,7 @@ exports.updateProfile = async (body, files, userId) => {
   let sql = "UPDATE users SET";
   const values = [];
   const columns = [];
-  
+
   if (body.fullName !== undefined) {
     columns.push("full_name");
     values.push(body.fullName);
@@ -406,13 +407,17 @@ exports.updateProfile = async (body, files, userId) => {
   if (files) {
     columns.push("image");
     values.push(files[0].filename);
+  } else if (body.rmImage && !files) {
+    // If rmImage is provided but no new file, set image to null in database
+    columns.push("image");
+    values.push(null);
   }
-  
+
   if (columns.length === 0) {
     // No fields to update
     return await exports.getUserById(userId);
   }
-  
+
   sql += " " + columns.map((col, index) => `${col} = $${index + 1}`).join(", ");
   values.push(userId);
   sql += ` WHERE id = $${values.length} RETURNING full_name, email, image, slug`;
@@ -462,10 +467,10 @@ exports.sendNewCommentEmail = async (clientUrl) => {
   const sendEmailPromises = users
     .filter((user) => user.emailNewCommentNotification)
     .map(async (user) => {
-      const to = user.email;
-      const subject = `You have new ${user.commentCount} comment(s) on WayzAway!`;
-      const html = generateNewCommentContent(user, clientUrl);
-      return sendMail(to, subject, html);
+      return emailService.sendNewCommentEmail(user.email, {
+        userId: user.id,
+        vueBaseUrl: clientUrl
+      });
     });
   // Wait for all emails to be sent
   return await Promise.all(sendEmailPromises);
@@ -476,11 +481,10 @@ exports.sendTodaysEventEmail = async (clientUrl) => {
   const users = await exports.getUsersPostedEventsToday();
   // Generate email and send emails in parallel
   const sendEmailPromises = users.map(async (user) => {
-    const to = user.email;
-    const subject = `You have an event scheduled for today!`;
-    const html = generateTodaysEventContent(user, clientUrl);
-
-    return sendMail(to, subject, html);
+    return emailService.sendTodaysEventEmail(user.email, {
+      userId: user.id,
+      vueBaseUrl: clientUrl
+    });
   });
   // Wait for all emails to be sent
   return await Promise.all(sendEmailPromises);

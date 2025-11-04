@@ -1,7 +1,7 @@
-const sharp = require('sharp');
-const path = require('path');
-const fs = require('fs');
-const uploadConfig = require('../config/uploadConfig.js');
+const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
+const uploadConfig = require("../config/uploadConfig.js");
 
 function ensureDirSync(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -10,7 +10,7 @@ function ensureDirSync(dir) {
 function compress(configKey) {
   const config = uploadConfig[configKey];
   if (!config) throw new Error(`No sharp config for key: ${configKey}`);
-  const dest = path.join(__dirname, '../../public', config.dest);
+  const dest = path.join(__dirname, "../../public", config.dest);
   ensureDirSync(dest);
 
   return async (req, res, next) => {
@@ -28,7 +28,7 @@ function compress(configKey) {
           originalname: file.originalname,
           filename,
           path: filepath,
-          url: `/public/${config.dest}/${filename}`,
+          url: `/public/${config.dest}/${filename}`
         });
       }
       next();

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{title}}</title>
+  <style>
+    /* Email-safe CSS */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f8f9fa;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .email-header {
+      background-color: #ffffff;
+      padding: 32px 32px 24px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .email-logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e40046;
+      text-decoration: none;
+      margin: 0;
+    }
+    .email-content {
+      padding: 40px 32px;
+    }
+    .email-footer {
+      background-color: #f8f9fa;
+      padding: 32px;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      font-size: 14px;
+      color: #666666;
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 32px;
+      background-color: #e40046;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    .button:hover {
+      background-color: #c5003a;
+    }
+    .footer-links {
+      margin-top: 24px;
+    }
+    .footer-links a {
+      margin: 0 8px;
+    }
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+      }
+      .email-content {
+        padding: 32px 24px !important;
+      }
+      .email-header {
+        padding: 24px 24px 16px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" class="email-container" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td class="email-header">
+              <h1 class="email-logo">{{appName}}</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td class="email-content">
+              {{> content}}
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td class="email-footer">
+              <p style="margin: 0 0 16px 0;">Best wishes,<br><strong>{{appName}}</strong></p>
+              <div class="footer-links">
+                <a href="https://play.google.com/store/apps/details?id=app.wayzaway.online&pcampaignid=web_share" target="_blank" style="text-decoration: none;">
+                  <img src="{{vueBaseUrl}}/img/badge-google-play.png" alt="Download on Google Play" width="110" height="40" style="border: 0; display: inline-block;">
+                </a>
+                <a href="https://apps.apple.com/us/app/wayzaway-lifestyle-journal/id6497877312" target="_blank" style="text-decoration: none; margin-left: 8px;">
+                  <img src="{{vueBaseUrl}}/img/badge-app-store.png" alt="Download on App Store" width="105" height="35" style="border: 0; display: inline-block;">
+                </a>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+

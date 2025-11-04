@@ -6,7 +6,7 @@
 </script>
 
 <template>
-  <v-sheet
+  <v-card
     :class="{ 'pa-2 mb-2 rounded': type === 'has-header' }"
   >
     <h4 v-if="type === 'has-header'" class="px-2 pb-1">Upcoming Events</h4>
@@ -23,7 +23,7 @@
       icon="mdi-calendar-clock-outline"
       variant="text"
     />
-  </v-sheet>
+  </v-card>
 </template>
 
 <style scoped></style>

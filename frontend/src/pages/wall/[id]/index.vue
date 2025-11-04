@@ -73,23 +73,23 @@
 
       // Use the actual userId from the user object, ensure it's a valid number
       let userId = user.value?.id
-      
+
       // If user.value.id is not available, check if route.params.id is numeric
       if (!userId) {
         const routeId = route.params.id
         // Only use route.params.id if it's numeric (userId), not a slug
         if (routeId && /^\d+$/.test(routeId)) {
-          userId = parseInt(routeId, 10)
+          userId = Number.parseInt(routeId, 10)
         }
       }
-      
+
       // Ensure userId is a valid number before making the API call
       if (!userId || isNaN(userId)) {
         done('error')
         isLoading = false
         return
       }
-      
+
       const payload = {
         userId: userId,
         searchKeyword:
@@ -151,15 +151,15 @@
 
   async function fetchData () {
     resetPageNEvents()
-    
+
     // Try to fetch user by slug or id
     let userData
     let userId
-    
+
     try {
       // Check if route.params.id is a number (userId) or string (slug)
       const isNumeric = /^\d+$/.test(route.params.id)
-      
+
       if (isNumeric) {
         // It's a userId, use getUserById
         const response = await store.dispatch('eventWall/getUserById', route.params.id)
@@ -171,12 +171,12 @@
         userData = response.data?.payload
         userId = userData?.id
       }
-      
+
       if (!userData) {
         router.push({ name: 'notFound' })
         return
       }
-      
+
       // Check if current user has access to this profile
       const validFriends = userId == currentUser.id
         ? true
@@ -210,7 +210,7 @@
 
   const routeInfo = computed(() => store.state.routeInfo)
   const isOwnProfile = computed(() => user.value?.id === currentUser.id)
-  
+
   onMounted(() => {
     // fix: going other profile from event single - comment namecard, then return to event single - back btn. dont update new profile info
     // if (user.value?.id && user.value?.id != route.params.id) {

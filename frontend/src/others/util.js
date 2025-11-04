@@ -63,8 +63,27 @@ export function formatDateFromTimestamp (timestamp) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-indexed
   const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
-  return `${day}-${month}-${year}`
+// Calculate days until expiration
+export function getDaysUntilExpiration (expiresAt) {
+  if (!expiresAt) return null
+  const now = new Date()
+  const expires = new Date(expiresAt)
+  const diffTime = expires - now
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays > 0 ? diffDays : 0
+}
+
+// Format expiration date
+export function formatExpirationDate (expiresAt) {
+  if (!expiresAt) return null
+  return new Date(expiresAt).toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })
 }
 
 export function getCurrentDate () {
@@ -152,12 +171,12 @@ export function getWishlistImageUrl (imageName) {
 export function goUserProfile (identifier) {
   // identifier can be either userId (number) or slug (string) or user object
   let slug = identifier
-  
+
   // If identifier is an object (user), extract slug or id
   if (typeof identifier === 'object' && identifier !== null) {
     slug = identifier.slug || identifier.id
   }
-  
+
   router.push({ name: 'wall', params: { id: slug } })
 }
 
@@ -219,16 +238,18 @@ export function isValidSlug (slug) {
 }
 
 export function generateSlugFromText (text) {
-  if (!text) return ''
-  
+  if (!text) {
+    return ''
+  }
+
   return text
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')        // Replace spaces with hyphens
-    .replace(/[^\w\s-]/g, '')    // Remove special characters
-    .replace(/-+/g, '-')         // Replace multiple hyphens with single hyphen
-    .replace(/^-+|-+$/g, '')     // Remove leading/trailing hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
 }
 
 export const isValidPass = [

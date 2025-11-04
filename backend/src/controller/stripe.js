@@ -30,12 +30,12 @@ const ApiResponse = require("../model/ApiResponse");
 // });
 
 const webhook = async (req, res, next) => {
-    try {
-        const result = await stripeService.webhook(req);
-        res.status(200).json(new ApiResponse({ payload: result }));
-    } catch (err) {
-        next(err);
-    }
+  try {
+    const result = await stripeService.webhook(req);
+    res.status(200).json(new ApiResponse({ payload: result }));
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports = {router, webhook};
+module.exports = { router, webhook };

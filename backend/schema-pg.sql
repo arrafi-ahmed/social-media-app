@@ -26,6 +26,7 @@ CREATE TABLE event_post
     is_featured      BOOLEAN,
     new_notification BOOLEAN,
     user_id          INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    expires_at       TIMESTAMP,  --added
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -148,6 +149,17 @@ CREATE TABLE subscription
     active                 BOOLEAN        NOT NULL,
     pending_cancel         BOOLEAN,
     created_at             TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+--added
+CREATE TABLE event_reaction
+(
+    id            SERIAL PRIMARY KEY,
+    user_id       INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    event_id      INTEGER REFERENCES event_post (id) ON DELETE CASCADE,
+    reaction_type VARCHAR(20) NOT NULL, -- 'like', 'heart', 'laugh', 'wow', 'sad', 'angry'
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, event_id)
 );
 
 CREATE

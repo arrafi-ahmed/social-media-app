@@ -4,10 +4,10 @@
   import { useDisplay, useTheme } from 'vuetify'
   import { useStore } from 'vuex'
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+  import ImageManager from '@/components/ImageManager.vue'
   import PageTitle from '@/components/PageTitle.vue'
-  import UserAvatar from '@/components/UserAvatar.vue'
   import { User, UserSettings } from '@/models'
-  import { isValidEmail, isValidImage, isValidSlug } from '@/others/util.js'
+  import { formatDateFromTimestamp, formatPrice, getUserImageUrl, isValidEmail, isValidImage, isValidSlug } from '@/others/util.js'
 
   definePage({
     name: 'settings',
@@ -25,6 +25,18 @@
 
   const calcHome = computed(() => store.getters['auth/calcHome'])
   const profile = computed(() => store.state.user.profile)
+  const currentUser = computed(() => store.getters['auth/getCurrentUser'])
+  const subscription = computed(() => store.state.subscription.subscription)
+  const subscriptionPlans = computed(() => store.state.subscription.subscriptionPlans)
+  const isSubscriptionActive = computed(() => store.getters['subscription/isSubscriptionActive'])
+  const pendingCancel = computed(() => store.getters['subscription/pendingCancel'])
+  
+  // Check if current subscription is basic plan (no expiration)
+  const isBasicPlan = computed(() => {
+    if (!subscription.value?.planId) return false
+    const plan = subscriptionPlans.value.find(p => p.id === subscription.value.planId)
+    return plan?.title?.toLowerCase() === 'basic' || subscription.value?.stripeSubscriptionId === 0 || subscription.value?.stripeSubscriptionId === '0'
+  })
 
   // User model for profile updates
   const userInit = new User()
@@ -32,13 +44,23 @@
   user.newPassword = null
   user.newProfilePicture = null
   user.slug = null
+  const imageDeleted = ref(false)
 
   // UserSettings model for notification settings
   const settingsInit = new UserSettings()
   const settings = reactive({ ...settingsInit })
 
   function handleProfileImageChange (files) {
-    user.newProfilePicture = files
+    // When new image is uploaded, reset deletion flag
+    if (files) {
+      imageDeleted.value = false
+    }
+  }
+
+  function handleDeleteProfileImage () {
+    // When ImageManager delete is clicked, mark image for deletion
+    imageDeleted.value = true
+    user.newProfilePicture = null
   }
 
   const form = ref(null)
@@ -59,12 +81,23 @@
     }
 
     if (user.newProfilePicture) {
-      formData.append('files', user.newProfilePicture)
-      if (profile.value?.image) formData.append('rmImage', profile.value?.image)
+      // v-file-upload may return array or single file - handle both cases
+      const fileToUpload = Array.isArray(user.newProfilePicture)
+        ? user.newProfilePicture[0]
+        : user.newProfilePicture
+      if (fileToUpload) {
+        formData.append('files', fileToUpload)
+        if (profile.value?.image) formData.append('rmImage', profile.value?.image)
+      }
+    } else if (imageDeleted.value && profile.value?.image) {
+      // If image was deleted via ImageManager, add rmImage without new file
+      formData.append('rmImage', profile.value?.image)
     }
 
     store.dispatch('user/updateProfile', formData).then(() => {
       // Reset form after successful update
+      imageDeleted.value = false
+      user.newProfilePicture = null
     })
   }
 
@@ -97,30 +130,40 @@
       })
   }
 
-  onMounted(() => {
-    store.dispatch('user/setProfileWSettings').then(() => {
-      // Map profile data to user model
-      Object.assign(user, {
-        id: profile.value?.id,
-        fullName: profile.value?.fullName,
-        email: profile.value?.email,
-        image: profile.value?.image,
-        slug: profile.value?.slug,
-        role: profile.value?.role,
-        createdAt: profile.value?.createdAt,
-      })
-
-      // Map settings data to settings model
-      Object.assign(settings, {
-        id: profile.value?.settings?.id,
-        emailNewEventNotification: profile.value?.emailNewEventNotification,
-        emailUpdateEventNotification: profile.value?.emailUpdateEventNotification,
-        emailNewCommentNotification: profile.value?.emailNewCommentNotification,
-        sort: profile.value?.settings?.sort,
-        theme: profile.value?.theme || 'light',
-        userId: profile.value?.id,
-      })
+  onMounted(async () => {
+    await store.dispatch('user/setProfileWSettings')
+    // Map profile data to user model
+    Object.assign(user, {
+      id: profile.value?.id,
+      fullName: profile.value?.fullName,
+      email: profile.value?.email,
+      image: profile.value?.image,
+      slug: profile.value?.slug,
+      role: profile.value?.role,
+      createdAt: profile.value?.createdAt,
     })
+    // Reset image deletion flag when profile loads
+    imageDeleted.value = false
+    user.newProfilePicture = null
+
+    // Map settings data to settings model
+    Object.assign(settings, {
+      id: profile.value?.settings?.id,
+      emailNewEventNotification: profile.value?.emailNewEventNotification,
+      emailUpdateEventNotification: profile.value?.emailUpdateEventNotification,
+      emailNewCommentNotification: profile.value?.emailNewCommentNotification,
+      sort: profile.value?.settings?.sort,
+      theme: profile.value?.theme || 'light',
+      userId: profile.value?.id,
+    })
+
+    // Fetch subscription data
+    if (currentUser.value?.id) {
+      await Promise.all([
+        store.dispatch('subscription/setSubscription', currentUser.value.id),
+        store.dispatch('subscription/setSubscriptionPlans'),
+      ])
+    }
   })
 </script>
 <template>
@@ -129,208 +172,271 @@
 
     <v-row justify="center">
       <v-col cols="12" md="5">
-        <h3 class="mt-5">Update profile</h3>
-        <v-divider />
-
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          class="mt-5"
-          fast-fail
-          @submit.prevent="updateProfile"
-        >
-          <v-text-field
-            v-model="user.fullName"
-            class="mt-3"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Full Name"
-            :rules="[(v) => !!v || 'Full Name is required!']"
-            variant="solo"
-          />
-          <v-text-field
-            v-model="user.email"
-            class="mt-3"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="Email Address"
-            :rules="[
-              (v) => !!v || 'Email is required!',
-              (v) => isValidEmail(v) || 'Invalid Email',
-            ]"
-            variant="solo"
-          />
-          <v-text-field
-            v-model="user.slug"
-            class="mt-3"
-            clearable
-            density="compact"
-            hide-details="auto"
-            hint="Your custom URL identifier (e.g., yourprofile)"
-            label="Profile Slug"
-            persistent-hint
-            :rules="[
-              (v) => !v || isValidSlug(v) || 'Slug must be 3-50 chars, lowercase letters, numbers, and hyphens only',
-            ]"
-            variant="solo"
-          />
-          <v-text-field
-            v-model="user.newPassword"
-            class="mt-3"
-            clearable
-            density="compact"
-            hide-details="auto"
-            label="New Password"
-            type="password"
-            variant="solo"
-          />
-          <div class="d-flex align-center mt-3">
-            <user-avatar :clickable="false" :img-src="profile?.image" />
-            <v-file-input
-              accept="image/*"
-              class="ml-2"
-              density="compact"
-              hide-details="auto"
-              label="Profile picture"
-              prepend-icon=""
-              prepend-inner-icon="mdi-camera"
-              show-size
-              variant="solo"
-              @update:model-value="handleProfileImageChange"
+        <v-card class="mt-5">
+          <v-card-title>Update profile</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-form
+              ref="form"
+              v-model="isFormValid"
+              class="mt-3"
+              fast-fail
+              @submit.prevent="updateProfile"
             >
-              <template #selection="{ fileNames }">
-                <template v-for="fileName in fileNames" :key="fileName">
-                  <v-chip class="me-2" color="primary" label size="small">
-                    {{ fileName }}
-                  </v-chip>
-                </template>
-              </template>
-            </v-file-input>
-          </div>
-
-          <v-btn
-            class="ml-auto mt-5 d-block"
-            color="primary"
-            :density="mobile ? 'comfortable' : 'default'"
-            type="submit"
-          >Update Profile
-          </v-btn>
-        </v-form>
+              <v-text-field
+                v-model="user.fullName"
+                class="mt-3"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Full Name"
+                :rules="[(v) => !!v || 'Full Name is required!']"
+                variant="solo"
+              />
+              <v-text-field
+                v-model="user.email"
+                class="mt-3"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Email Address"
+                :rules="[
+                  (v) => !!v || 'Email is required!',
+                  (v) => isValidEmail(v) || 'Invalid Email',
+                ]"
+                variant="solo"
+              />
+              <v-text-field
+                v-model="user.slug"
+                class="mt-3"
+                clearable
+                density="compact"
+                hide-details="auto"
+                hint="Your custom URL identifier (e.g., yourprofile)"
+                label="Profile Slug"
+                persistent-hint
+                :rules="[
+                  (v) => !v || isValidSlug(v) || 'Slug must be 3-50 chars, lowercase letters, numbers, and hyphens only',
+                ]"
+                variant="solo"
+              />
+              <v-text-field
+                v-model="user.newPassword"
+                class="mt-3"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="New Password"
+                type="password"
+                variant="solo"
+              />
+              <div class="mt-3">
+                <image-manager
+                  v-if="profile?.image && !imageDeleted"
+                  container-class="mb-3"
+                  max-height="200px"
+                  max-width="200px"
+                  :src="getUserImageUrl(profile?.image)"
+                  @delete="handleDeleteProfileImage"
+                />
+                <v-file-upload
+                  v-model="user.newProfilePicture"
+                  accept="image/*"
+                  clearable
+                  density="compact"
+                  :hide-browse="false"
+                  :rules="[
+                    (v) =>
+                      !v ||
+                      (Array.isArray(v) ? v : [v]).every((file) =>
+                        isValidImage(file),
+                      ) || 'Only jpeg/png allowed!',
+                  ]"
+                  show-size
+                  title="Upload Profile Picture"
+                  variant=""
+                  @update:model-value="handleProfileImageChange"
+                />
+                <div v-if="imageDeleted && !user.newProfilePicture" class="text-body-2 text-medium-emphasis mt-2">
+                  Profile picture removed. Upload a new one or save to confirm deletion.
+                </div>
+              </div>
+              <v-card-actions class="pa-0 mt-5">
+                <v-spacer />
+                <v-btn
+                  color="primary"
+                  :density="mobile ? 'comfortable' : 'default'"
+                  prepend-icon="mdi-content-save"
+                  type="submit"
+                  variant="flat"
+                >Save
+                </v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
     <v-row align="center" class="mt-2 mt-md-5" justify="center">
       <v-col cols="12" md="5">
-        <h3 class="mt-5">Subscription</h3>
-        <v-divider />
-        <v-row align="center" class="mt-2" justify="end" no-gutters>
-          <v-col cols="auto">
-            <v-btn
-              class="ml-auto mt-5"
+        <v-card>
+          <v-card-title>Subscription</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <div v-if="isSubscriptionActive && subscription?.planId" class="mt-3">
+              <div class="d-flex align-center justify-space-between mb-3">
+                <div>
+                  <div class="text-h6 font-weight-bold">
+                    {{ subscriptionPlans.find(p => p.id === subscription.planId)?.title || 'Active Plan' }}
+                  </div>
+                  <div v-if="isBasicPlan" class="text-body-2 text-medium-emphasis mt-1">
+                    No expiration
+                  </div>
+                  <div v-else-if="subscription.expireDate" class="text-body-2 text-medium-emphasis mt-1">
+                    Expires: {{ formatDateFromTimestamp(subscription.expireDate) }}
+                  </div>
+                  <div v-if="pendingCancel" class="text-body-2 text-error mt-1">
+                    Subscription will be cancelled
+                  </div>
+                </div>
+                <v-chip
+                  :color="pendingCancel ? 'warning' : 'success'"
+                  size="small"
+                  variant="flat"
+                >
+                  {{ pendingCancel ? 'Cancelling' : 'Active' }}
+                </v-chip>
+              </div>
+              <div v-if="subscriptionPlans.find(p => p.id === subscription.planId)" class="text-body-1 mb-3">
+                <strong>{{ formatPrice(subscriptionPlans.find(p => p.id === subscription.planId).price, subscriptionPlans.find(p => p.id === subscription.planId).currency) }}</strong>
+              </div>
+            </div>
+            <div v-else class="mt-3 text-body-1 text-medium-emphasis">
+              No active subscription
+            </div>
+            <v-row align="center" class="mt-3" justify="end" no-gutters>
+              <v-col cols="auto">
+                <v-btn
+                  class="ml-auto"
+                  color="primary"
+                  :density="mobile ? 'comfortable' : 'default'"
+                  prepend-icon="mdi-lock-open-check"
+                  :to="{ name: 'pricing' }"
+                >{{ isSubscriptionActive ? 'Update Plan' : 'Choose Plan' }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-col cols="12" md="5">
+        <v-card>
+          <v-card-title>Appearance</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-switch
+              v-model="settings.theme"
+              class="mt-3"
               color="primary"
-              :density="mobile ? 'comfortable' : 'default'"
-              :to="{ name: 'pricing' }"
-            >Update Plan
-            </v-btn>
-          </v-col>
-        </v-row>
+              false-value="light"
+              hide-details
+              inset
+              label="Dark mode"
+              true-value="dark"
+              @update:model-value="handleThemeToggle(settings.theme)"
+            />
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
     <v-row justify="center">
       <v-col cols="12" md="5">
-        <h3 class="mt-5">Appearance</h3>
-        <v-divider />
-
-        <v-switch
-          v-model="settings.theme"
-          color="primary"
-          false-value="light"
-          hide-details
-          inset
-          label="Dark mode"
-          true-value="dark"
-          @update:model-value="handleThemeToggle(settings.theme)"
-        />
-      </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-col cols="12" md="5">
-        <h3 class="mt-5">Email Notification</h3>
-        <v-divider />
-
-        <v-switch
-          v-model="settings.emailNewEventNotification"
-          color="primary"
-          :false-value="0"
-          hide-details
-          inset
-          label="When friends post new event"
-          :true-value="1"
-          @update:model-value="
-            handleEmailNewEventNotification(settings.emailNewEventNotification)
-          "
-        />
-        <v-switch
-          v-model="settings.emailUpdateEventNotification"
-          color="primary"
-          :false-value="0"
-          hide-details
-          inset
-          label="When friends edit event"
-          :true-value="1"
-          @update:model-value="
-            handleEmailUpdateEventNotification(
-              settings.emailUpdateEventNotification,
-            )
-          "
-        />
-        <v-switch
-          v-model="settings.emailNewCommentNotification"
-          color="primary"
-          :false-value="0"
-          hide-details
-          inset
-          label="When friends comment on your event"
-          :true-value="1"
-          @update:model-value="
-            handleEmailNewCommentNotification(
-              settings.emailNewCommentNotification,
-            )
-          "
-        />
+        <v-card>
+          <v-card-title>Email Notification</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-switch
+              v-model="settings.emailNewEventNotification"
+              class="mt-3"
+              color="primary"
+              :false-value="0"
+              hide-details
+              inset
+              label="When friends post new event"
+              :true-value="1"
+              @update:model-value="
+                handleEmailNewEventNotification(settings.emailNewEventNotification)
+              "
+            />
+            <v-switch
+              v-model="settings.emailUpdateEventNotification"
+              class="mt-3"
+              color="primary"
+              :false-value="0"
+              hide-details
+              inset
+              label="When friends edit event"
+              :true-value="1"
+              @update:model-value="
+                handleEmailUpdateEventNotification(
+                  settings.emailUpdateEventNotification,
+                )
+              "
+            />
+            <v-switch
+              v-model="settings.emailNewCommentNotification"
+              class="mt-3"
+              color="primary"
+              :false-value="0"
+              hide-details
+              inset
+              label="When friends comment on your event"
+              :true-value="1"
+              @update:model-value="
+                handleEmailNewCommentNotification(
+                  settings.emailNewCommentNotification,
+                )
+              "
+            />
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
     <v-row align="center" class="mt-2 mt-md-5" justify="center">
       <v-col cols="12" md="5">
-        <h3 class="mt-5">Account Delete</h3>
-        <v-divider />
-        <div class="mt-5">
-          <div>Do you want to delete your account?</div>
+        <v-card>
+          <v-card-title>Account Delete</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <div class="mt-3">Do you want to delete your account?</div>
 
-          <v-row justify="end">
-            <v-col cols="auto">
-              <confirmation-dialog
-                popup-content="Please cancel any existing subscription before you delete your account."
-                popup-title="Delete"
-                @confirm="deleteAccount"
-              >
-                <template #activator="{ onClick }">
-                  <v-btn
-                    class="ms-auto"
-                    color="error"
-                    variant="flat"
-                    @click="onClick"
-                  >Delete</v-btn>
-                </template>
-              </confirmation-dialog>
-            </v-col>
-          </v-row>
-        </div>
+            <v-row justify="end">
+              <v-col cols="auto">
+                <confirmation-dialog
+                  popup-content="Please cancel any existing subscription before you delete your account."
+                  popup-title="Delete"
+                  @confirm="deleteAccount"
+                >
+                  <template #activator="{ onClick }">
+                    <v-btn
+                      class="ms-auto mt-3"
+                      color="error"
+                      prepend-icon="mdi-trash-can-outline"
+                      variant="flat"
+                      @click="onClick"
+                    >Delete</v-btn>
+                  </template>
+                </confirmation-dialog>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

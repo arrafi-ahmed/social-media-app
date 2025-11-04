@@ -4,6 +4,7 @@
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import PageTitle from '@/components/PageTitle.vue'
+  import RichTextEditor from '@/components/RichTextEditor.vue'
   import TimePicker from '@/components/TimePicker.vue'
   import { Event } from '@/models'
   import { toLocalISOString } from '@/others/util.js'
@@ -39,6 +40,32 @@
   const newEvent = reactive({ ...eventInit })
   const form = ref(null)
   const isFormValid = ref(true)
+  const isTemporary = ref(false)
+  const autoDeleteDays = ref(null)
+  const isCustomDays = ref(false)
+  const customDays = ref(null)
+  
+  const dayOptions = [1, 7, 14, 30, 60, 90, { title: 'Custom', value: 'custom' }]
+  
+  const calculatedExpirationDate = computed(() => {
+    if (!isTemporary.value) return null
+    const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
+    if (!days) return null
+    const date = new Date()
+    date.setDate(date.getDate() + parseInt(days))
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  })
+  
+  function handleDaysChange(value) {
+    if (value === 'custom') {
+      isCustomDays.value = true
+      autoDeleteDays.value = null
+    } else {
+      isCustomDays.value = false
+      autoDeleteDays.value = value
+      customDays.value = null
+    }
+  }
 
   function handleUploadChange (files) {
     // If files is empty (clear all), reset the images
@@ -67,6 +94,14 @@
     newEvent.images.push(...files)
   }
 
+  // Helper to strip HTML tags and get text length for validation
+  function getTextLength(html) {
+    if (!html) return 0
+    const temp = document.createElement('div')
+    temp.innerHTML = html
+    return (temp.textContent || temp.innerText || '').length
+  }
+
   async function addEvent () {
     if (!isSubscriptionValid.value) {
       return router.push({ name: 'pricing' })
@@ -74,6 +109,19 @@
 
     await form.value.validate()
     if (!isFormValid.value) return
+
+    // Validate description
+    const descLength = getTextLength(newEvent.description)
+    if (!newEvent.description || descLength === 0) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description is required!', color: 'error' })
+      return
+    }
+    if (descLength > 1000) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description must not exceed 1000 characters!', color: 'error' })
+      return
+    }
 
     // Validate total image count
     const imageCount = newEvent.images ? (Array.isArray(newEvent.images) ? newEvent.images.length : 1) : 0
@@ -93,6 +141,12 @@
     formData.append('location', newEvent.location)
     formData.append('description', newEvent.description)
     formData.append('category', newEvent.selectedCategory)
+    if (isTemporary.value) {
+      const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
+      if (days && parseInt(days) > 0) {
+        formData.append('autoDeleteDays', days)
+      }
+    }
     for (const file of newEvent.images) {
       formData.append('files', file)
     }
@@ -105,6 +159,10 @@
         selectedCategory: null,
         images: [],
       })
+      isTemporary.value = false
+      autoDeleteDays.value = null
+      isCustomDays.value = false
+      customDays.value = null
       router.push({ name: 'wall', params: { id: currentUser.slug || currentUser.id } })
     })
   }
@@ -163,20 +221,16 @@
               variant="solo"
             />
 
-            <v-textarea
-              v-model="newEvent.description"
-              class="mt-2 text-pre-wrap"
-              clearable
-              hide-details="auto"
-              label="Description"
-              rows="5"
-              :rules="[
-                (v) => !!v || 'Description is required!',
-                (v) =>
-                  (v && v.length <= 1000) || 'Must not exceed 1000 characters',
-              ]"
-              variant="solo"
-            />
+            <div class="mt-2">
+              <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+              <rich-text-editor
+                v-model="newEvent.description"
+                placeholder="Describe your event..."
+              />
+              <div class="text-caption text-medium-emphasis mt-1">
+                {{ getTextLength(newEvent.description) }} / 1000 characters
+              </div>
+            </div>
             <v-row :no-gutters="!!mobile">
               <v-col class="mt-2" cols="12" md="6">
                 <v-select
@@ -225,6 +279,47 @@
                 />
               </v-col>
             </v-row>
+
+            <!-- Temporary Post Option -->
+            <v-card class="mt-4" variant="outlined">
+              <v-card-text>
+                <div class="d-flex align-center mb-2">
+                  <v-switch
+                    v-model="isTemporary"
+                    color="primary"
+                    hide-details
+                    label="Make this post temporary"
+                  />
+                </div>
+                <div v-if="isTemporary" class="mt-3">
+                  <v-select
+                    v-model="autoDeleteDays"
+                    :items="dayOptions.map(d => typeof d === 'object' ? d : { title: `${d} ${d === 1 ? 'day' : 'days'}`, value: d })"
+                    label="Auto-delete after"
+                    variant="solo"
+                    @update:model-value="handleDaysChange"
+                  />
+                  <v-number-input
+                    v-if="isCustomDays"
+                    v-model="customDays"
+                    label="Enter number of days"
+                    variant="solo"
+                    min="1"
+                    max="365"
+                    :rules="[
+                      (v) => !!v || 'Number of days is required',
+                      (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
+                      (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
+                    ]"
+                    class="mt-3"
+                    hide-details="auto"
+                  />
+                  <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
+                    This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
 
             <div class="container-border">
               <v-alert

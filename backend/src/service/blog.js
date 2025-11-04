@@ -12,10 +12,10 @@ exports.saveBlog = (body, files, userId) => {
     body.description,
     files ? files[0].filename : null,
     userId,
-    new Date(),
+    new Date()
   ];
 
-  return db.getRow(sql + ' RETURNING *', values);
+  return db.getRow(sql + " RETURNING *", values);
 };
 
 exports.getBlogs = () => {
@@ -42,7 +42,7 @@ exports.editBlog = async (body, files) => {
       body.title,
       body.description,
       files ? files[0].filename : null,
-      body.id,
+      body.id
     ];
   } else {
     sql = `UPDATE blog_post SET title = $1, description = $2 WHERE id = $3 RETURNING *`;

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {auth} = require("../middleware/auth");
+const { auth } = require("../middleware/auth");
 const ApiResponse = require("../model/ApiResponse");
 const categoryService = require("../service/category");
 
@@ -29,13 +29,13 @@ router.post("/edit", auth, async (req, res, next) => {
 router.get("/delete", auth, async (req, res, next) => {
   try {
     const result = await categoryService.deleteCategory(
-      req.query?.id,
+      req.query?.id
     );
-    
+
     if (!result) {
       throw new Error();
     }
-    
+
     res
       .status(200)
       .json(new ApiResponse("Category deleted successfully!", result));

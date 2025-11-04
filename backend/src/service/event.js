@@ -1,23 +1,28 @@
 const db = require("../db");
 const CustomError = require("../model/CustomError");
-const { removeImages, generatePostCreationContent, ifAdmin } = require("../others/util");
-const { sendMail } = require("./sendMail");
+const { removeImages, ifAdmin } = require("../others/util");
+const emailService = require("../email");
 const userService = require("./user");
+
+// Valid reaction types
+const VALID_REACTION_TYPES = ['like', 'unlike', 'heart', 'laugh', 'sad', 'angry'];
 
 exports.sendPostCreationEmail = async (userId, clientUrl) => {
   // find friends & send notification email to friends
   const [friends, user] = await Promise.all([
     userService.getFriendsWSettings(userId),
-    userService.getUserById(userId),
+    userService.getUserById(userId)
   ]);
   // Generate email and send emails in parallel
   const sendEmailPromises = friends
     .filter((friend) => friend.emailNewEventNotification)
     .map(async (friend) => {
-      const to = friend.email;
-      const subject = `${user.fullName} has added an event to WayzAway!`;
-      const html = generatePostCreationContent(user, "add", clientUrl);
-      return sendMail(to, subject, html);
+      return emailService.sendEventEmail(friend.email, {
+        userName: user.fullName,
+        userId: user.id,
+        type: "add",
+        vueBaseUrl: clientUrl
+      });
     });
   // Wait for all emails to be sent
   return Promise.all(sendEmailPromises);
@@ -27,16 +32,18 @@ exports.sendPostEditEmail = async (userId, clientUrl) => {
   // find friends & send notification email to friends
   const [friends, user] = await Promise.all([
     userService.getFriendsWSettings(userId),
-    userService.getUserById(userId),
+    userService.getUserById(userId)
   ]);
   // Generate email and send emails in parallel
   const sendEmailPromises = friends
     .filter((friend) => friend.emailUpdateEventNotification)
     .map(async (friend) => {
-      const to = friend.email;
-      const subject = `${user.fullName} has edited an event to WayzAway!`;
-      const html = generatePostCreationContent(user, "edit", clientUrl);
-      return sendMail(to, subject, html);
+      return emailService.sendEventEmail(friend.email, {
+        userName: user.fullName,
+        userId: user.id,
+        type: "edit",
+        vueBaseUrl: clientUrl
+      });
     });
   // Wait for all emails to be sent
   return Promise.all(sendEmailPromises);
@@ -64,11 +71,11 @@ exports.createWelcomeEvent = async (userId) => {
     "[]", // No images
     false,
     userId,
-    currentDate,
+    currentDate
   ];
 
   const event = await db.getRow(sql, values);
-  
+
   if (!event) {
     return null;
   }
@@ -76,11 +83,21 @@ exports.createWelcomeEvent = async (userId) => {
 };
 
 exports.save = async (body, files, userId, clientUrl) => {
-  const fileNames = JSON.stringify(files ? files.map((file) => file.filename) : [])
+  const fileNames = JSON.stringify(files ? files.map((file) => file.filename) : []);
   const eventDate = new Date(body.date).toISOString().split("T")[0];
+  
+  // Calculate expires_at if autoDeleteDays is provided
+  let expiresAt = null;
+  if (body.autoDeleteDays && parseInt(body.autoDeleteDays) > 0) {
+    const deleteDays = parseInt(body.autoDeleteDays);
+    const createdDate = new Date();
+    // Use UTC date components to avoid timezone issues, normalize to midnight UTC
+    expiresAt = new Date(Date.UTC(createdDate.getUTCFullYear(), createdDate.getUTCMonth(), createdDate.getUTCDate() + deleteDays, 0, 0, 0, 0));
+  }
+  
   const sql = `
-    INSERT INTO event_post (title, date, start_time, end_time, location, description, category, images, is_featured, user_id, created_at) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10, $11)
+    INSERT INTO event_post (title, date, start_time, end_time, location, description, category, images, is_featured, user_id, created_at, expires_at) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10, $11, $12)
     RETURNING *
   `;
   const values = [
@@ -95,30 +112,46 @@ exports.save = async (body, files, userId, clientUrl) => {
     JSON.parse(body.isFeatured),
     userId,
     new Date(),
+    expiresAt
   ];
 
   const event = await db.getRow(sql, values);
-  
+
   if (!event) {
     return null;
   }
 
-  exports.sendPostCreationEmail(userId, "add", clientUrl);
+  exports.sendPostCreationEmail(userId, clientUrl);
   return event;
 };
 
 exports.edit = async (body, files, userId, clientUrl) => {
   const fileNames =
-    files ? files.map((file) => file.filename) : []
+    files ? files.map((file) => file.filename) : [];
 
   const images = body.images ? JSON.parse(body.images) : [];
   const combinedImages = [...images, ...fileNames];
 
   const eventDate = new Date(body.date).toISOString().split("T")[0];
+  
+  // Calculate expires_at if autoDeleteDays is provided
+  let expiresAt = null;
+  if (body.autoDeleteDays !== undefined && body.autoDeleteDays !== '') {
+    if (body.autoDeleteDays && parseInt(body.autoDeleteDays) > 0) {
+      const deleteDays = parseInt(body.autoDeleteDays);
+      // When editing, calculate from current date (not original created_at)
+      // This allows users to reset expiration to X days from now
+      const currentDate = new Date();
+      // Use UTC date components to avoid timezone issues, normalize to midnight UTC
+      expiresAt = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate() + deleteDays, 0, 0, 0, 0));
+    }
+    // If autoDeleteDays is empty string or 0, expiresAt remains null (permanent)
+  }
+  
   let sql = `
     UPDATE event_post 
-    SET title=$1, date=$2, start_time=$3, end_time=$4, location=$5, description=$6, category=$7, images=$8::jsonb
-    WHERE id=$9 RETURNING *
+    SET title=$1, date=$2, start_time=$3, end_time=$4, location=$5, description=$6, category=$7, images=$8::jsonb, expires_at=$9
+    WHERE id=$10 RETURNING *
   `;
 
   const values = [
@@ -130,12 +163,13 @@ exports.edit = async (body, files, userId, clientUrl) => {
     body.description,
     body.category,
     JSON.stringify(combinedImages),
+    expiresAt,
     body.id
   ];
 
   const result = await db.getRow(sql, values);
-  exports.sendPostEditEmail(userId, "edit", clientUrl);
-  
+  exports.sendPostEditEmail(userId, clientUrl);
+
   if (!result) {
     return null;
   }
@@ -162,6 +196,7 @@ function getSortingColumn(sort) {
     // No default
   }
 }
+
 exports.getEventsByUserId = async ({ userId, page = 1, sort = "LATEST" }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
@@ -194,23 +229,24 @@ exports.getAllEventsByFriends = async ({ userId, page = 1, sort = "LATEST" }) =>
       SELECT $3 as friendId
     ) as friends ON e.user_id = friends.friendId
     JOIN users c ON e.user_id = c.id
+    WHERE (e.expires_at IS NULL OR e.expires_at > NOW())
     ORDER BY ${getSortingColumn(sort)}
     LIMIT $4 OFFSET $5
   `;
   const results = await db.getRows(sql, [userId, userId, userId, itemsPerPage, offset]);
   // Parse the images field for each record
-  return results
+  return results;
 };
 
 exports.findWallEvents = async ({
-  userId,
-  searchKeyword,
-  startDate,
-  endDate,
-  category,
-  sort = "LATEST",
-  page = 1,
-}) => {
+                                  userId,
+                                  searchKeyword,
+                                  startDate,
+                                  endDate,
+                                  category,
+                                  sort = "LATEST",
+                                  page = 1
+                                }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   const values = [];
@@ -218,7 +254,7 @@ exports.findWallEvents = async ({
     SELECT e.*, c.full_name, c.image, c.slug
     FROM event_post e
     JOIN users c ON e.user_id = c.id
-    WHERE e.user_id = $1
+    WHERE e.user_id = $1 AND (e.expires_at IS NULL OR e.expires_at > NOW())
   `;
 
   values.push(userId);
@@ -251,14 +287,14 @@ exports.findWallEvents = async ({
 };
 
 exports.findBrowseEvents = async ({
-  userId,
-  searchKeyword,
-  startDate,
-  endDate,
-  category,
-  sort = "LATEST",
-  page = 1,
-}) => {
+                                    userId,
+                                    searchKeyword,
+                                    startDate,
+                                    endDate,
+                                    category,
+                                    sort = "LATEST",
+                                    page = 1
+                                  }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   const values = [];
@@ -278,6 +314,7 @@ exports.findBrowseEvents = async ({
       SELECT $3 as friendId
     ) as friends ON e.user_id = friends.friendId
     JOIN users c ON e.user_id = c.id
+    WHERE (e.expires_at IS NULL OR e.expires_at > NOW())
   `;
 
   values.push(userId, userId, userId);
@@ -309,17 +346,54 @@ exports.findBrowseEvents = async ({
   return await db.getRows(sql, values);
 };
 
-exports.getEvent = async (eventId) => {
+exports.getEvent = async (eventId, userId = null) => {
   const sql = `
-    SELECT e.*, c.full_name, c.image, c.slug 
+    SELECT e.*, c.full_name, c.image, c.slug,
+      COALESCE(COUNT(DISTINCT er_like.id), 0) as like_count,
+      COALESCE(COUNT(DISTINCT er_heart.id), 0) as heart_count,
+      COALESCE(COUNT(DISTINCT er_laugh.id), 0) as laugh_count,
+      COALESCE(COUNT(DISTINCT er_unlike.id), 0) as unlike_count,
+      COALESCE(COUNT(DISTINCT er_sad.id), 0) as sad_count,
+      COALESCE(COUNT(DISTINCT er_angry.id), 0) as angry_count
     FROM event_post e 
     JOIN users c ON e.user_id = c.id 
-    WHERE e.id = $1
+    LEFT JOIN event_reaction er_like ON e.id = er_like.event_id AND er_like.reaction_type = 'like'
+    LEFT JOIN event_reaction er_heart ON e.id = er_heart.event_id AND er_heart.reaction_type = 'heart'
+    LEFT JOIN event_reaction er_laugh ON e.id = er_laugh.event_id AND er_laugh.reaction_type = 'laugh'
+    LEFT JOIN event_reaction er_unlike ON e.id = er_unlike.event_id AND er_unlike.reaction_type = 'unlike'
+    LEFT JOIN event_reaction er_sad ON e.id = er_sad.event_id AND er_sad.reaction_type = 'sad'
+    LEFT JOIN event_reaction er_angry ON e.id = er_angry.event_id AND er_angry.reaction_type = 'angry'
+    WHERE e.id = $1 AND (e.expires_at IS NULL OR e.expires_at > NOW())
+    GROUP BY e.id, c.full_name, c.image, c.slug
   `;
+  
   const result = await db.getRow(sql, [eventId]);
   if (!result) {
     return null;
   }
+
+  // Format reaction counts
+  result.reactions = {
+    like: parseInt(result.like_count) || 0,
+    heart: parseInt(result.heart_count) || 0,
+    laugh: parseInt(result.laugh_count) || 0,
+    unlike: parseInt(result.unlike_count) || 0,
+    sad: parseInt(result.sad_count) || 0,
+    angry: parseInt(result.angry_count) || 0
+  };
+
+  // Get user's reaction if userId provided
+  if (userId) {
+    result.userReaction = await exports.getUserReaction(eventId, userId);
+  }
+
+  // Remove temporary count fields
+  delete result.like_count;
+  delete result.heart_count;
+  delete result.laugh_count;
+  delete result.unlike_count;
+  delete result.sad_count;
+  delete result.angry_count;
 
   return result;
 };
@@ -383,7 +457,7 @@ exports.getFavoriteEvents = async (userId, page = 1) => {
     FROM event_post e 
     JOIN event_favorite ef ON e.id = ef.event_id 
     JOIN users c ON c.id = e.user_id 
-    WHERE ef.user_id = $1 
+    WHERE ef.user_id = $1 AND (e.expires_at IS NULL OR e.expires_at > NOW())
     ORDER BY ef.created_at DESC 
     LIMIT $2 OFFSET $3
   `;
@@ -430,6 +504,101 @@ exports.switchFavoriteEvent = async (eventId, payload, userId) => {
   }
 };
 
+// Reaction functions
+exports.toggleReaction = async (eventId, reactionType, userId) => {
+  // Validate reaction type
+  if (!VALID_REACTION_TYPES.includes(reactionType)) {
+    throw new CustomError("Invalid reaction type!", 400);
+  }
+
+  // Check if user has existing reaction
+  const existingSql = `SELECT * FROM event_reaction WHERE user_id = $1 AND event_id = $2`;
+  const existing = await db.getRow(existingSql, [userId, eventId]);
+  
+  // db.js converts snake_case to camelCase, so reaction_type becomes reactionType
+  if (existing && existing.reactionType === reactionType) {
+    // Same reaction - remove it
+    const deleteSql = `DELETE FROM event_reaction WHERE id = $1`;
+    await db.execute(deleteSql, [existing.id]);
+    const updatedReactions = await exports.getEventReactions(eventId, userId);
+    return { 
+      reactionType: null, 
+      isActive: false,
+      counts: updatedReactions.counts,
+      userReaction: updatedReactions.userReaction
+    };
+  } else if (existing) {
+    // Different reaction - update it
+    const updateSql = `UPDATE event_reaction SET reaction_type = $1, created_at = $2 WHERE id = $3`;
+    await db.execute(updateSql, [reactionType, new Date(), existing.id]);
+    const updatedReactions = await exports.getEventReactions(eventId, userId);
+    return { 
+      reactionType, 
+      isActive: true,
+      counts: updatedReactions.counts,
+      userReaction: updatedReactions.userReaction
+    };
+  } else {
+    // No existing reaction - add it
+    const insertSql = `INSERT INTO event_reaction (user_id, event_id, reaction_type, created_at) VALUES ($1, $2, $3, $4)`;
+    await db.execute(insertSql, [userId, eventId, reactionType, new Date()]);
+    const updatedReactions = await exports.getEventReactions(eventId, userId);
+    return { 
+      reactionType, 
+      isActive: true,
+      counts: updatedReactions.counts,
+      userReaction: updatedReactions.userReaction
+    };
+  }
+};
+
+exports.getEventReactions = async (eventId, userId = null) => {
+  // Get reaction counts grouped by type
+  const countsSql = `
+    SELECT reaction_type, COUNT(*) as count
+    FROM event_reaction
+    WHERE event_id = $1
+    GROUP BY reaction_type
+  `;
+  const counts = await db.getRows(countsSql, [eventId]);
+
+  // Initialize counts object
+  const reactionCounts = {
+    like: 0,
+    heart: 0,
+    laugh: 0,
+      unlike: 0,
+    sad: 0,
+    angry: 0
+  };
+
+  // Populate counts - only include valid reaction types
+  // Note: db.js converts snake_case to camelCase, so reaction_type becomes reactionType
+  counts.forEach(row => {
+    if (row.reactionType && VALID_REACTION_TYPES.includes(row.reactionType)) {
+      reactionCounts[row.reactionType] = parseInt(row.count) || 0;
+    }
+  });
+
+  // Get user's reaction if userId provided
+  const userReaction = userId ? await exports.getUserReaction(eventId, userId) : null;
+
+  return {
+    counts: reactionCounts,
+    userReaction
+  };
+};
+
+exports.getUserReaction = async (eventId, userId) => {
+  const sql = `SELECT reaction_type FROM event_reaction WHERE user_id = $1 AND event_id = $2`;
+  const result = await db.getRow(sql, [userId, eventId]);
+  // db.js converts snake_case to camelCase, so reaction_type becomes reactionType
+  if (result && result.reactionType && VALID_REACTION_TYPES.includes(result.reactionType)) {
+    return result.reactionType;
+  }
+  return null;
+};
+
 exports.getUpcomingEvents = async (userId, source) => {
   let friends = [];
   const currentDate = new Date();
@@ -449,7 +618,7 @@ exports.getUpcomingEvents = async (userId, source) => {
     const res = await db.getRows(sql, [userId, userId, userId]);
     friends = res
       .map((item) => item.friendId)
-      .filter((friendId) => friendId != null && friendId !== '')
+      .filter((friendId) => friendId != null && friendId !== "")
       .map((friendId) => Number.parseInt(friendId))
       .filter((friendId) => !isNaN(friendId));
   } else {
@@ -472,6 +641,7 @@ exports.getUpcomingEvents = async (userId, source) => {
     FROM event_post e
     JOIN users c ON e.user_id = c.id
     WHERE e.user_id IN (${inPlaceholders})
+      AND (e.expires_at IS NULL OR e.expires_at > NOW())
       AND (
         e.date > '${formattedCurrentDate}'
         OR (
@@ -487,7 +657,7 @@ exports.getUpcomingEvents = async (userId, source) => {
 };
 
 exports.getFeaturedEvent = async (userId) => {
-  const sql = `SELECT * FROM event_post WHERE user_id = $1 AND is_featured = true`;
+  const sql = `SELECT * FROM event_post WHERE user_id = $1 AND is_featured = true AND (expires_at IS NULL OR expires_at > NOW())`;
   const result = await db.getRow(sql, [userId]);
   if (!result) {
     return null;
@@ -499,14 +669,52 @@ exports.updateFeaturedEvent = (payload, eventId, userId) => {
   return db.execute(sql, [JSON.parse(payload), eventId, userId]);
 };
 
+exports.deleteExpiredEvents = async () => {
+  // Get all expired events with their images
+  const sql = `
+    SELECT id, images 
+    FROM event_post 
+    WHERE expires_at IS NOT NULL AND expires_at <= NOW()
+  `;
+  
+  const expiredEvents = await db.getRows(sql, []);
+  
+  if (!expiredEvents || expiredEvents.length === 0) {
+    return 0;
+  }
+  
+  // Collect all images to delete
+  const allImages = [];
+  expiredEvents.forEach(event => {
+    if (event.images && Array.isArray(event.images)) {
+      allImages.push(...event.images);
+    }
+  });
+  
+  // Delete images from filesystem
+  if (allImages.length > 0) {
+    await removeImages(allImages);
+  }
+  
+  // Delete expired events from database
+  const deleteSql = `
+    DELETE FROM event_post 
+    WHERE expires_at IS NOT NULL AND expires_at <= NOW()
+  `;
+  
+  await db.execute(deleteSql, []);
+  
+  return expiredEvents.length;
+};
+
 exports.swichFeaturedEvent = async (payload, newEventId, oldEventId, userId) => {
   const updatePromises = [
-    exports.updateFeaturedEvent(payload, newEventId, userId),
+    exports.updateFeaturedEvent(payload, newEventId, userId)
   ];
 
   if (oldEventId) {
     updatePromises.push(
-      exports.updateFeaturedEvent(!payload, oldEventId, userId),
+      exports.updateFeaturedEvent(!payload, oldEventId, userId)
     );
   }
 

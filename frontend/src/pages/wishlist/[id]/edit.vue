@@ -5,6 +5,7 @@
   import { useStore } from 'vuex'
   import ImageManager from '@/components/ImageManager.vue'
   import PageTitle from '@/components/PageTitle.vue'
+  import RichTextEditor from '@/components/RichTextEditor.vue'
   import { Wishlist } from '@/models'
   import { getWishlistImageUrl } from '@/others/util.js'
 
@@ -66,9 +67,30 @@
     newUploads.value.push(...files)
   }
 
+  // Helper to strip HTML tags and get text length for validation
+  function getTextLength(html) {
+    if (!html) return 0
+    const temp = document.createElement('div')
+    temp.innerHTML = html
+    return (temp.textContent || temp.innerText || '').length
+  }
+
   async function handleSubmitEditEvent () {
     await form.value.validate()
     if (!isFormValid.value) return
+
+    // Validate description
+    const descLength = getTextLength(editingEvent.description)
+    if (!editingEvent.description || descLength === 0) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description is required!', color: 'error' })
+      return
+    }
+    if (descLength > 1000) {
+      isFormValid.value = false
+      await store.commit('addSnackbar', { text: 'Description must not exceed 1000 characters!', color: 'error' })
+      return
+    }
 
     // Validate total image count
     const totalCount = editingEvent.images.length + newUploads.value.length
@@ -163,21 +185,16 @@
                 variant="solo"
               />
 
-              <v-textarea
-                v-model="editingEvent.description"
-                class="mt-2"
-                clearable
-                hide-details="auto"
-                label="Description"
-                rows="5"
-                :rules="[
-                  (v) => !!v || 'Description is required!',
-                  (v) =>
-                    (v && v.length <= 1000) ||
-                    'Must not exceed 1000 characters',
-                ]"
-                variant="solo"
-              />
+              <div class="mt-2">
+                <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+                <rich-text-editor
+                  v-model="editingEvent.description"
+                  placeholder="Describe your wishlist item..."
+                />
+                <div class="text-caption text-medium-emphasis mt-1">
+                  {{ getTextLength(editingEvent.description) }} / 1000 characters
+                </div>
+              </div>
               <v-select
                 v-model="editingEvent.category"
                 class="mt-2"
