@@ -62,7 +62,7 @@
   }
 
   // Helper to strip HTML tags and get text length for validation
-  function getTextLength(html) {
+  function getTextLength (html) {
     if (!html) return 0
     const temp = document.createElement('div')
     temp.innerHTML = html

@@ -1,4 +1,4 @@
-<!--source = [browse, wall, favorite, wishlist]-->
+<!--source = [browse, wall, collection, wishlist]-->
 <script setup>
   import { computed } from 'vue'
   import { useStore } from 'vuex'

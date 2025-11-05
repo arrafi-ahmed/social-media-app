@@ -1,8 +1,8 @@
 <script setup>
+  import DOMPurify from 'dompurify'
   import { computed, onMounted, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useStore } from 'vuex'
-  import DOMPurify from 'dompurify'
   import Applink from '@/components/Applink.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
@@ -40,16 +40,16 @@
   const sanitizedContent = computed(() => {
     const content = currentState.value?.description?.content || currentState.value?.description || ''
     if (!content) return ''
-    
+
     // Check if content contains HTML tags (from rich editor)
     const hasHtmlTags = /<[a-z][\s\S]*>/i.test(content)
-    
+
     if (hasHtmlTags) {
       // Sanitize HTML content
       return DOMPurify.sanitize(content, {
         ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a'],
         ALLOWED_ATTR: ['href', 'target', 'rel'],
-        ALLOW_DATA_ATTR: false
+        ALLOW_DATA_ATTR: false,
       })
     } else {
       // Plain text content - convert newlines to <br> and escape HTML

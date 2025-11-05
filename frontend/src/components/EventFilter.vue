@@ -76,7 +76,7 @@
     :class="{ 'flex-sticky top-60': !mobile }"
     @submit.prevent="handleFindEvents"
   >
-    <v-card elevation="1" variant="text">
+    <v-card elevation="0" variant="flat">
       <v-container>
         <v-row align="center" no-gutters>
           <v-col class="d-flex" cols="12" md="11">

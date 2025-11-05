@@ -30,7 +30,7 @@
   const subscriptionPlans = computed(() => store.state.subscription.subscriptionPlans)
   const isSubscriptionActive = computed(() => store.getters['subscription/isSubscriptionActive'])
   const pendingCancel = computed(() => store.getters['subscription/pendingCancel'])
-  
+
   // Check if current subscription is basic plan (no expiration)
   const isBasicPlan = computed(() => {
     if (!subscription.value?.planId) return false

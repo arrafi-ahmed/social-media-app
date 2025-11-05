@@ -30,6 +30,7 @@ declare module 'vue-router/auto-routes' {
     'blog': RouteRecordInfo<'blog', '/blog', Record<never, never>, Record<never, never>>,
     'blogSingle': RouteRecordInfo<'blogSingle', '/blog/:id/single', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'browse': RouteRecordInfo<'browse', '/browse', Record<never, never>, Record<never, never>>,
+    'collection': RouteRecordInfo<'collection', '/collection', Record<never, never>, Record<never, never>>,
     '/event/': RouteRecordInfo<'/event/', '/event', Record<never, never>, Record<never, never>>,
     'eventSingle': RouteRecordInfo<'eventSingle', '/event/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'eventEdit': RouteRecordInfo<'eventEdit', '/event/:id/edit', { id: ParamValue<true> }, { id: ParamValue<false> }>,

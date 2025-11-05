@@ -68,21 +68,25 @@ export function formatDateFromTimestamp (timestamp) {
 
 // Calculate days until expiration
 export function getDaysUntilExpiration (expiresAt) {
-  if (!expiresAt) return null
+  if (!expiresAt) {
+    return null
+  }
   const now = new Date()
   const expires = new Date(expiresAt)
   const diffTime = expires - now
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays > 0 ? diffDays : 0
+  return Math.max(diffDays, 0)
 }
 
 // Format expiration date
 export function formatExpirationDate (expiresAt) {
-  if (!expiresAt) return null
-  return new Date(expiresAt).toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  if (!expiresAt) {
+    return null
+  }
+  return new Date(expiresAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   })
 }
 

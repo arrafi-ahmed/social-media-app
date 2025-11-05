@@ -1,17 +1,20 @@
 <script setup>
+  import DOMPurify from 'dompurify'
   import { computed, onMounted, ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
-import DOMPurify from 'dompurify'
-import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
-import Lightbox from '@/components/Lightbox.vue'
-import UserAvatar from '@/components/UserAvatar.vue'
-import ReactionButtons from '@/components/ReactionButtons.vue'
-import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserProfile, getDaysUntilExpiration, formatExpirationDate } from '@/others/util.js'
+  import CollectionDialog from '@/components/CollectionDialog.vue'
+  import CommentMentions from '@/components/CommentMentions.vue'
+  import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+  import Lightbox from '@/components/Lightbox.vue'
+  import MentionAutocomplete from '@/components/MentionAutocomplete.vue'
+  import ReactionButtons from '@/components/ReactionButtons.vue'
+  import UserAvatar from '@/components/UserAvatar.vue'
+  import { formatDateFromTimestamp, formatExpirationDate, formatTimeFromTime, getDaysUntilExpiration, getEventImageUrl, goUserProfile } from '@/others/util.js'
 
   // Helper to check if content is HTML and sanitize it
-  function getSanitizedDescription(html) {
+  function getSanitizedDescription (html) {
     if (!html) return ''
     // Check if content contains HTML tags (from rich editor)
     const hasHtmlTags = /<[a-z][\s\S]*>/i.test(html)
@@ -19,7 +22,7 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
       return DOMPurify.sanitize(html, {
         ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a'],
         ALLOWED_ATTR: ['href', 'target', 'rel'],
-        ALLOW_DATA_ATTR: false
+        ALLOW_DATA_ATTR: false,
       })
     }
     // Plain text - escape HTML and convert newlines to <br>
@@ -57,22 +60,67 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
   const getUserIdentifier = computed(() => {
     return event.value?.slug || event.value?.userId
   })
-  
+
   // Calculate days until expiration
   const daysUntilExpiration = computed(() => {
     return getDaysUntilExpiration(event.value?.expiresAt)
   })
-  
+
   // Format expiration date
   const expirationDateFormatted = computed(() => {
     return formatExpirationDate(event.value?.expiresAt)
   })
 
-  function handleFavoriteEvent (payload) {
-    store.dispatch('eventSingle/switchFavoriteEvent', {
-      eventId: route.params.id,
-      payload: !payload,
-    })
+  const collectionDialogOpen = ref(false)
+  const selectedCollectionId = ref(null)
+  const collections = computed(() => store.state.eventCollection.collections)
+  const showCollectionSelector = ref(false)
+  const removeFromSaved = ref(false)
+  const commentTextareaRef = ref(null)
+  const mentionAutocompleteRef = ref(null)
+
+  async function handleFavoriteEvent () {
+    // Always show collection selector dialog
+    await store.dispatch('eventCollection/getCollections')
+    // Pre-select current collection if event is already saved
+    if (event.value?.isFavorite) {
+      // We need to find which collection this event is in
+      // For now, just reset to null (All Saved)
+      selectedCollectionId.value = null
+    } else {
+      selectedCollectionId.value = null
+    }
+    removeFromSaved.value = false
+    showCollectionSelector.value = true
+  }
+
+  async function saveToCollection () {
+    if (removeFromSaved.value) {
+      // Remove from saved
+      await store.dispatch('eventSingle/switchFavoriteEvent', {
+        eventId: route.params.id,
+        payload: false,
+      })
+    } else {
+      // Save to collection
+      await store.dispatch('eventSingle/switchFavoriteEvent', {
+        eventId: route.params.id,
+        payload: true,
+        collectionId: selectedCollectionId.value,
+      })
+    }
+    showCollectionSelector.value = false
+    selectedCollectionId.value = null
+    removeFromSaved.value = false
+  }
+
+  function openCreateCollectionDialog () {
+    collectionDialogOpen.value = true
+  }
+
+  function handleCollectionSaved () {
+    // Refresh collections list
+    store.dispatch('eventCollection/getCollections')
   }
 
   function addComment () {
@@ -84,6 +132,10 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
     }
     store.dispatch('eventSingle/addComment', newComment).then(res => {
       newCommentText.value = null
+      // Hide mention dropdown after posting comment
+      if (mentionAutocompleteRef.value) {
+        mentionAutocompleteRef.value.hideDropdown()
+      }
       return store.dispatch('eventWall/setEventNotification', {
         eventId: route.params.id,
         payload: true,
@@ -153,7 +205,7 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
           color="primary"
           :icon="event.isFavorite ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
           variant="text"
-          @click="handleFavoriteEvent(event.isFavorite)"
+          @click="handleFavoriteEvent"
         />
         <v-btn
           v-if="isEventOwner || isAdmin"
@@ -199,18 +251,18 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
                   </div>
                 </div>
               </div>
-              
+
               <v-divider v-if="event?.location" />
-              
+
               <div v-if="event?.location" class="d-flex align-center">
                 <v-icon class="mr-3" color="primary" size="small">mdi-map-marker</v-icon>
                 <div class="text-body-2">{{ event?.location }}</div>
               </div>
-              
+
               <v-divider v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" />
 
-              <div 
-                v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" 
+              <div
+                v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0"
                 class="d-flex align-center"
               >
                 <v-icon class="mr-3" color="warning" size="small">mdi-clock-alert</v-icon>
@@ -234,14 +286,14 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
         </v-card>
 
         <!-- Reactions Section -->
-        <v-card class="pa-1 mb-4" density="compact">          
-            <reaction-buttons
-              :event-id="event?.id"
-              :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
-              :user-reaction="event?.userReaction"
-              :compact="false"
-              store-module="eventSingle"
-            />          
+        <v-card class="pa-1 mb-4" density="compact">
+          <reaction-buttons
+            :compact="false"
+            :event-id="event?.id"
+            :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
+            store-module="eventSingle"
+            :user-reaction="event?.userReaction"
+          />
         </v-card>
 
         <v-row v-if="event?.images?.length > 1" class="mb-4" justify="start">
@@ -276,18 +328,27 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
           <v-col v-if="!xs" class="mr-2 ml-md-0" cols="auto">
             <user-avatar :clickable="false" :img-src="currentUser.image" />
           </v-col>
-          <v-col class="mr-2 ml-md-0">
+          <v-col class="mr-2 ml-md-0 position-relative">
             <v-textarea
+              ref="commentTextareaRef"
               v-model="newCommentText"
               auto-grow
               class="text-pre-wrap"
-              density="compact"
+              :density="xs ? 'comfortable' : 'default'"
               hide-details
               label="Write a comment..."
               required
-              rows="1"
+              rows="2"
               variant="solo"
+              @keydown="mentionAutocompleteRef?.handleKeydown"
               @keyup.enter="addComment"
+              @focus="mentionAutocompleteRef?.checkActiveMention"
+            />
+            <mention-autocomplete
+              ref="mentionAutocompleteRef"
+              :model-value="newCommentText"
+              :textarea-ref="commentTextareaRef"
+              @update:model-value="newCommentText = $event"
             />
           </v-col>
           <v-col cols="auto">
@@ -301,7 +362,7 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
         </v-row>
 
         <!-- Comments List -->
-        <v-list v-if="event?.comments?.length > 0" class="mt-2 mt-md-4">
+        <v-list v-if="event?.comments?.length > 0" class="mt-2 mt-md-4" variant="text">
           <v-list-item
             v-for="(comment, index) in event?.comments"
             :key="index"
@@ -315,17 +376,17 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
                 />
               </v-col>
               <v-col>
-                <v-card class="pa-3" variant="tonal" :elevation="1">
+                <v-card class="pa-3" :elevation="1" variant="tonal">
                   <v-hover v-slot="{ isHovering, props }">
                     <div class="position-relative" v-bind="props">
                       <confirmation-dialog
-                        v-if="isHovering && (isAdmin || isOwner(comment.userId))"
                         popup-content="Are you sure?"
                         popup-title="Delete Comment"
                         @confirm="deleteComment(comment.id)"
                       >
                         <template #activator="{ onClick }">
                           <v-btn
+                            v-if="isHovering && (isAdmin || isOwner(comment.userId))"
                             color="error"
                             icon="mdi-delete"
                             location="top end"
@@ -346,7 +407,11 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
                         <v-list-item-subtitle class="ml-2">{{ formatDateFromTimestamp(comment.createdAt) }}
                         </v-list-item-subtitle>
                       </div>
-                      <p class="text-pre-wrap text-body-2 mt-2">{{ comment.text }}</p>
+                      <comment-mentions
+                        class="text-body-2 mt-2 d-block"
+                        :mentions="comment.mentions || []"
+                        :text="comment.text"
+                      />
                     </div>
                   </v-hover>
                 </v-card>
@@ -356,6 +421,101 @@ import { formatDateFromTimestamp, formatTimeFromTime, getEventImageUrl, goUserPr
         </v-list>
       </v-col>
     </v-row>
+
+    <!-- Collection Selector Dialog -->
+    <v-dialog
+      v-model="showCollectionSelector"
+      :width="450"
+    >
+      <v-card>
+        <v-card-title class="text-h6 pa-4 pb-3">
+          {{ event?.isFavorite ? 'Move to Collection' : 'Save to Collection' }}
+        </v-card-title>
+        <v-card-text class="pa-4">
+          <v-radio-group
+            v-model="selectedCollectionId"
+            :disabled="removeFromSaved"
+          >
+            <v-radio
+              class="mb-2"
+              label="All Saved (uncategorized)"
+              :value="null"
+            />
+            <v-radio
+              v-for="collection in collections"
+              :key="collection.id"
+              class="mb-2"
+              :value="collection.id"
+            >
+              <template #label>
+                <div class="d-flex align-center">
+                  <v-icon
+                    class="mr-2"
+                    :color="collection.color || 'primary'"
+                    :icon="collection.icon || 'mdi-folder'"
+                    size="small"
+                  />
+                  <span>{{ collection.name }}</span>
+                  <span v-if="collection.event_count > 0" class="ml-2 text-caption text-medium-emphasis">
+                    ({{ collection.event_count }})
+                  </span>
+                </div>
+              </template>
+            </v-radio>
+          </v-radio-group>
+
+          <!-- Remove from saved checkbox -->
+          <v-divider v-if="event?.isFavorite" class="my-4" />
+          <v-checkbox
+            v-if="event?.isFavorite"
+            v-model="removeFromSaved"
+            color="error"
+            density="comfortable"
+            hide-details
+            label="Remove from saved events"
+          >
+            <template #label>
+              <span class="text-error">Remove from saved events</span>
+            </template>
+          </v-checkbox>
+        </v-card-text>
+        <v-card-actions class="pa-4 pt-0">
+          <v-spacer />
+          <v-btn
+            class="mr-2"
+            size="default"
+            variant="text"
+            @click="showCollectionSelector = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            v-if="!removeFromSaved"
+            class="mr-2"
+            color="primary"
+            size="default"
+            variant="flat"
+            @click="openCreateCollectionDialog"
+          >
+            New Collection
+          </v-btn>
+          <v-btn
+            :color="removeFromSaved ? 'error' : 'primary'"
+            size="default"
+            variant="flat"
+            @click="saveToCollection"
+          >
+            {{ removeFromSaved ? 'Remove' : 'Save' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Collection Create/Edit Dialog -->
+    <collection-dialog
+      v-model="collectionDialogOpen"
+      @saved="handleCollectionSaved"
+    />
   </v-container>
 </template>
 <style scoped>

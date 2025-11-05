@@ -3,7 +3,7 @@ import * as auth from './modules/auth.js'
 import * as blog from './modules/blog'
 import * as category from './modules/category'
 import * as eventBrowse from './modules/event-browse'
-import * as eventFavorite from './modules/event-favorite'
+import * as eventCollection from './modules/event-collection'
 import * as eventSingle from './modules/event-single'
 import * as eventWall from './modules/event-wall'
 import * as eventWishlist from './modules/event-wishlist'
@@ -18,7 +18,7 @@ const store = createStore({
     eventSingle,
     eventWall,
     eventBrowse,
-    eventFavorite,
+    eventCollection,
     eventWishlist,
     category,
     page,

@@ -6,8 +6,8 @@
         <!-- Text Formatting -->
         <div class="d-flex button-group">
           <v-btn
-            :class="{ 'v-btn--active': isEditorActive('bold') }"
             class="toolbar-button"
+            :class="{ 'v-btn--active': isEditorActive('bold') }"
             icon="mdi-format-bold"
             rounded="sm"
             size="small"
@@ -15,8 +15,8 @@
             @click="toggleBold"
           />
           <v-btn
-            :class="{ 'v-btn--active': isEditorActive('italic') }"
             class="toolbar-button"
+            :class="{ 'v-btn--active': isEditorActive('italic') }"
             icon="mdi-format-italic"
             rounded="sm"
             size="small"
@@ -24,8 +24,8 @@
             @click="toggleItalic"
           />
           <v-btn
-            :class="{ 'v-btn--active': isEditorActive('underline') }"
             class="toolbar-button"
+            :class="{ 'v-btn--active': isEditorActive('underline') }"
             icon="mdi-format-underline"
             rounded="sm"
             size="small"
@@ -34,7 +34,7 @@
           />
         </div>
 
-        <v-divider vertical class="toolbar-divider" />
+        <v-divider class="toolbar-divider" vertical />
 
         <!-- Headings -->
         <v-menu>
@@ -68,13 +68,13 @@
           </v-list>
         </v-menu>
 
-        <v-divider vertical class="toolbar-divider" />
+        <v-divider class="toolbar-divider" vertical />
 
         <!-- Lists -->
         <div class="d-flex button-group">
           <v-btn
-            :class="{ 'v-btn--active': isEditorActive('bulletList') }"
             class="toolbar-button"
+            :class="{ 'v-btn--active': isEditorActive('bulletList') }"
             icon="mdi-format-list-bulleted"
             rounded="sm"
             size="small"
@@ -82,8 +82,8 @@
             @click="toggleBulletList"
           />
           <v-btn
-            :class="{ 'v-btn--active': isEditorActive('orderedList') }"
             class="toolbar-button"
+            :class="{ 'v-btn--active': isEditorActive('orderedList') }"
             icon="mdi-format-list-numbered"
             rounded="sm"
             size="small"
@@ -92,12 +92,12 @@
           />
         </div>
 
-        <v-divider vertical class="toolbar-divider" />
+        <v-divider class="toolbar-divider" vertical />
 
         <!-- Link -->
         <v-btn
-          :class="{ 'v-btn--active': isEditorActive('link') }"
           class="toolbar-button"
+          :class="{ 'v-btn--active': isEditorActive('link') }"
           icon="mdi-link"
           rounded="sm"
           size="small"
@@ -109,11 +109,11 @@
 
     <!-- Editor Content Area -->
     <v-card v-if="editor" :class="{ 'editor-focused': isFocused }" elevation="1">
-      <editor-content :editor="editor" class="editor-content" />
+      <editor-content class="editor-content" :editor="editor" />
     </v-card>
     <v-card v-else elevation="1">
       <v-card-text class="text-center py-8">
-        <v-progress-circular indeterminate color="primary" />
+        <v-progress-circular color="primary" indeterminate />
       </v-card-text>
     </v-card>
 
@@ -140,76 +140,76 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { EditorContent, useEditor } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
+  import Link from '@tiptap/extension-link'
+  import Underline from '@tiptap/extension-underline'
+  import StarterKit from '@tiptap/starter-kit'
+  import { EditorContent, useEditor } from '@tiptap/vue-3'
+  import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  },
-  placeholder: {
-    type: String,
-    default: 'Start typing...'
-  }
-})
+  const props = defineProps({
+    modelValue: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: 'Start typing...',
+    },
+  })
 
-const emit = defineEmits(['update:modelValue'])
+  const emit = defineEmits(['update:modelValue'])
 
-const isFocused = ref(false)
-const linkDialog = ref(false)
-const linkUrl = ref('')
-const editorReady = ref(false)
+  const isFocused = ref(false)
+  const linkDialog = ref(false)
+  const linkUrl = ref('')
+  const editorReady = ref(false)
 
-// Helper function to convert plain text with line breaks to HTML paragraphs
-const convertTextToHtml = (text) => {
-  if (!text) return ''
-  // If it's already HTML (contains tags), return as is
-  if (/<[a-z][\s\S]*>/i.test(text)) {
+  // Helper function to convert plain text with line breaks to HTML paragraphs
+  function convertTextToHtml (text) {
+    if (!text) return ''
+    // If it's already HTML (contains tags), return as is
+    if (/<[a-z][\s\S]*>/i.test(text)) {
+      return text
+    }
+    // Convert plain text with line breaks to HTML paragraphs
     return text
+      .split(/\n\n+/) // Split on double line breaks (paragraphs)
+      .map(para => para.trim())
+      .filter(para => para.length > 0)
+      .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+      .join('')
   }
-  // Convert plain text with line breaks to HTML paragraphs
-  return text
-    .split(/\n\n+/) // Split on double line breaks (paragraphs)
-    .map(para => para.trim())
-    .filter(para => para.length > 0)
-    .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
-    .join('')
-}
 
-// Initialize editor using useEditor composable
-const editor = useEditor({
+  // Initialize editor using useEditor composable
+  const editor = useEditor({
     content: convertTextToHtml(props.modelValue || ''),
     extensions: [
       StarterKit.configure({
         heading: {
-          levels: [1, 2, 3]
+          levels: [1, 2, 3],
         },
         // Ensure paragraphs are preserved
         paragraph: {
           HTMLAttributes: {
-            class: 'editor-paragraph'
-          }
-        }
+            class: 'editor-paragraph',
+          },
+        },
       }),
       Underline,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
           target: '_blank',
-          rel: 'noopener noreferrer'
-        }
-      })
+          rel: 'noopener noreferrer',
+        },
+      }),
     ],
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] p-4',
+        'class': 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] p-4',
         'data-placeholder': props.placeholder,
-        spellcheck: 'false'
-      }
+        'spellcheck': 'false',
+      },
     },
     onUpdate: ({ editor }) => {
       emit('update:modelValue', editor.getHTML())
@@ -222,125 +222,125 @@ const editor = useEditor({
     },
     onCreate: () => {
       editorReady.value = true
-    }
+    },
   })
 
-// Wait for editor to be fully ready
-watch(() => editor.value, async (newEditor) => {
-  if (newEditor && !editorReady.value) {
-    await nextTick()
-    editorReady.value = true
-  }
-}, { immediate: true })
-
-// Safe wrapper for isActive checks
-const isEditorActive = (name, options = {}) => {
-  if (!editor.value || !editorReady.value || typeof editor.value.isActive !== 'function') {
-    return false
-  }
-  try {
-    return editor.value.isActive(name, options)
-  } catch (e) {
-    return false
-  }
-}
-
-// Helper to check if editor is ready with chain method
-const isEditorReady = () => {
-  return editor.value && editorReady.value && typeof editor.value.chain === 'function'
-}
-
-// Wrapper functions for editor commands
-const toggleBold = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleBold().run()
-  }
-}
-
-const toggleItalic = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleItalic().run()
-  }
-}
-
-const toggleUnderline = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleUnderline().run()
-  }
-}
-
-const toggleHeading = (level) => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleHeading({ level }).run()
-  }
-}
-
-const setParagraph = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().setParagraph().run()
-  }
-}
-
-const toggleBulletList = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleBulletList().run()
-  }
-}
-
-const toggleOrderedList = () => {
-  if (isEditorReady()) {
-    editor.value.chain().focus().toggleOrderedList().run()
-  }
-}
-
-const setLink = () => {
-  if (!isEditorReady() || typeof editor.value.isActive !== 'function') return
-  
-  try {
-    if (editor.value.isActive('link')) {
-      editor.value.chain().focus().extendMarkRange('link').unsetLink().run()
-    } else {
-      const url = window.getSelection().toString() || ''
-      linkUrl.value = url
-      linkDialog.value = true
+  // Wait for editor to be fully ready
+  watch(() => editor.value, async newEditor => {
+    if (newEditor && !editorReady.value) {
+      await nextTick()
+      editorReady.value = true
     }
-  } catch (e) {
-    console.error('Error setting link:', e)
-  }
-}
+  }, { immediate: true })
 
-const confirmLink = () => {
-  if (linkUrl.value && isEditorReady()) {
-    editor.value.chain().focus().setLink({ href: linkUrl.value }).run()
-  }
-  linkDialog.value = false
-  linkUrl.value = ''
-}
-
-// Watch for external changes to modelValue
-watch(() => props.modelValue, async (newValue) => {
-  if (editor.value && editorReady.value && editor.value.commands) {
-    await nextTick()
+  // Safe wrapper for isActive checks
+  function isEditorActive (name, options = {}) {
+    if (!editor.value || !editorReady.value || typeof editor.value.isActive !== 'function') {
+      return false
+    }
     try {
-      const currentHtml = editor.value.getHTML()
-      const convertedNew = convertTextToHtml(newValue || '')
-      const normalizedCurrent = currentHtml.replace(/\s+/g, ' ').trim()
-      const normalizedNew = convertedNew.replace(/\s+/g, ' ').trim()
-      // Only update if the content is actually different to avoid infinite loops
-      if (normalizedCurrent !== normalizedNew) {
-        editor.value.commands.setContent(convertedNew || '', false)
-      }
-    } catch (e) {
-      console.error('Error updating editor content:', e)
+      return editor.value.isActive(name, options)
+    } catch {
+      return false
     }
   }
-}, { immediate: false })
 
-onBeforeUnmount(() => {
-  if (editor.value && editor.value.destroy) {
-    editor.value.destroy()
+  // Helper to check if editor is ready with chain method
+  function isEditorReady () {
+    return editor.value && editorReady.value && typeof editor.value.chain === 'function'
   }
-})
+
+  // Wrapper functions for editor commands
+  function toggleBold () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleBold().run()
+    }
+  }
+
+  function toggleItalic () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleItalic().run()
+    }
+  }
+
+  function toggleUnderline () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleUnderline().run()
+    }
+  }
+
+  function toggleHeading (level) {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleHeading({ level }).run()
+    }
+  }
+
+  function setParagraph () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().setParagraph().run()
+    }
+  }
+
+  function toggleBulletList () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleBulletList().run()
+    }
+  }
+
+  function toggleOrderedList () {
+    if (isEditorReady()) {
+      editor.value.chain().focus().toggleOrderedList().run()
+    }
+  }
+
+  function setLink () {
+    if (!isEditorReady() || typeof editor.value.isActive !== 'function') return
+
+    try {
+      if (editor.value.isActive('link')) {
+        editor.value.chain().focus().extendMarkRange('link').unsetLink().run()
+      } else {
+        const url = window.getSelection().toString() || ''
+        linkUrl.value = url
+        linkDialog.value = true
+      }
+    } catch (error) {
+      console.error('Error setting link:', error)
+    }
+  }
+
+  function confirmLink () {
+    if (linkUrl.value && isEditorReady()) {
+      editor.value.chain().focus().setLink({ href: linkUrl.value }).run()
+    }
+    linkDialog.value = false
+    linkUrl.value = ''
+  }
+
+  // Watch for external changes to modelValue
+  watch(() => props.modelValue, async newValue => {
+    if (editor.value && editorReady.value && editor.value.commands) {
+      await nextTick()
+      try {
+        const currentHtml = editor.value.getHTML()
+        const convertedNew = convertTextToHtml(newValue || '')
+        const normalizedCurrent = currentHtml.replace(/\s+/g, ' ').trim()
+        const normalizedNew = convertedNew.replace(/\s+/g, ' ').trim()
+        // Only update if the content is actually different to avoid infinite loops
+        if (normalizedCurrent !== normalizedNew) {
+          editor.value.commands.setContent(convertedNew || '', false)
+        }
+      } catch (error) {
+        console.error('Error updating editor content:', error)
+      }
+    }
+  }, { immediate: false })
+
+  onBeforeUnmount(() => {
+    if (editor.value && editor.value.destroy) {
+      editor.value.destroy()
+    }
+  })
 </script>
 
 <style scoped>
@@ -419,7 +419,6 @@ onBeforeUnmount(() => {
   font-size: 1.25em;
 }
 
-
 .editor-content :deep(.ProseMirror ul),
 .editor-content :deep(.ProseMirror ol) {
   padding-left: 1.5em;
@@ -455,4 +454,3 @@ onBeforeUnmount(() => {
   background-color: rgba(var(--v-theme-primary), 0.1);
 }
 </style>
-

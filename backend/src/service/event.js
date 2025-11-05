@@ -3,6 +3,7 @@ const CustomError = require("../model/CustomError");
 const { removeImages, ifAdmin } = require("../others/util");
 const emailService = require("../email");
 const userService = require("./user");
+const mentionService = require("./mention");
 
 // Valid reaction types
 const VALID_REACTION_TYPES = ['like', 'unlike', 'heart', 'laugh', 'sad', 'angry'];
@@ -398,7 +399,7 @@ exports.getEvent = async (eventId, userId = null) => {
   return result;
 };
 
-exports.getCommentsByEventId = (eventId) => {
+exports.getCommentsByEventId = async (eventId) => {
   const sql = `
     SELECT ec.id, ec.user_id, ec.text, ec.created_at, u.full_name, u.image, u.slug 
     FROM event_comment ec 
@@ -406,7 +407,27 @@ exports.getCommentsByEventId = (eventId) => {
     WHERE ec.event_id = $1 
     ORDER BY ec.created_at DESC
   `;
-  return db.getRows(sql, [eventId]);
+  const comments = await db.getRows(sql, [eventId]);
+  
+  // Load mentions for all comments
+  if (comments && comments.length > 0) {
+    const commentIds = comments.map(c => c.id);
+    const mentionsByComment = await mentionService.getCommentsMentions(commentIds);
+    
+    // Add mentions to each comment
+    // Ensure we match by both string and number to handle type differences
+    comments.forEach(comment => {
+      const commentId = comment.id;
+      // Try both string and number keys in case of type mismatch
+      const key = Number(commentId) || commentId;
+      comment.mentions = mentionsByComment[key] || 
+                         mentionsByComment[String(key)] || 
+                         mentionsByComment[Number(key)] || 
+                         [];
+    });
+  }
+  
+  return comments;
 };
 
 exports.addComment = async (newComment, userId) => {
@@ -416,7 +437,28 @@ exports.addComment = async (newComment, userId) => {
     RETURNING *
   `;
   const values = [newComment.eventId, userId, newComment.text, new Date()];
-  return await db.getRow(sql, values);
+  const comment = await db.getRow(sql, values);
+  
+  // Parse and save mentions
+  if (comment && comment.id) {
+    const mentionTexts = mentionService.parseMentions(newComment.text);
+    if (mentionTexts.length > 0) {
+      const mentionedUserIds = await mentionService.findMentionedUsers(mentionTexts);
+      if (mentionedUserIds.length > 0) {
+        await mentionService.saveMentions(comment.id, mentionedUserIds);
+        // Load mentions for the response
+        comment.mentions = await mentionService.getCommentMentions(comment.id);
+      } else {
+        comment.mentions = [];
+      }
+    } else {
+      comment.mentions = [];
+    }
+  } else {
+    if (comment) comment.mentions = [];
+  }
+  
+  return comment;
 };
 
 exports.deleteComment = async (commentId, userId, userRole) => {
@@ -449,23 +491,36 @@ exports.deleteEvent = async (eventId, images, userId, userRole) => {
 
 // wishlist-specific functions moved to wishlist service
 
-exports.getFavoriteEvents = async (userId, page = 1) => {
+exports.getFavoriteEvents = async (userId, page = 1, collectionId = null) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
-  const sql = `
+  let sql = `
     SELECT e.*, c.full_name, c.image 
     FROM event_post e 
-    JOIN event_favorite ef ON e.id = ef.event_id 
+    JOIN event_collection_item ef ON e.id = ef.event_id 
     JOIN users c ON c.id = e.user_id 
     WHERE ef.user_id = $1 AND (e.expires_at IS NULL OR e.expires_at > NOW())
-    ORDER BY ef.created_at DESC 
-    LIMIT $2 OFFSET $3
   `;
-  return db.getRows(sql, [userId, itemsPerPage, offset]);
+  const values = [userId];
+  let paramIndex = 2;
+  
+  if (collectionId !== null && collectionId !== undefined) {
+    sql += ` AND ef.collection_id = $${paramIndex++}`;
+    values.push(collectionId);
+  } else {
+    // If collectionId is explicitly null, get only uncategorized events
+    // If not provided, get all events (backward compatibility)
+    // This will be handled by collection service for better control
+  }
+  
+  sql += ` ORDER BY ef.created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+  values.push(itemsPerPage, offset);
+  
+  return db.getRows(sql, values);
 };
 
 exports.isFavorite = async (eventId, userId) => {
-  const sql = `SELECT id FROM event_favorite WHERE event_id = $1 AND user_id = $2`;
+  const sql = `SELECT id FROM event_collection_item WHERE event_id = $1 AND user_id = $2`;
   const result = await db.getRow(sql, [eventId, userId]);
   return !!result;
 };
@@ -478,20 +533,24 @@ exports.isFavorite = async (eventId, userId) => {
 
 // wishlist-specific functions moved to wishlist service
 
-exports.switchFavoriteEvent = async (eventId, payload, userId) => {
-  const sql = `SELECT * FROM event_favorite WHERE user_id = $1 AND event_id = $2`;
+exports.switchFavoriteEvent = async (eventId, payload, userId, collectionId = null) => {
+  const sql = `SELECT * FROM event_collection_item WHERE user_id = $1 AND event_id = $2`;
   const res = await db.getRow(sql, [userId, eventId]);
   let sql2 = "";
   const values = [];
   if (res && res.id && payload == "false") {
     // entry found and payload is false, so remove from db
-    sql2 = `DELETE FROM event_favorite WHERE id = $1`;
+    sql2 = `DELETE FROM event_collection_item WHERE id = $1`;
     values.push(res.id);
   } else if (!res && payload == "true") {
     // entry not found and payload is true, so insert
-    sql2 = `INSERT INTO event_favorite(user_id, event_id, created_at) VALUES ($1, $2, $3)`;
-    values.push(userId, eventId);
+    sql2 = `INSERT INTO event_collection_item(user_id, event_id, collection_id, created_at) VALUES ($1, $2, $3, $4)`;
+    values.push(userId, eventId, collectionId);
     values.push(new Date());
+  } else if (res && res.id && payload == "true") {
+    // entry found and payload is true, update collection_id
+    sql2 = `UPDATE event_collection_item SET collection_id = $1 WHERE id = $2`;
+    values.push(collectionId, res.id);
   } else {
     throw new CustomError("Invalid favorite toggle request!", 400);
   }

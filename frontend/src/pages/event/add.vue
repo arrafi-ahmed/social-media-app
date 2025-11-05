@@ -44,19 +44,19 @@
   const autoDeleteDays = ref(null)
   const isCustomDays = ref(false)
   const customDays = ref(null)
-  
+
   const dayOptions = [1, 7, 14, 30, 60, 90, { title: 'Custom', value: 'custom' }]
-  
+
   const calculatedExpirationDate = computed(() => {
     if (!isTemporary.value) return null
     const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
     if (!days) return null
     const date = new Date()
-    date.setDate(date.getDate() + parseInt(days))
+    date.setDate(date.getDate() + Number.parseInt(days))
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   })
-  
-  function handleDaysChange(value) {
+
+  function handleDaysChange (value) {
     if (value === 'custom') {
       isCustomDays.value = true
       autoDeleteDays.value = null
@@ -95,7 +95,7 @@
   }
 
   // Helper to strip HTML tags and get text length for validation
-  function getTextLength(html) {
+  function getTextLength (html) {
     if (!html) return 0
     const temp = document.createElement('div')
     temp.innerHTML = html
@@ -143,7 +143,7 @@
     formData.append('category', newEvent.selectedCategory)
     if (isTemporary.value) {
       const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
-      if (days && parseInt(days) > 0) {
+      if (days && Number.parseInt(days) > 0) {
         formData.append('autoDeleteDays', days)
       }
     }
@@ -302,17 +302,17 @@
                   <v-number-input
                     v-if="isCustomDays"
                     v-model="customDays"
+                    class="mt-3"
+                    hide-details="auto"
                     label="Enter number of days"
-                    variant="solo"
-                    min="1"
                     max="365"
+                    min="1"
                     :rules="[
                       (v) => !!v || 'Number of days is required',
                       (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
                       (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
                     ]"
-                    class="mt-3"
-                    hide-details="auto"
+                    variant="solo"
                   />
                   <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
                     This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>

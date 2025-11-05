@@ -20,6 +20,9 @@
       case 'wishlist': {
         return 'mdi-heart-outline'
       }
+      case 'collection': {
+        return 'mdi-folder-outline'
+      }
       case 'favorite': {
         return 'mdi-star-outline'
       }
@@ -39,6 +42,9 @@
     switch (source) {
       case 'wishlist': {
         return 'No wishlist events yet'
+      }
+      case 'collection': {
+        return 'No events in this collection yet'
       }
       case 'favorite': {
         return 'No favorite events yet'

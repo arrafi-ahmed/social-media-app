@@ -39,6 +39,15 @@ CREATE TABLE event_comment
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE comment_mention
+(
+    id               SERIAL PRIMARY KEY,
+    comment_id       INTEGER NOT NULL REFERENCES event_comment (id) ON DELETE CASCADE,
+    mentioned_user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (comment_id, mentioned_user_id)
+);
+
 CREATE TABLE friendship
 (
     id         SERIAL PRIMARY KEY,
@@ -47,12 +56,13 @@ CREATE TABLE friendship
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE event_favorite
+CREATE TABLE event_collection_item
 (
-    id         SERIAL PRIMARY KEY,
-    user_id    INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    event_id   INTEGER REFERENCES event_post (id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id            SERIAL PRIMARY KEY,
+    user_id       INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    event_id      INTEGER NOT NULL REFERENCES event_post (id) ON DELETE CASCADE,
+    collection_id INTEGER REFERENCES event_collection (id) ON DELETE CASCADE,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, event_id)
 );
 
@@ -160,6 +170,37 @@ CREATE TABLE event_reaction
     reaction_type VARCHAR(20) NOT NULL, -- 'like', 'heart', 'laugh', 'wow', 'sad', 'angry'
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, event_id)
+);
+-- added
+CREATE TABLE event_collection
+(
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT,
+    color       VARCHAR(7),  -- Hex color code (e.g., #FF5733)
+    icon        VARCHAR(50), -- Icon name (e.g., mdi-folder, mdi-music)
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- added
+CREATE TABLE event_collection_item
+(
+    id            SERIAL PRIMARY KEY,
+    user_id       INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    event_id      INTEGER NOT NULL REFERENCES event_post (id) ON DELETE CASCADE,
+    collection_id INTEGER REFERENCES event_collection (id) ON DELETE CASCADE,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, event_id)
+);
+--added
+CREATE TABLE comment_mention
+(
+    id               SERIAL PRIMARY KEY,
+    comment_id       INTEGER NOT NULL REFERENCES event_comment (id) ON DELETE CASCADE,
+    mentioned_user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (comment_id, mentioned_user_id)
 );
 
 CREATE

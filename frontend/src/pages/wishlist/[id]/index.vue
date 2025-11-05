@@ -1,14 +1,14 @@
 <script setup>
+  import DOMPurify from 'dompurify'
   import { computed, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useStore } from 'vuex'
-  import DOMPurify from 'dompurify'
   import Lightbox from '@/components/Lightbox.vue'
   import UserAvatar from '@/components/UserAvatar.vue'
   import { formatDateFromTimestamp, getWishlistImageUrl, goUserProfile } from '@/others/util.js'
 
   // Helper to check if content is HTML and sanitize it
-  function getSanitizedDescription(html) {
+  function getSanitizedDescription (html) {
     if (!html) return ''
     // Check if content contains HTML tags (from rich editor)
     const hasHtmlTags = /<[a-z][\s\S]*>/i.test(html)
@@ -16,7 +16,7 @@
       return DOMPurify.sanitize(html, {
         ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a'],
         ALLOWED_ATTR: ['href', 'target', 'rel'],
-        ALLOW_DATA_ATTR: false
+        ALLOW_DATA_ATTR: false,
       })
     }
     // Plain text - escape HTML and convert newlines to <br>

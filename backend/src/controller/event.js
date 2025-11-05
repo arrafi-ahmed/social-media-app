@@ -121,10 +121,12 @@ router.get("/switchFavoriteEvent", auth, async (req, res, next) => {
   try {
     const eventId = req.query?.eventId ? parseInt(req.query.eventId, 10) : undefined;
     const payload = req.query?.payload;
+    const collectionId = req.query?.collectionId ? parseInt(req.query.collectionId, 10) : null;
     const result = await eventService.switchFavoriteEvent(
       eventId,
       payload,
-      req.currentUser.id
+      req.currentUser.id,
+      collectionId
     );
     res
       .status(200)

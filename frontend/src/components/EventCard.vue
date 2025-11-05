@@ -1,19 +1,19 @@
-<!--source = [browse, wall, favorite]-->
+<!--source = [browse, wall, collection]-->
 <script setup>
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useTheme } from 'vuetify'
   import { useStore } from 'vuex'
-import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
-import UserAvatar from '@/components/UserAvatar.vue'
-import {
+  import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+  import UserAvatar from '@/components/UserAvatar.vue'
+  import {
     formatDateFromTimestamp,
     formatMonthYear,
     getDate,
+    getDaysUntilExpiration,
     goUserProfile,
     loadEventThumb,
     to12hTime,
-    getDaysUntilExpiration,
   } from '@/others/util.js'
 
   const store = useStore()
@@ -46,7 +46,7 @@ import {
   const getUserIdentifier = computed(() => {
     return event.slug || event.userId
   })
-  
+
   // Calculate days until expiration
   const daysUntilExpiration = computed(() => {
     return getDaysUntilExpiration(event.expiresAt)
@@ -252,13 +252,13 @@ import {
           Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? 'day' : 'days' }}
         </v-chip>
       </div>
-      <h5 class="mb-4" style="font-weight: 600; line-height: 1.3;">{{ event.title }}</h5>
-      
-      <div v-if="event.startTime || event.location" class="mb-3">
+      <h3 class="mb-3">{{ event.title }}</h3>
+
+      <div v-if="event.startTime || event.location">
         <div v-if="event.startTime" class="d-flex align-center mb-2">
           <v-icon class="mr-2" color="primary" size="small">mdi-clock</v-icon>
-          <span class="text-body-2">{{ to12hTime(event.startTime) }}</span>
-          <span v-if="event.endTime" class="text-body-2"> - {{ to12hTime(event.endTime) }}</span>
+          <span>{{ to12hTime(event.startTime) }}</span>
+          <span v-if="event.endTime"> - {{ to12hTime(event.endTime) }}</span>
         </div>
         <div v-if="event.location" class="d-flex align-center">
           <v-icon
@@ -267,13 +267,13 @@ import {
             size="small"
           >mdi-map-marker
           </v-icon>
-          <span class="text-body-2">{{ event.location }}</span>
+          <span>{{ event.location }}</span>
         </div>
       </div>
 
       <div class="d-flex justify-space-between align-center">
         <v-btn
-          class="mt-2"
+          class="mt-3"
           color="primary"
           density="comfortable"
           variant="flat"

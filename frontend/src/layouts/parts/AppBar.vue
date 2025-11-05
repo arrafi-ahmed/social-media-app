@@ -29,7 +29,7 @@
         to: { name: 'wall', params: { id: currentUser.value?.slug || currentUser.value?.id } },
       },
       { title: 'Friends', to: { name: 'friends' } },
-      { title: 'Saved Events', to: { name: 'favorite' } },
+      { title: 'Collections', to: { name: 'collection' } },
       { title: 'Wishlist', to: { name: 'wishlist' } },
       { title: 'Settings', to: { name: 'settings' } },
     ].filter(Boolean),

@@ -328,9 +328,77 @@ exports.searchUser = async (requestedUser) => {
   return await db.getRows(sql, params);
 };
 
+// Search users for mention autocomplete (friends only)
+exports.searchUsers = async (query, userId, limit = 10) => {
+  const trimmedQuery = query ? query.trim() : '';
+  
+  let sql;
+  let params;
+  
+  if (trimmedQuery.length === 0) {
+    // Show all friends when query is empty
+    sql = `
+      SELECT 
+        u.id, 
+        u.full_name, 
+        u.slug, 
+        u.image, 
+        u.email
+      FROM users u
+      JOIN (
+        SELECT user_id_1 as friend_id
+        FROM friendship
+        WHERE user_id_2 = $1
+        UNION
+        SELECT user_id_2 as friend_id
+        FROM friendship
+        WHERE user_id_1 = $2
+      ) as friends ON u.id = friends.friend_id
+      ORDER BY u.full_name ASC
+      LIMIT $3
+    `;
+    params = [userId, userId, limit];
+  } else {
+    // Filter friends by search query
+    const searchTerm = `%${trimmedQuery}%`;
+    sql = `
+      SELECT 
+        u.id, 
+        u.full_name, 
+        u.slug, 
+        u.image, 
+        u.email
+      FROM users u
+      JOIN (
+        SELECT user_id_1 as friend_id
+        FROM friendship
+        WHERE user_id_2 = $3
+        UNION
+        SELECT user_id_2 as friend_id
+        FROM friendship
+        WHERE user_id_1 = $4
+      ) as friends ON u.id = friends.friend_id
+      WHERE (LOWER(u.full_name) LIKE LOWER($1)
+         OR LOWER(u.slug) LIKE LOWER($1)
+         OR LOWER(u.email) LIKE LOWER($1))
+      ORDER BY 
+        CASE 
+          WHEN LOWER(u.slug) = LOWER($2) THEN 1
+          WHEN LOWER(u.full_name) LIKE LOWER($2) THEN 2
+          ELSE 3
+        END,
+        u.full_name ASC
+      LIMIT $5
+    `;
+    params = [searchTerm, trimmedQuery, userId, userId, limit];
+  }
+  
+  return await db.getRows(sql, params);
+};
+
 exports.deleteUser = async (userId, rmImage) => {
   const sql = `SELECT images FROM event_post WHERE user_id = $1`;
-  const sql1 = `DELETE FROM event_favorite WHERE user_id = $1`;
+  const sql1 = `DELETE FROM event_collection_item WHERE user_id = $1`;
   const sql2 = `DELETE FROM event_comment WHERE user_id = $1`;
   const sql3 = `DELETE FROM event_wishlist WHERE user_id = $1`;
   const sql4 = `DELETE FROM event_post WHERE user_id = $1`;

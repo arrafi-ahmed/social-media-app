@@ -36,9 +36,9 @@
   const autoDeleteDays = ref(null)
   const isCustomDays = ref(false)
   const customDays = ref(null)
-  
+
   const dayOptions = [1, 7, 14, 30, 60, 90, { title: 'Custom', value: 'custom' }]
-  
+
   const calculatedExpirationDate = computed(() => {
     if (!isTemporary.value) return null
     const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
@@ -46,18 +46,18 @@
     // Calculate from current date (not original created_at) when editing
     const currentDate = new Date()
     const date = new Date(currentDate)
-    date.setDate(date.getDate() + parseInt(days))
+    date.setDate(date.getDate() + Number.parseInt(days))
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   })
-  
+
   const currentExpirationDate = computed(() => {
     if (editingEvent.expiresAt) {
       return new Date(editingEvent.expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     }
     return null
   })
-  
-  function handleDaysChange(value) {
+
+  function handleDaysChange (value) {
     if (value === 'custom') {
       isCustomDays.value = true
       autoDeleteDays.value = null
@@ -116,7 +116,7 @@
   }
 
   // Helper to strip HTML tags and get text length for validation
-  function getTextLength(html) {
+  function getTextLength (html) {
     if (!html) return 0
     const temp = document.createElement('div')
     temp.innerHTML = html
@@ -128,7 +128,7 @@
     if (!valid) {
       await store.commit('addSnackbar', {
         text: 'Please fill in all required fields correctly',
-        color: 'error'
+        color: 'error',
       })
       return
     }
@@ -169,7 +169,7 @@
     formData.append('rmImages', JSON.stringify(rmImages.value))
     if (isTemporary.value) {
       const days = isCustomDays.value ? customDays.value : autoDeleteDays.value
-      if (days && parseInt(days) > 0) {
+      if (days && Number.parseInt(days) > 0) {
         formData.append('autoDeleteDays', days)
       } else {
         formData.append('autoDeleteDays', '')
@@ -190,22 +190,33 @@
     store
       .dispatch(`${storeModule.value}/editEvent`, formData)
       .then(() => {
-        if (route.query.src === 'single') {
-          router.push({ name: 'eventSingle', params: { id: editingEvent.id } })
-        } else if (route.query.src === 'browse') {
-          router.push({ name: 'browse' })
-        } else if (route.query.src === 'wall') {
-          router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
-        } else {
-          // Fallback to wall if src is missing
-          router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
+        switch (route.query.src) {
+          case 'single': {
+            router.push({ name: 'eventSingle', params: { id: editingEvent.id } })
+
+            break
+          }
+          case 'browse': {
+            router.push({ name: 'browse' })
+
+            break
+          }
+          case 'wall': {
+            router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
+
+            break
+          }
+          default: {
+            // Fallback to wall if src is missing
+            router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
+          }
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error editing event:', error)
         store.commit('addSnackbar', {
           text: error?.response?.data?.message || 'Failed to update event',
-          color: 'error'
+          color: 'error',
         })
       })
   }
@@ -222,7 +233,7 @@
       ...storedEditingEvent.value,
       date: new Date(storedEditingEvent.value.date),
     })
-    
+
     // Set temporary post state if expiresAt exists
     if (editingEvent.expiresAt) {
       isTemporary.value = true
@@ -252,7 +263,7 @@
         customDays.value = null
       }
     }
-    
+
     newUploads.value = []
     rmImages.value = []
   })
@@ -308,7 +319,7 @@
               {{ getTextLength(editingEvent.description) }} / 1000 characters
             </div>
           </div>
-          
+
           <!-- Temporary Post Option -->
           <v-card class="mt-4">
             <v-card-text>
@@ -326,26 +337,26 @@
               <div v-if="isTemporary" class="mt-3">
                 <v-select
                   v-model="autoDeleteDays"
+                  hide-details="auto"
                   :items="dayOptions.map(d => typeof d === 'object' ? d : { title: `${d} ${d === 1 ? 'day' : 'days'}`, value: d })"
                   label="Auto-delete after"
                   variant="solo"
-                  hide-details="auto"
                   @update:model-value="handleDaysChange"
                 />
                 <v-number-input
                   v-if="isCustomDays"
                   v-model="customDays"
+                  class="mt-3"
+                  hide-details="auto"
                   label="Enter number of days"
-                  variant="solo"
-                  min="1"
                   max="365"
+                  min="1"
                   :rules="[
                     (v) => !!v || 'Number of days is required',
                     (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
                     (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
                   ]"
-                  class="mt-3"
-                  hide-details="auto"
+                  variant="solo"
                 />
                 <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
                   This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>
@@ -353,7 +364,7 @@
               </div>
             </v-card-text>
           </v-card>
-          
+
           <v-row :no-gutters="!!mobile">
             <v-col class="mt-2" cols="12" md="6">
               <v-select

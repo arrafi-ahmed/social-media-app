@@ -278,4 +278,16 @@ router.get("/addAllUsersToAdminFriendlist", auth, async (req, res, next) => {
   }
 });
 
+router.get("/search", auth, async (req, res, next) => {
+  try {
+    const query = req.query?.q || '';
+    const limit = req.query?.limit ? parseInt(req.query.limit, 10) : 10;
+    const userId = req.currentUser.id;
+    const result = await userService.searchUsers(query, userId, limit);
+    res.status(200).json(new ApiResponse(null, result));
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = router;

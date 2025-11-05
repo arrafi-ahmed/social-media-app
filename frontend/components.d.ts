@@ -10,6 +10,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     Applink: typeof import('./src/components/Applink.vue')['default']
     CategoryList: typeof import('./src/components/CategoryList.vue')['default']
+    CollectionDialog: typeof import('./src/components/CollectionDialog.vue')['default']
+    CommentMentions: typeof import('./src/components/CommentMentions.vue')['default']
     ConfirmationDialog: typeof import('./src/components/ConfirmationDialog.vue')['default']
     DatePicker: typeof import('./src/components/DatePicker.vue')['default']
     EventCard: typeof import('./src/components/EventCard.vue')['default']
@@ -21,6 +23,7 @@ declare module 'vue' {
     ImageManager: typeof import('./src/components/ImageManager.vue')['default']
     Lightbox: typeof import('./src/components/Lightbox.vue')['default']
     Logo: typeof import('./src/components/Logo.vue')['default']
+    MentionAutocomplete: typeof import('./src/components/MentionAutocomplete.vue')['default']
     NameCard: typeof import('./src/components/NameCard.vue')['default']
     NoItems: typeof import('./src/components/NoItems.vue')['default']
     PageTitle: typeof import('./src/components/PageTitle.vue')['default']

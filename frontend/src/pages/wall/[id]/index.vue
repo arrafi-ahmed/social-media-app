@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, onMounted, reactive, ref, watch } from 'vue'
+  import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
@@ -71,19 +71,27 @@
       const action
         = filterActive.value === 'findForm' ? 'findEvents' : 'setEvents'
 
-      // Use the actual userId from the user object, ensure it's a valid number
-      let userId = user.value?.id
-
-      // If user.value.id is not available, check if route.params.id is numeric
-      if (!userId) {
-        const routeId = route.params.id
-        // Only use route.params.id if it's numeric (userId), not a slug
-        if (routeId && /^\d+$/.test(routeId)) {
-          userId = Number.parseInt(routeId, 10)
+      // Get userId from route params
+      const routeId = route.params.id
+      let userId = null
+      
+      // If routeId is numeric, use it directly
+      if (/^\d+$/.test(routeId)) {
+        userId = Number.parseInt(routeId, 10)
+      } else {
+        // It's a slug - verify user in store matches current route
+        // setUser and setEvents may fire at same time, so we need to check
+        if (user.value?.slug === routeId && user.value?.id) {
+          userId = user.value.id
+        } else {
+          // User not loaded yet or doesn't match route - wait a bit
+          await new Promise(resolve => setTimeout(resolve, 100))
+          if (user.value?.slug === routeId && user.value?.id) {
+            userId = user.value.id
+          }
         }
       }
 
-      // Ensure userId is a valid number before making the API call
       if (!userId || isNaN(userId)) {
         done('error')
         isLoading = false
@@ -193,6 +201,7 @@
             source: 'own',
           }),
         ])
+        // EventInfinite component will automatically trigger loadEvents via @load event
       } else {
         router.push({
           name: 'notFound',

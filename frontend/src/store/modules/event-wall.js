@@ -86,7 +86,7 @@ export const mutations = {
     if (!event.reactions) {
       event.reactions = { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }
     }
-    
+
     // Update user reaction first
     if (isActive && reactionType) {
       // If same reaction was clicked, it means we're removing it
@@ -100,10 +100,8 @@ export const mutations = {
         // Change to different reaction
         event.userReaction = reactionType
         // Remove previous reaction count
-        if (previousReaction && previousReaction !== reactionType) {
-          if (event.reactions[previousReaction] > 0) {
-            event.reactions[previousReaction]--
-          }
+        if (previousReaction && previousReaction !== reactionType && event.reactions[previousReaction] > 0) {
+          event.reactions[previousReaction]--
         }
         // Add new reaction count
         event.reactions[reactionType]++
