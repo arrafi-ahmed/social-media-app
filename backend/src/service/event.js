@@ -785,3 +785,70 @@ exports.setEventNotification = (eventId, payload) => {
   const sql = `UPDATE event_post SET new_notification = $1 WHERE id = $2`;
   return db.execute(sql, [JSON.parse(payload), eventId]);
 };
+
+// Get all events for admin export
+exports.getAllEvents = async () => {
+  const sql = `
+    SELECT e.*, u.full_name as user_full_name, u.email as user_email, u.slug as user_slug
+    FROM event_post e
+    JOIN users u ON e.user_id = u.id
+    ORDER BY e.created_at DESC
+  `;
+  return await db.getRows(sql, []);
+};
+
+// Export events to CSV
+exports.exportEventsToCSV = (events) => {
+  if (!events || events.length === 0) {
+    return 'No events found';
+  }
+
+  // CSV Header
+  const headers = [
+    'ID',
+    'Title',
+    'Date',
+    'Start Time',
+    'End Time',
+    'Location',
+    'Category',
+    'Description',
+    'Featured',
+    'User Name',
+    'User Email',
+    'User Slug',
+    'Created At',
+    'Expires At'
+  ];
+
+  // CSV Rows
+  const rows = events.map(event => {
+    const escapeCSV = (value) => {
+      if (value === null || value === undefined) return '';
+      const str = String(value);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    return [
+      escapeCSV(event.id),
+      escapeCSV(event.title),
+      escapeCSV(event.date ? new Date(event.date).toISOString().split('T')[0] : ''),
+      escapeCSV(event.startTime || ''),
+      escapeCSV(event.endTime || ''),
+      escapeCSV(event.location),
+      escapeCSV(event.category),
+      escapeCSV(event.description ? event.description.replace(/\n/g, ' ') : ''),
+      escapeCSV(event.isFeatured ? 'Yes' : 'No'),
+      escapeCSV(event.userFullName || event.user_full_name),
+      escapeCSV(event.userEmail || event.user_email),
+      escapeCSV(event.userSlug || event.user_slug),
+      escapeCSV(event.createdAt ? new Date(event.createdAt).toISOString() : ''),
+      escapeCSV(event.expiresAt ? new Date(event.expiresAt).toISOString() : '')
+    ].join(',');
+  });
+
+  return [headers.join(','), ...rows].join('\n');
+};

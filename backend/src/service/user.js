@@ -132,8 +132,54 @@ exports.getAdmins = async () => {
 };
 
 exports.getUsers = async () => {
-  const sql = `SELECT * FROM users`;
+  const sql = `SELECT * FROM users ORDER BY created_at DESC`;
   return await db.getRows(sql, []);
+};
+
+// Export users to CSV
+exports.exportUsersToCSV = (users) => {
+  if (!users || users.length === 0) {
+    return 'No users found';
+  }
+
+  // CSV Header
+  const headers = [
+    'ID',
+    'Full Name',
+    'Email',
+    'Date of Birth',
+    'Country',
+    'Role',
+    'Slug',
+    'Created At'
+  ];
+
+  // CSV Rows
+  const rows = users.map(user => {
+    const escapeCSV = (value) => {
+      if (value === null || value === undefined) return '';
+      const str = String(value);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const role = user.role === 10 ? 'Admin' : user.role === 20 ? 'User' : user.role;
+
+    return [
+      escapeCSV(user.id),
+      escapeCSV(user.fullName || user.full_name),
+      escapeCSV(user.email),
+      escapeCSV(user.dateOfBirth || user.date_of_birth || ''),
+      escapeCSV(user.country || ''),
+      escapeCSV(role),
+      escapeCSV(user.slug || ''),
+      escapeCSV(user.createdAt ? new Date(user.createdAt).toISOString() : '')
+    ].join(',');
+  });
+
+  return [headers.join(','), ...rows].join('\n');
 };
 
 exports.checkFriends = async (id1, id2) => {

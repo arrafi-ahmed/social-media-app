@@ -253,6 +253,42 @@
     store.dispatch('user/addAllUsersToAdminFriendlist')
   }
 
+  async function exportUsers () {
+    try {
+      const response = await $axios.get('/admin/export/users', {
+        responseType: 'blob',
+      })
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `users_export_${new Date().toISOString().split('T')[0]}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error exporting users:', error)
+    }
+  }
+
+  async function exportEvents () {
+    try {
+      const response = await $axios.get('/admin/export/events', {
+        responseType: 'blob',
+      })
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `events_export_${new Date().toISOString().split('T')[0]}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error exporting events:', error)
+    }
+  }
+
   const foundUsersWSucscription = ref([])
 
   watch(
@@ -566,6 +602,27 @@
                   >
                     Add as Friends
                   </v-btn>
+                </div>
+
+                <div class="mt-5">
+                  <h3>Export Data</h3>
+                  <v-divider class="my-2" />
+                  <div class="d-flex flex-column flex-sm-row gap-2">
+                    <v-btn
+                      color="primary"
+                      prepend-icon="mdi-file-excel"
+                      @click="exportUsers"
+                    >
+                      Export User Data
+                    </v-btn>
+                    <v-btn
+                      color="primary"
+                      prepend-icon="mdi-file-excel"
+                      @click="exportEvents"
+                    >
+                      Export Event Data
+                    </v-btn>
+                  </div>
                 </div>
               </v-col>
             </v-row>

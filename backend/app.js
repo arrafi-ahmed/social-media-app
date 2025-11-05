@@ -47,6 +47,7 @@ app.use("/page", require("./src/controller/page"));
 app.use("/blog", require("./src/controller/blog"));
 app.use("/subscription", require("./src/controller/subscription"));
 app.use("/stripe", require("./src/controller/stripe").router);
+app.use("/admin", require("./src/controller/admin"));
 
 app.get("/info", function (req, res) {
   res.status(200).json(appInfo);
