@@ -217,3 +217,13 @@ exports.getStripeSubscriptionExpiryDate = async (subscriptionId) => {
     await stripeService.getStripeSubscription(subscriptionId);
   return new Date(stripeSubscription.current_period_end * 1000);
 };
+
+// Check if user has premium subscription (Standard or Ultimate)
+exports.isPremiumUser = async (userId) => {
+  const subscription = await exports.getSubscription(userId);
+  if (!subscription || !subscription.active) {
+    return false;
+  }
+  // plan_id 1 = Ultimate, 2 = Standard (premium), 3 = Basic (free)
+  return subscription.planId === 1 || subscription.planId === 2;
+};

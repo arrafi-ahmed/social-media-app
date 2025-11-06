@@ -41,6 +41,7 @@ app.use("/auth", require("./src/controller/auth"));
 app.use("/user", require("./src/controller/user"));
 app.use("/event", require("./src/controller/event"));
 app.use("/collection", require("./src/controller/collection"));
+app.use("/group", require("./src/controller/group"));
 app.use("/wishlist", require("./src/controller/wishlist"));
 app.use("/category", require("./src/controller/category"));
 app.use("/page", require("./src/controller/page"));

@@ -48,7 +48,8 @@
     <v-row align="center" justify="center">
       <v-col cols="12" md="4">
         <page-title subtitle="Set a new password" title="Reset Password" />
-        <v-card
+        <div class="page-content">
+          <v-card
           class="mx-auto pa-2 pa-md-5 my-2 my-md-5"
           color="grey-lighten-3"
           elevation="4"
@@ -110,6 +111,7 @@
             </v-form>
           </v-card-text>
         </v-card>
+        </div>
       </v-col>
     </v-row>
   </v-container>

@@ -4,6 +4,7 @@ const { removeImages, ifAdmin } = require("../others/util");
 const emailService = require("../email");
 const userService = require("./user");
 const mentionService = require("./mention");
+const subscriptionService = require("./subscription");
 
 // Valid reaction types
 const VALID_REACTION_TYPES = ['like', 'unlike', 'heart', 'laugh', 'sad', 'angry'];
@@ -83,7 +84,51 @@ exports.createWelcomeEvent = async (userId) => {
   return event;
 };
 
+// Get monthly post count for a user (excluding welcome events)
+exports.getMonthlyPostCount = async (userId) => {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const sql = `
+    SELECT COUNT(*) as count
+    FROM event_post
+    WHERE user_id = $1
+      AND created_at >= $2
+      AND created_at < $3
+      AND category != 'Registration'
+  `;
+  const result = await db.getRow(sql, [userId, startOfMonth, now]);
+  return parseInt(result.count) || 0;
+};
+
+// Get post limit status for a user
+exports.getPostLimitStatus = async (userId) => {
+  const isPremium = await subscriptionService.isPremiumUser(userId);
+  const monthlyCount = await exports.getMonthlyPostCount(userId);
+  const limit = 5; // Free users get 5 posts/month
+  const remaining = isPremium ? -1 : Math.max(0, limit - monthlyCount); // -1 means unlimited
+  
+  return {
+    isPremium,
+    monthlyCount,
+    limit,
+    remaining
+  };
+};
+
 exports.save = async (body, files, userId, clientUrl) => {
+  // Check post limit for free users
+  const isPremium = await subscriptionService.isPremiumUser(userId);
+  if (!isPremium) {
+    const monthlyCount = await exports.getMonthlyPostCount(userId);
+    const limit = 5;
+    if (monthlyCount >= limit) {
+      throw new CustomError(
+        `You've reached your monthly post limit of ${limit} posts. Upgrade to premium for unlimited posts!`,
+        403
+      );
+    }
+  }
+
   const fileNames = JSON.stringify(files ? files.map((file) => file.filename) : []);
   const eventDate = new Date(body.date).toISOString().split("T")[0];
   
@@ -216,25 +261,39 @@ exports.getAllEventsByFriends = async ({ userId, page = 1, sort = "LATEST" }) =>
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   const sql = `
-    SELECT e.*, c.full_name, c.image, c.slug
+    SELECT DISTINCT e.*, c.full_name, c.image, c.slug
     FROM event_post e
-    JOIN (
-      SELECT user_id_1 as friendId
-      FROM friendship
-      WHERE user_id_2 = $1
-      UNION
-      SELECT user_id_2 as friendId
-      FROM friendship
-      WHERE user_id_1 = $2
-      UNION
-      SELECT $3 as friendId
-    ) as friends ON e.user_id = friends.friendId
     JOIN users c ON e.user_id = c.id
     WHERE (e.expires_at IS NULL OR e.expires_at > NOW())
+      AND (
+        -- Events from friends that are NOT shared with any group
+        (
+          EXISTS (
+            SELECT 1
+            FROM friendship f
+            WHERE (f.user_id_1 = e.user_id AND f.user_id_2 = $1)
+               OR (f.user_id_2 = e.user_id AND f.user_id_1 = $1)
+               OR e.user_id = $1
+          )
+          AND NOT EXISTS (
+            SELECT 1
+            FROM event_group eg
+            WHERE eg.event_id = e.id
+          )
+        )
+        -- OR events shared with groups user belongs to (even if creator is not a friend)
+        OR EXISTS (
+          SELECT 1
+          FROM event_group eg
+          JOIN group_member gm ON eg.group_id = gm.group_id
+          WHERE eg.event_id = e.id
+            AND gm.user_id = $1
+        )
+      )
     ORDER BY ${getSortingColumn(sort)}
-    LIMIT $4 OFFSET $5
+    LIMIT $2 OFFSET $3
   `;
-  const results = await db.getRows(sql, [userId, userId, userId, itemsPerPage, offset]);
+  const results = await db.getRows(sql, [userId, itemsPerPage, offset]);
   // Parse the images field for each record
   return results;
 };
@@ -301,25 +360,39 @@ exports.findBrowseEvents = async ({
   const values = [];
 
   let sql = `
-    SELECT e.*, c.full_name, c.image, c.slug 
+    SELECT DISTINCT e.*, c.full_name, c.image, c.slug 
     FROM event_post e 
-    JOIN (
-      SELECT user_id_1 as friendId 
-      FROM friendship 
-      WHERE user_id_2 = $1
-      UNION 
-      SELECT user_id_2 as friendId 
-      FROM friendship 
-      WHERE user_id_1 = $2
-      UNION 
-      SELECT $3 as friendId
-    ) as friends ON e.user_id = friends.friendId
     JOIN users c ON e.user_id = c.id
     WHERE (e.expires_at IS NULL OR e.expires_at > NOW())
+      AND (
+        -- Events from friends that are NOT shared with any group
+        (
+          EXISTS (
+            SELECT 1
+            FROM friendship f
+            WHERE (f.user_id_1 = e.user_id AND f.user_id_2 = $1)
+               OR (f.user_id_2 = e.user_id AND f.user_id_1 = $1)
+               OR e.user_id = $1
+          )
+          AND NOT EXISTS (
+            SELECT 1
+            FROM event_group eg
+            WHERE eg.event_id = e.id
+          )
+        )
+        -- OR events shared with groups user belongs to (even if creator is not a friend)
+        OR EXISTS (
+          SELECT 1
+          FROM event_group eg
+          JOIN group_member gm ON eg.group_id = gm.group_id
+          WHERE eg.event_id = e.id
+            AND gm.user_id = $1
+        )
+      )
   `;
 
-  values.push(userId, userId, userId);
-  let paramIndex2 = 4;
+  values.push(userId);
+  let paramIndex2 = 2;
 
   if (searchKeyword) {
     sql += ` and e.title like $${paramIndex2++}`;
@@ -371,6 +444,33 @@ exports.getEvent = async (eventId, userId = null) => {
   const result = await db.getRow(sql, [eventId]);
   if (!result) {
     return null;
+  }
+
+  // Check if event is shared with groups
+  const groupCheckSql = `SELECT COUNT(*) as count FROM event_group WHERE event_id = $1`;
+  const groupCheck = await db.getRow(groupCheckSql, [eventId]);
+  const isSharedWithGroups = groupCheck && parseInt(groupCheck.count) > 0;
+
+  // If event is shared with groups, verify user has access
+  if (isSharedWithGroups && userId) {
+    // Check if user is the event creator or a member of any group the event is shared with
+    // Note: Friends are NOT allowed if event is shared with groups (group-only privacy)
+    const accessSql = `
+      SELECT 1
+      FROM event_post e
+      LEFT JOIN event_group eg ON e.id = eg.event_id
+      LEFT JOIN group_member gm ON eg.group_id = gm.group_id AND gm.user_id = $2
+      WHERE e.id = $1
+        AND (e.user_id = $2 OR gm.user_id = $2)
+      LIMIT 1
+    `;
+    const hasAccess = await db.getRow(accessSql, [eventId, userId]);
+    if (!hasAccess) {
+      throw new CustomError("Event not found or access denied!", 404);
+    }
+  } else if (isSharedWithGroups && !userId) {
+    // Event is shared with groups but no userId provided - deny access
+    throw new CustomError("Event not found or access denied!", 404);
   }
 
   // Format reaction counts

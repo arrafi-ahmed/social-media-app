@@ -83,7 +83,8 @@
   <v-container>
     <page-title :back-url="calcHome" :subtitle="currentSubtitle" :title="currentTitle || 'Title not available'" />
 
-    <v-row class="mt-2" justify="center">
+    <div class="page-content">
+      <v-row justify="center">
       <v-col md="9">
         <v-row v-if="pageSlug === 'about'" justify="start" no-gutters>
           <v-col cols="8" md="4" sm="6">
@@ -106,6 +107,7 @@
         />
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 

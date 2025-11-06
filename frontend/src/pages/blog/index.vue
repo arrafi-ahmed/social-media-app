@@ -27,8 +27,9 @@
   <v-container>
     <page-title subtitle="Read our latest stories" title="Blog" />
 
-    <!-- Blog Post List -->
-    <v-row class="mt-2" justify="center">
+    <div class="page-content">
+      <!-- Blog Post List -->
+      <v-row justify="center">
       <v-col cols="12" md="7">
         <v-data-iterator
           v-if="blogs?.length > 0"
@@ -94,7 +95,7 @@
         />
       </v-col>
     </v-row>
-
+    </div>
   </v-container>
 </template>
 

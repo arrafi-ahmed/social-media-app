@@ -59,7 +59,8 @@
       <v-col cols="12">
         <page-title :back-url="calcHome" subtitle="Your saved events" title="Saved Events" />
 
-        <!-- Event Card Feed -->
+        <div class="page-content">
+          <!-- Event Card Feed -->
         <event-infinite
           :events="events"
           :grid="{ sm: 6, md: 4 }"
@@ -67,6 +68,7 @@
           type="has-header"
           @fetch-events="loadEvents"
         />
+        </div>
       </v-col>
     </v-row>
   </v-container>

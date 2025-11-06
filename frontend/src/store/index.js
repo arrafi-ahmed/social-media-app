@@ -5,6 +5,7 @@ import * as category from './modules/category'
 import * as eventBrowse from './modules/event-browse'
 import * as eventCollection from './modules/event-collection'
 import * as eventSingle from './modules/event-single'
+import * as group from './modules/group'
 import * as eventWall from './modules/event-wall'
 import * as eventWishlist from './modules/event-wishlist'
 import * as page from './modules/page'
@@ -20,6 +21,7 @@ const store = createStore({
     eventBrowse,
     eventCollection,
     eventWishlist,
+    group,
     category,
     page,
     blog,

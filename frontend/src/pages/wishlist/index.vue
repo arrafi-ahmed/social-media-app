@@ -86,13 +86,19 @@
                 />
               </template>
               <v-list density="compact">
-                <v-list-item link title="Add Event" @click="openAddEvent" />
+                <v-list-item
+                  link
+                  prepend-icon="mdi-calendar-plus"
+                  title="Add Event"
+                  @click="openAddEvent"
+                />
               </v-list>
             </v-menu>
           </template>
         </page-title>
 
-        <!-- Event Card Feed -->
+        <div class="page-content">
+          <!-- Event Card Feed -->
         <event-infinite
           :events="events"
           :grid="{ sm: 6, md: 4 }"
@@ -100,6 +106,7 @@
           type="headerless"
           @fetch-events="loadEvents"
         />
+        </div>
       </v-col>
     </v-row>
   </v-container>

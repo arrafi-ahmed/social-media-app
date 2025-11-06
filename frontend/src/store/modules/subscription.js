@@ -3,10 +3,31 @@ import $axios from '@/plugins/axios'
 
 export const namespaced = true
 
+// Initialize post limit status from localStorage if available
+const getInitialPostLimitStatus = () => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('postLimitStatus')
+    if (stored) {
+      try {
+        return JSON.parse(stored)
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  }
+  return {
+    isPremium: false,
+    monthlyCount: 0,
+    limit: 5,
+    remaining: 0,
+  }
+}
+
 export const state = {
   subscription: {},
   stripeSubscription: {},
   subscriptionPlans: [],
+  postLimitStatus: getInitialPostLimitStatus(),
 }
 
 export const mutations = {
@@ -30,6 +51,29 @@ export const mutations = {
       planData => new SubscriptionPlan(planData || {}),
     )
   },
+  setPostLimitStatus (state, payload) {
+    state.postLimitStatus = payload || {
+      isPremium: false,
+      monthlyCount: 0,
+      limit: 5,
+      remaining: 0,
+    }
+    // Store in localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('postLimitStatus', JSON.stringify(state.postLimitStatus))
+    }
+  },
+  resetPostLimitStatus (state) {
+    state.postLimitStatus = {
+      isPremium: false,
+      monthlyCount: 0,
+      limit: 5,
+      remaining: 0,
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('postLimitStatus')
+    }
+  },
 }
 
 export const actions = {
@@ -51,7 +95,7 @@ export const actions = {
       throw error
     }
   },
-  async fetchPremiumSubscriptionData ({ commit }, request) {
+  async fetchPremiumSubscriptionData ({ commit, dispatch }, request) {
     try {
       const response = await $axios.get('/subscription/fetchPremiumSubscriptionData', { params: { userId: request.userId } })
       commit('resetSubscription')
@@ -60,8 +104,30 @@ export const actions = {
       if (response.data?.payload?.subscription?.stripeSubscriptionId !== '0') {
         commit('setStripeSubscription', response.data?.payload?.stripeSubscription)
       }
+      // Load post limit status
+      await dispatch('fetchPostLimitStatus', request.userId)
       return response.data?.payload
     } catch (error) {
+      throw error
+    }
+  },
+  async fetchPostLimitStatus ({ commit }, userId) {
+    try {
+      const response = await $axios.get('/event/postLimitStatus')
+      commit('setPostLimitStatus', response.data?.payload)
+      return response.data?.payload
+    } catch (error) {
+      // If error, try to load from localStorage
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('postLimitStatus')
+        if (stored) {
+          try {
+            commit('setPostLimitStatus', JSON.parse(stored))
+          } catch (e) {
+            // Ignore parse errors
+          }
+        }
+      }
       throw error
     }
   },
@@ -118,8 +184,16 @@ export const actions = {
 
 export const getters = {
   isSubscriptionValid (state) {
-    return state.subscription?.active
-      && ['active', 'trialing'].includes(state.stripeSubscription?.status)
+    // Premium users (Standard/Ultimate) - check Stripe status
+    if (state.subscription?.active && state.subscription?.planId !== 3) {
+      return ['active', 'trialing'].includes(state.stripeSubscription?.status)
+    }
+    // Basic plan users (planId = 3) - check if they have remaining posts
+    if (state.subscription?.active && state.subscription?.planId === 3) {
+      return state.postLimitStatus?.remaining > 0 || state.postLimitStatus?.isPremium === true
+    }
+    // No subscription - check if they have remaining posts (for new users)
+    return state.postLimitStatus?.remaining > 0 || state.postLimitStatus?.isPremium === true
   },
   isSubscriptionActive (state) {
     console.log(4, state.subscription?.active)
@@ -127,5 +201,8 @@ export const getters = {
   },
   pendingCancel (state) {
     return state.subscription?.pendingCancel === true
+  },
+  postLimitStatus (state) {
+    return state.postLimitStatus
   },
 }

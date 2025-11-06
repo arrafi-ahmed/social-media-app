@@ -30,6 +30,7 @@
       },
       { title: 'Friends', to: { name: 'friends' } },
       { title: 'Collections', to: { name: 'collection' } },
+      { title: 'Groups', to: { name: 'groups' } },
       { title: 'Wishlist', to: { name: 'wishlist' } },
       { title: 'Settings', to: { name: 'settings' } },
     ].filter(Boolean),

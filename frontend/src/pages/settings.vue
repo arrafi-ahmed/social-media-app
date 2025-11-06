@@ -170,12 +170,22 @@
   <v-container>
     <page-title :back-url="calcHome" subtitle="Manage your account" title="Settings" />
 
-    <v-row justify="center">
-      <v-col cols="12" md="5">
-        <v-card class="mt-5">
-          <v-card-title>Update profile</v-card-title>
-          <v-divider />
-          <v-card-text>
+    <div class="page-content">
+      <v-expansion-panels variant="accordion">
+        <!-- Update Profile Section -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <div class="d-flex align-center justify-space-between w-100 pr-4">
+              <div>
+                <div class="text-h6 font-weight-bold">Update Profile</div>
+                <div class="text-caption text-medium-emphasis">
+                  Manage your personal information
+                </div>
+              </div>
+              <v-icon icon="mdi-account-edit" />
+            </div>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-form
               ref="form"
               v-model="isFormValid"
@@ -273,17 +283,23 @@
                 </v-btn>
               </v-card-actions>
             </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
 
-    <v-row align="center" class="mt-2 mt-md-5" justify="center">
-      <v-col cols="12" md="5">
-        <v-card>
-          <v-card-title>Subscription</v-card-title>
-          <v-divider />
-          <v-card-text>
+        <!-- Subscription Section -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <div class="d-flex align-center justify-space-between w-100 pr-4">
+              <div>
+                <div class="text-h6 font-weight-bold">Subscription</div>
+                <div class="text-caption text-medium-emphasis">
+                  Manage your subscription plan
+                </div>
+              </div>
+              <v-icon icon="mdi-credit-card" />
+            </div>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <div v-if="isSubscriptionActive && subscription?.planId" class="mt-3">
               <div class="d-flex align-center justify-space-between mb-3">
                 <div>
@@ -327,17 +343,23 @@
                 </v-btn>
               </v-col>
             </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
 
-    <v-row justify="center">
-      <v-col cols="12" md="5">
-        <v-card>
-          <v-card-title>Appearance</v-card-title>
-          <v-divider />
-          <v-card-text>
+        <!-- Appearance Section -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <div class="d-flex align-center justify-space-between w-100 pr-4">
+              <div>
+                <div class="text-h6 font-weight-bold">Appearance</div>
+                <div class="text-caption text-medium-emphasis">
+                  Customize your theme preferences
+                </div>
+              </div>
+              <v-icon icon="mdi-palette" />
+            </div>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-switch
               v-model="settings.theme"
               class="mt-3"
@@ -349,17 +371,23 @@
               true-value="dark"
               @update:model-value="handleThemeToggle(settings.theme)"
             />
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
 
-    <v-row justify="center">
-      <v-col cols="12" md="5">
-        <v-card>
-          <v-card-title>Email Notification</v-card-title>
-          <v-divider />
-          <v-card-text>
+        <!-- Email Notification Section -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <div class="d-flex align-center justify-space-between w-100 pr-4">
+              <div>
+                <div class="text-h6 font-weight-bold">Email Notification</div>
+                <div class="text-caption text-medium-emphasis">
+                  Configure your email preferences
+                </div>
+              </div>
+              <v-icon icon="mdi-email" />
+            </div>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-switch
               v-model="settings.emailNewEventNotification"
               class="mt-3"
@@ -403,17 +431,23 @@
                 )
               "
             />
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
 
-    <v-row align="center" class="mt-2 mt-md-5" justify="center">
-      <v-col cols="12" md="5">
-        <v-card>
-          <v-card-title>Account Delete</v-card-title>
-          <v-divider />
-          <v-card-text>
+        <!-- Account Delete Section -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <div class="d-flex align-center justify-space-between w-100 pr-4">
+              <div>
+                <div class="text-h6 font-weight-bold">Account Delete</div>
+                <div class="text-caption text-medium-emphasis">
+                  Permanently delete your account
+                </div>
+              </div>
+              <v-icon icon="mdi-account-remove" />
+            </div>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <div class="mt-3">Do you want to delete your account?</div>
 
             <v-row justify="end">
@@ -435,10 +469,10 @@
                 </confirmation-dialog>
               </v-col>
             </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
   </v-container>
 </template>
 

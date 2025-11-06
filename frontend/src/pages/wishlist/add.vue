@@ -139,6 +139,7 @@
     <page-title subtitle="Add to your wishlist" title="Add Wishlist">
       <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
+    <div class="page-content">
     <v-row align="center" justify="center">
       <v-col cols="12" md="8" sm="10">
         <div>
@@ -179,7 +180,7 @@
             <div class="mt-2">
               <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
               <rich-text-editor
-                v-model="newEvent.description"
+              v-model="newEvent.description"
                 placeholder="Describe your wishlist item..."
               />
               <div class="text-caption text-medium-emphasis mt-1">
@@ -230,6 +231,7 @@
         </div>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 

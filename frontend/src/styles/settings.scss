@@ -47,3 +47,8 @@ $default-font: $oxygen-font;
     margin-top: 16px;
   }
 }
+
+// Page content wrapper - consistent spacing after page title
+.page-content {
+  margin-top: 24px;
+}

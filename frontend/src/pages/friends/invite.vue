@@ -65,7 +65,8 @@
   <v-container>
     <page-title title="Invite friend" />
 
-    <v-row align="center" class="mt-2 mt-md-4" justify="center">
+    <div class="page-content">
+      <v-row align="center" justify="center">
       <v-col cols="12" md="6">
         <v-form
           ref="form"
@@ -129,6 +130,7 @@
         </v-form>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 

@@ -365,7 +365,8 @@
 <template>
   <v-container>
     <page-title :show-back-button="false" subtitle="Manage your site" title="Admin Panel" />
-    <v-row justify="center">
+    <div class="page-content">
+      <v-row justify="center">
       <v-col cols="12">
         <v-tabs v-model="tab" bg-color="primary" density="comfortable">
           <v-tab value="site">Site</v-tab>
@@ -1113,6 +1114,7 @@
         </v-window>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 
   <v-dialog v-model="newCategoryDialog" width="400">

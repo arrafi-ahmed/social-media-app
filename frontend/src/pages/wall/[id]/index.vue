@@ -278,7 +278,12 @@
           />
         </template>
         <v-list density="compact">
-          <v-list-item link title="Add Event" @click="openAddEvent" />
+          <v-list-item
+            link
+            prepend-icon="mdi-calendar-plus"
+            title="Add Event"
+            @click="openAddEvent"
+          />
         </v-list>
       </v-menu>
     </div>

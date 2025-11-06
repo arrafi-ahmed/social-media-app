@@ -294,4 +294,14 @@ router.get("/setEventNotification", auth, async (req, res, next) => {
   }
 });
 
+router.get("/postLimitStatus", auth, async (req, res, next) => {
+  try {
+    const userId = req.currentUser.id;
+    const result = await eventService.getPostLimitStatus(userId);
+    res.status(200).json(new ApiResponse(null, result));
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = router;

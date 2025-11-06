@@ -143,7 +143,8 @@
       <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
 
-    <v-row align="center" justify="center">
+    <div class="page-content">
+      <v-row align="center" justify="center">
       <v-col cols="12" md="8" sm="10">
         <v-form
           ref="form"
@@ -268,6 +269,7 @@
         </v-form>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 

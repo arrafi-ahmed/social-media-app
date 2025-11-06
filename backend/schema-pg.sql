@@ -202,6 +202,34 @@ CREATE TABLE comment_mention
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (comment_id, mentioned_user_id)
 );
+--added
+CREATE TABLE user_group (
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT,
+    color       VARCHAR(7),  -- Hex color code (e.g., #FF5733)
+    icon        VARCHAR(50), -- MDI icon name (e.g., 'mdi-account-group')
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+--added
+CREATE TABLE group_member (
+    id         SERIAL PRIMARY KEY,
+    group_id   INTEGER REFERENCES user_group(id) ON DELETE CASCADE,
+    user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role       VARCHAR(20) DEFAULT 'member', -- 'owner', 'admin', 'member'
+    joined_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (group_id, user_id)
+);
+--added
+CREATE TABLE event_group (
+    id         SERIAL PRIMARY KEY,
+    event_id   INTEGER REFERENCES event_post(id) ON DELETE CASCADE,
+    group_id   INTEGER REFERENCES user_group(id) ON DELETE CASCADE,
+    shared_by  INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (event_id, group_id)
+);
 
 CREATE
 DATABASE wayzaway

@@ -7,6 +7,7 @@
   import CollectionDialog from '@/components/CollectionDialog.vue'
   import CommentMentions from '@/components/CommentMentions.vue'
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+  import GroupDialog from '@/components/GroupDialog.vue'
   import Lightbox from '@/components/Lightbox.vue'
   import MentionAutocomplete from '@/components/MentionAutocomplete.vue'
   import ReactionButtons from '@/components/ReactionButtons.vue'
@@ -79,6 +80,14 @@
   const commentTextareaRef = ref(null)
   const mentionAutocompleteRef = ref(null)
 
+  // Group sharing
+  const groups = computed(() => store.state.group.groups)
+  const eventGroups = ref([])
+  const showGroupSelector = ref(false)
+  const selectedGroupIds = ref([])
+  const isLoadingGroups = ref(false)
+  const groupDialogOpen = ref(false)
+
   async function handleFavoriteEvent () {
     // Always show collection selector dialog
     await store.dispatch('eventCollection/getCollections')
@@ -123,6 +132,70 @@
     store.dispatch('eventCollection/getCollections')
   }
 
+  async function handleGroupSaved () {
+    // Refresh groups list
+    await store.dispatch('group/getGroups')
+    // Reload event groups to include newly created group
+    await loadEventGroups()
+  }
+
+  function openCreateGroupDialog () {
+    groupDialogOpen.value = true
+  }
+
+  async function loadEventGroups () {
+    if (!event.value?.id) return
+    try {
+      isLoadingGroups.value = true
+      const response = await store.dispatch('group/getGroupsForEvent', event.value.id)
+      eventGroups.value = response.data.payload || []
+      selectedGroupIds.value = eventGroups.value.map(g => g.id)
+    } catch (error) {
+      console.error('Error loading event groups:', error)
+    } finally {
+      isLoadingGroups.value = false
+    }
+  }
+
+  async function openGroupSelector () {
+    await store.dispatch('group/getGroups')
+    await loadEventGroups()
+    showGroupSelector.value = true
+  }
+
+  async function saveGroupSharing () {
+    if (!event.value?.id) return
+    try {
+      const currentGroupIds = new Set(eventGroups.value.map(g => g.id))
+      const selectedGroupIdsSet = new Set(selectedGroupIds.value)
+
+      // Unshare from groups that were removed
+      for (const group of eventGroups.value) {
+        if (!selectedGroupIdsSet.has(group.id)) {
+          await store.dispatch('group/unshareEventFromGroup', {
+            eventId: event.value.id,
+            groupId: group.id,
+          })
+        }
+      }
+
+      // Share with new groups
+      for (const groupId of selectedGroupIds.value) {
+        if (!currentGroupIds.has(groupId)) {
+          await store.dispatch('group/shareEventWithGroup', {
+            eventId: event.value.id,
+            groupId,
+          })
+        }
+      }
+
+      await loadEventGroups()
+      showGroupSelector.value = false
+    } catch (error) {
+      console.error('Error saving group sharing:', error)
+    }
+  }
+
   function addComment () {
     const newComment = {
       eventId: route.params.id,
@@ -155,6 +228,7 @@
           store.dispatch('eventSingle/setIsFavorite', route.params.id),
           store.dispatch('eventSingle/getCommentsByEventId', route.params.id),
           store.dispatch('eventSingle/getReactions', route.params.id),
+          loadEventGroups(),
         ])
       })
       .finally(() => {
@@ -285,15 +359,41 @@
           </v-card-text>
         </v-card>
 
-        <!-- Reactions Section -->
-        <v-card class="pa-1 mb-4" density="compact">
-          <reaction-buttons
-            :compact="false"
-            :event-id="event?.id"
-            :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
-            store-module="eventSingle"
-            :user-reaction="event?.userReaction"
-          />
+        <!-- Reactions and Group Sharing Section -->
+        <v-card class="mb-4">
+          <v-card-text class="pa-4">
+            <div class="d-flex align-center">
+              <reaction-buttons
+                :compact="false"
+                :event-id="event?.id"
+                :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
+                store-module="eventSingle"
+                :user-reaction="event?.userReaction"
+              />
+              <v-spacer v-if="isEventOwner" />
+              <div v-if="isEventOwner" class="d-flex align-center gap-2">
+                <div v-if="eventGroups.length > 0" class="d-flex flex-wrap gap-1">
+                  <v-chip
+                    v-for="group in eventGroups"
+                    :key="group.id"
+                    :color="group.color || 'primary'"
+                    size="small"
+                    variant="flat"
+                  >
+                    <v-icon :icon="group.icon || 'mdi-account-group'" start size="x-small" />
+                    <span class="text-caption">{{ group.name }}</span>
+                  </v-chip>
+                </div>
+                <v-btn
+                  color="primary"
+                  icon="mdi-share-variant"
+                  size="small"
+                  variant="text"
+                  @click="openGroupSelector"
+                />
+              </div>
+            </div>
+          </v-card-text>
         </v-card>
 
         <v-row v-if="event?.images?.length > 1" class="mb-4" justify="start">
@@ -515,6 +615,101 @@
     <collection-dialog
       v-model="collectionDialogOpen"
       @saved="handleCollectionSaved"
+    />
+
+    <!-- Group Selector Dialog -->
+    <v-dialog
+      v-model="showGroupSelector"
+      :width="450"
+    >
+      <v-card>
+        <v-card-title class="text-h6 pa-4 pb-3">
+          Share with Groups
+        </v-card-title>
+        <v-card-text class="pa-4">
+          <div v-if="isLoadingGroups" class="text-center py-4">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="24"
+            />
+          </div>
+          <div v-else-if="groups.length === 0" class="text-center py-4">
+            <div class="text-body-2 text-medium-emphasis mb-3">
+              No groups available
+            </div>
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-account-group-plus"
+              variant="flat"
+              @click="openCreateGroupDialog"
+            >
+              Create Group
+            </v-btn>
+          </div>
+          <div v-else>
+            <v-checkbox
+              v-for="group in groups"
+              :key="group.id"
+              v-model="selectedGroupIds"
+              class="mb-2"
+              hide-details='auto'
+              :value="group.id"
+            >
+              <template #label>
+                <div class="d-flex align-center">
+                  <v-icon
+                    class="mr-2"
+                    :color="group.color || 'primary'"
+                    :icon="group.icon || 'mdi-account-group'"
+                    size="small"
+                  />
+                  <span>{{ group.name }}</span>
+                  <span v-if="group.memberCount > 0" class="ml-2 text-caption text-medium-emphasis">
+                    ({{ group.memberCount }})
+                  </span>
+                </div>
+              </template>
+            </v-checkbox>
+          </div>
+        </v-card-text>
+        <v-card-actions class="pa-4 pt-0">
+          <v-btn
+            v-if="groups.length > 0"
+            color="primary"
+            prepend-icon="mdi-account-group-plus"
+            size="small"
+            variant="text"
+            @click="openCreateGroupDialog"
+          >
+            New Group
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            class="mr-2"
+            size="default"
+            variant="text"
+            @click="showGroupSelector = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            v-if="groups.length > 0"
+            color="primary"
+            size="default"
+            variant="flat"
+            @click="saveGroupSharing"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Group Create/Edit Dialog -->
+    <group-dialog
+      v-model="groupDialogOpen"
+      @saved="handleGroupSaved"
     />
   </v-container>
 </template>

@@ -50,8 +50,9 @@
       <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
 
-    <!-- Blog Post Content -->
-    <v-row class="mt-5" justify="center">
+    <div class="page-content">
+      <!-- Blog Post Content -->
+      <v-row justify="center">
       <v-col cols="12" md="7">
         <v-card v-if="blog.id">
           <v-img
@@ -69,6 +70,7 @@
         </v-card>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 

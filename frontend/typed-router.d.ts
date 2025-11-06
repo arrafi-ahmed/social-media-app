@@ -38,6 +38,7 @@ declare module 'vue-router/auto-routes' {
     'favorite': RouteRecordInfo<'favorite', '/favorite', Record<never, never>, Record<never, never>>,
     'friends': RouteRecordInfo<'friends', '/friends', Record<never, never>, Record<never, never>>,
     'friendsInvite': RouteRecordInfo<'friendsInvite', '/friends/invite', Record<never, never>, Record<never, never>>,
+    'groups': RouteRecordInfo<'groups', '/groups', Record<never, never>, Record<never, never>>,
     'notFound': RouteRecordInfo<'notFound', '/not-found', Record<never, never>, Record<never, never>>,
     'pricing': RouteRecordInfo<'pricing', '/pricing', Record<never, never>, Record<never, never>>,
     'settings': RouteRecordInfo<'settings', '/settings', Record<never, never>, Record<never, never>>,

@@ -76,6 +76,7 @@
               <v-list density="compact">
                 <v-list-item
                   link
+                  prepend-icon="mdi-account-plus"
                   title="Invite a friend"
                   @click="$router.push({ name: 'friendsInvite' })"
                 />
@@ -84,7 +85,8 @@
           </template>
         </page-title>
 
-        <v-row align="center" justify="center">
+        <div class="page-content">
+          <v-row align="center" justify="center">
           <v-col cols="12" md="7">
 
             <v-data-iterator
@@ -165,6 +167,7 @@
 
           </v-col>
         </v-row>
+        </div>
 
       </v-col>
     </v-row>

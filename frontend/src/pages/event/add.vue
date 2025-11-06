@@ -6,6 +6,7 @@
   import PageTitle from '@/components/PageTitle.vue'
   import RichTextEditor from '@/components/RichTextEditor.vue'
   import TimePicker from '@/components/TimePicker.vue'
+  import PostLimitStatus from '@/components/PostLimitStatus.vue'
   import { Event } from '@/models'
   import { toLocalISOString } from '@/others/util.js'
 
@@ -44,6 +45,7 @@
   const autoDeleteDays = ref(null)
   const isCustomDays = ref(false)
   const customDays = ref(null)
+  const postLimitStatusRef = ref(null)
 
   const dayOptions = [1, 7, 14, 30, 60, 90, { title: 'Custom', value: 'custom' }]
 
@@ -103,7 +105,13 @@
   }
 
   async function addEvent () {
-    if (!isSubscriptionValid.value) {
+    // Check post limit before submission using store
+    const limitStatus = store.getters['subscription/postLimitStatus']
+    if (!limitStatus.isPremium && limitStatus.remaining === 0) {
+      store.commit('addSnackbar', {
+        text: 'Post limit reached. Upgrade to premium for unlimited posts!',
+        color: 'error',
+      })
       return router.push({ name: 'pricing' })
     }
 
@@ -163,7 +171,28 @@
       autoDeleteDays.value = null
       isCustomDays.value = false
       customDays.value = null
+      // Reload limit status after successful post
+      store.dispatch('subscription/fetchPostLimitStatus', currentUser.id).then(() => {
+        // Also reload component if it exists
+        if (postLimitStatusRef.value) {
+          postLimitStatusRef.value.loadLimitStatus()
+        }
+      })
       router.push({ name: 'wall', params: { id: currentUser.slug || currentUser.id } })
+    }).catch((error) => {
+      // Handle post limit error
+      if (error.response?.status === 403) {
+        store.commit('addSnackbar', {
+          text: error.response?.data?.msg || 'Post limit reached. Upgrade to premium for unlimited posts!',
+          color: 'error',
+        })
+        // Reload limit status from store
+        store.dispatch('subscription/fetchPostLimitStatus', currentUser.id).then(() => {
+          if (postLimitStatusRef.value) {
+            postLimitStatusRef.value.loadLimitStatus()
+          }
+        })
+      }
     })
   }
 
@@ -171,9 +200,12 @@
     await store.dispatch('subscription/fetchPremiumSubscriptionData', {
       userId: currentUser.id,
     })
-    if (!isSubscriptionValid.value) {
-      return router.push({ name: 'pricing' })
+    // Load post limit status if not already loaded
+    if (!store.getters['subscription/postLimitStatus']?.isPremium && 
+        store.getters['subscription/postLimitStatus']?.remaining === undefined) {
+      await store.dispatch('subscription/fetchPostLimitStatus', currentUser.id)
     }
+    // Allow free users to access the page - they'll see the limit status
     Object.assign(newEvent, { ...eventInit, selectedCategory: null, images: [] })
     await store.dispatch('category/setCategories')
   })
@@ -184,8 +216,14 @@
     <page-title subtitle="Create a new event" title="Add Event">
       <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
-    <v-row align="center" justify="center">
+    <div class="page-content">
+      <v-row align="center" justify="center">
       <v-col cols="12" md="8" sm="10">
+        <!-- Post Limit Status -->
+        <post-limit-status
+          ref="postLimitStatusRef"
+          class="mb-4"
+        />
         <div>
           <v-form
             ref="form"
@@ -360,6 +398,7 @@
         </div>
       </v-col>
     </v-row>
+    </div>
   </v-container>
 </template>
 
