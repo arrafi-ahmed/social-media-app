@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, onMounted, reactive, ref, watch } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useDisplay, useTheme } from 'vuetify'
   import { useStore } from 'vuex'
@@ -7,7 +7,14 @@
   import ImageManager from '@/components/ImageManager.vue'
   import PageTitle from '@/components/PageTitle.vue'
   import { User, UserSettings } from '@/models'
-  import { formatDateFromTimestamp, formatPrice, getUserImageUrl, isValidEmail, isValidImage, isValidSlug } from '@/others/util.js'
+  import {
+    formatDateFromTimestamp,
+    formatPrice,
+    getUserImageUrl,
+    isValidEmail,
+    isValidImage,
+    isValidSlug,
+  } from '@/others/util.js'
 
   definePage({
     name: 'settings',
@@ -304,7 +311,7 @@
               <div class="d-flex align-center justify-space-between mb-3">
                 <div>
                   <div class="text-h6 font-weight-bold">
-                    {{ subscriptionPlans.find(p => p.id === subscription.planId)?.title || 'Active Plan' }}
+                    {{ subscriptionPlans.find(p => p.id === subscription.planId)?.title || "Active Plan" }}
                   </div>
                   <div v-if="isBasicPlan" class="text-body-2 text-medium-emphasis mt-1">
                     No expiration
@@ -321,11 +328,13 @@
                   size="small"
                   variant="flat"
                 >
-                  {{ pendingCancel ? 'Cancelling' : 'Active' }}
+                  {{ pendingCancel ? "Cancelling" : "Active" }}
                 </v-chip>
               </div>
               <div v-if="subscriptionPlans.find(p => p.id === subscription.planId)" class="text-body-1 mb-3">
-                <strong>{{ formatPrice(subscriptionPlans.find(p => p.id === subscription.planId).price, subscriptionPlans.find(p => p.id === subscription.planId).currency) }}</strong>
+                <strong>{{
+                  formatPrice(subscriptionPlans.find(p => p.id === subscription.planId).price, subscriptionPlans.find(p => p.id === subscription.planId).currency)
+                }}</strong>
               </div>
             </div>
             <div v-else class="mt-3 text-body-1 text-medium-emphasis">
@@ -339,7 +348,7 @@
                   :density="mobile ? 'comfortable' : 'default'"
                   prepend-icon="mdi-lock-open-check"
                   :to="{ name: 'pricing' }"
-                >{{ isSubscriptionActive ? 'Update Plan' : 'Choose Plan' }}
+                >{{ isSubscriptionActive ? "Update Plan" : "Choose Plan" }}
                 </v-btn>
               </v-col>
             </v-row>
@@ -464,7 +473,8 @@
                       prepend-icon="mdi-trash-can-outline"
                       variant="flat"
                       @click="onClick"
-                    >Delete</v-btn>
+                    >Delete
+                    </v-btn>
                   </template>
                 </confirmation-dialog>
               </v-col>

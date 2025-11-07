@@ -85,28 +85,28 @@
 
     <div class="page-content">
       <v-row justify="center">
-      <v-col md="9">
-        <v-row v-if="pageSlug === 'about'" justify="start" no-gutters>
-          <v-col cols="8" md="4" sm="6">
-            <applink />
-          </v-col>
-        </v-row>
+        <v-col md="9">
+          <v-row v-if="pageSlug === 'about'" justify="start" no-gutters>
+            <v-col cols="8" md="4" sm="6">
+              <applink />
+            </v-col>
+          </v-row>
 
-        <v-card v-if="hasContent">
-          <v-card-text
-            class="rich-text-content"
-            v-html="sanitizedContent"
+          <v-card v-if="hasContent">
+            <v-card-text
+              class="rich-text-content"
+              v-html="sanitizedContent"
+            />
+          </v-card>
+          <no-items
+            v-else
+            :closable="false"
+            description="This page doesn't have any content yet."
+            icon="mdi-file-document-outline"
+            title="No content available"
           />
-        </v-card>
-        <no-items
-          v-else
-          :closable="false"
-          description="This page doesn't have any content yet."
-          icon="mdi-file-document-outline"
-          title="No content available"
-        />
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

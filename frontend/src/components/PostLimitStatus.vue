@@ -33,7 +33,7 @@
     if (remaining === 0) {
       return 'Post limit reached'
     }
-    return `${remaining} post${remaining !== 1 ? 's' : ''} remaining this month`
+    return `${remaining} post${remaining === 1 ? '' : 's'} remaining this month`
   })
 
   const statusColor = computed(() => {
@@ -125,4 +125,3 @@
   width: 100%;
 }
 </style>
-

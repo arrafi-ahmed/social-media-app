@@ -67,69 +67,69 @@
 
     <div class="page-content">
       <v-row align="center" justify="center">
-      <v-col cols="12" md="6">
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-          @submit.prevent="sendInvite"
-        >
-          <div>
-            <p>
-              Invite friends or family you think would be interested in
-              following your journeys, days out and activities. You can invite a
-              maximum of 5 at once.
-            </p>
-          </div>
-          <div>
-            <v-combobox
-              v-model="email"
-              chips
-              class="mt-2"
-              clearable
-              density="compact"
-              hide-details="auto"
-              hint="Separate by enter"
-              :items="[]"
-              label="Recipient Emails"
-              multiple
-              required
-              :rules="[
-                (v) => !!v || 'Email is required!',
-                (v) => isValidEmail(v) || 'Invalid Email',
-                (v) => v.length <= 5 || 'Max 5',
-              ]"
-              variant="solo"
-            />
+        <v-col cols="12" md="6">
+          <v-form
+            ref="form"
+            v-model="isFormValid"
+            fast-fail
+            @submit.prevent="sendInvite"
+          >
+            <div>
+              <p>
+                Invite friends or family you think would be interested in
+                following your journeys, days out and activities. You can invite a
+                maximum of 5 at once.
+              </p>
+            </div>
+            <div>
+              <v-combobox
+                v-model="email"
+                chips
+                class="mt-2"
+                clearable
+                density="compact"
+                hide-details="auto"
+                hint="Separate by enter"
+                :items="[]"
+                label="Recipient Emails"
+                multiple
+                required
+                :rules="[
+                  (v) => !!v || 'Email is required!',
+                  (v) => isValidEmail(v) || 'Invalid Email',
+                  (v) => v.length <= 5 || 'Max 5',
+                ]"
+                variant="solo"
+              />
 
-            <v-textarea
-              v-model="message"
-              class="mt-2"
-              clearable
-              hide-details="auto"
-              label="Message"
-              rows="5"
-              variant="solo"
-            />
-          </div>
-          <div class="d-flex justify-space-between mt-5">
-            <v-btn
-              v-if="destination"
-              color="primary"
-              :to="{ name: destination }"
-              variant="text"
-            >Skip
-            </v-btn>
-            <v-btn
-              color="primary"
-              :density="mobile ? 'comfortable' : 'default'"
-              type="submit"
-            >Submit
-            </v-btn>
-          </div>
-        </v-form>
-      </v-col>
-    </v-row>
+              <v-textarea
+                v-model="message"
+                class="mt-2"
+                clearable
+                hide-details="auto"
+                label="Message"
+                rows="5"
+                variant="solo"
+              />
+            </div>
+            <div class="d-flex justify-space-between mt-5">
+              <v-btn
+                v-if="destination"
+                color="primary"
+                :to="{ name: destination }"
+                variant="text"
+              >Skip
+              </v-btn>
+              <v-btn
+                color="primary"
+                :density="mobile ? 'comfortable' : 'default'"
+                type="submit"
+              >Submit
+              </v-btn>
+            </div>
+          </v-form>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

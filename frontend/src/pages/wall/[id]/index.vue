@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+  import { computed, onMounted, reactive, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
@@ -74,7 +74,7 @@
       // Get userId from route params
       const routeId = route.params.id
       let userId = null
-      
+
       // If routeId is numeric, use it directly
       if (/^\d+$/.test(routeId)) {
         userId = Number.parseInt(routeId, 10)
@@ -201,7 +201,7 @@
             source: 'own',
           }),
         ])
-        // EventInfinite component will automatically trigger loadEvents via @load event
+      // EventInfinite component will automatically trigger loadEvents via @load event
       } else {
         router.push({
           name: 'notFound',

@@ -6,7 +6,6 @@
   import PageTitle from '@/components/PageTitle.vue'
   import RichTextEditor from '@/components/RichTextEditor.vue'
   import { Wishlist } from '@/models'
-  import { isValidImage } from '@/others/util.js'
 
   definePage({
     name: 'wishlistAdd',
@@ -140,97 +139,97 @@
       <v-btn icon="mdi-arrow-left" variant="text" @click="$router.back()" />
     </page-title>
     <div class="page-content">
-    <v-row align="center" justify="center">
-      <v-col cols="12" md="8" sm="10">
-        <div>
-          <v-form
-            ref="form"
-            v-model="isFormValid"
-            fast-fail
-            @submit.prevent="addNewEvent"
-          >
-            <v-text-field
-              v-model="newEvent.title"
-              class="mt-2"
-              clearable
-              hide-details="auto"
-              label="Title"
-              required
-              :rules="[
-                (v) => !!v || 'Title is required!',
-                (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-              ]"
-              variant="solo"
-            />
-
-            <v-text-field
-              v-model="newEvent.location"
-              class="mt-2"
-              clearable
-              hide-details="auto"
-              label="Location"
-              required
-              :rules="[
-                (v) => !!v || 'Location is required!',
-                (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-              ]"
-              variant="solo"
-            />
-
-            <div class="mt-2">
-              <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
-              <rich-text-editor
-              v-model="newEvent.description"
-                placeholder="Describe your wishlist item..."
-              />
-              <div class="text-caption text-medium-emphasis mt-1">
-                {{ getTextLength(newEvent.description) }} / 1000 characters
-              </div>
-            </div>
-
-            <v-select
-              v-model="newEvent.selectedCategory"
-              class="mt-2"
-              clearable
-              hide-details
-              :items="allEventCategories"
-              label="Category"
-              :rules="[(v) => !!v || 'Category is required!']"
-              variant="solo"
-            />
-
-            <div class="container-border">
-              <v-file-upload
-                accept="image/*"
+      <v-row align="center" justify="center">
+        <v-col cols="12" md="8" sm="10">
+          <div>
+            <v-form
+              ref="form"
+              v-model="isFormValid"
+              fast-fail
+              @submit.prevent="addNewEvent"
+            >
+              <v-text-field
+                v-model="newEvent.title"
                 class="mt-2"
                 clearable
-                density="compact"
-                :hide-browse="false"
-                :model-value="newEvent.images"
-                multiple
-                show-size
-                title="Upload Images (up to 2)"
-                variant=""
-                @update:model-value="handleUploadChange"
+                hide-details="auto"
+                label="Title"
+                required
+                :rules="[
+                  (v) => !!v || 'Title is required!',
+                  (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+                ]"
+                variant="solo"
               />
-            </div>
 
-            <v-row justify="end">
-              <v-col cols="auto">
-                <v-btn
-                  class="mt-5"
-                  color="primary"
-                  :density="mobile ? 'comfortable' : 'default'"
-                  type="submit"
-                  variant="flat"
-                >Add
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-        </div>
-      </v-col>
-    </v-row>
+              <v-text-field
+                v-model="newEvent.location"
+                class="mt-2"
+                clearable
+                hide-details="auto"
+                label="Location"
+                required
+                :rules="[
+                  (v) => !!v || 'Location is required!',
+                  (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+                ]"
+                variant="solo"
+              />
+
+              <div class="mt-2">
+                <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+                <rich-text-editor
+                  v-model="newEvent.description"
+                  placeholder="Describe your wishlist item..."
+                />
+                <div class="text-caption text-medium-emphasis mt-1">
+                  {{ getTextLength(newEvent.description) }} / 1000 characters
+                </div>
+              </div>
+
+              <v-select
+                v-model="newEvent.selectedCategory"
+                class="mt-2"
+                clearable
+                hide-details
+                :items="allEventCategories"
+                label="Category"
+                :rules="[(v) => !!v || 'Category is required!']"
+                variant="solo"
+              />
+
+              <div class="container-border">
+                <v-file-upload
+                  accept="image/*"
+                  class="mt-2"
+                  clearable
+                  density="compact"
+                  :hide-browse="false"
+                  :model-value="newEvent.images"
+                  multiple
+                  show-size
+                  title="Upload Images (up to 2)"
+                  variant=""
+                  @update:model-value="handleUploadChange"
+                />
+              </div>
+
+              <v-row justify="end">
+                <v-col cols="auto">
+                  <v-btn
+                    class="mt-5"
+                    color="primary"
+                    :density="mobile ? 'comfortable' : 'default'"
+                    type="submit"
+                    variant="flat"
+                  >Add
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
+          </div>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

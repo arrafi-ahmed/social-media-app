@@ -154,7 +154,7 @@ router.post("/reaction", auth, async (req, res, next) => {
       reactionType,
       req.currentUser.id
     );
-    const message = result.isActive 
+    const message = result.isActive
       ? `Reaction ${result.reactionType} added!`
       : "Reaction removed!";
     res.status(200).json(new ApiResponse(message, result));

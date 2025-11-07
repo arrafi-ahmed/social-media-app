@@ -137,7 +137,7 @@ async function sendTodaysEventEmail(to, data) {
 module.exports = {
   // Core sendMail function
   sendMail,
-  
+
   // Template generation functions (return {html, subject})
   generateWelcomeEmail,
   generatePasswordResetEmail,
@@ -145,7 +145,7 @@ module.exports = {
   generateEventEmail,
   generateNewCommentEmail,
   generateTodaysEventEmail,
-  
+
   // Combined send functions (generate + send)
   sendWelcomeEmail,
   sendPasswordResetEmail,

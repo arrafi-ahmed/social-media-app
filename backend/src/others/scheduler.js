@@ -7,7 +7,7 @@ function scheduleTasks() {
   cron.schedule("0 0 * * *", async () => {
     userService.sendNewCommentEmail(process.env.VUE_BASE_URL);
     userService.sendTodaysEventEmail(process.env.VUE_BASE_URL);
-    
+
     // Delete expired temporary posts
     try {
       const deletedCount = await eventService.deleteExpiredEvents();

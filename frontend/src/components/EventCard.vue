@@ -124,7 +124,11 @@
             <v-list-item-title>Edit</v-list-item-title>
           </v-list-item>
           <v-divider />
-          <confirmation-dialog popup-content="Are you sure?" popup-title="Delete" @confirm="deleteEvent(event.id, event.images)">
+          <confirmation-dialog
+            popup-content="Are you sure?"
+            popup-title="Delete"
+            @confirm="deleteEvent(event.id, event.images)"
+          >
             <template #activator="{ onClick }">
               <v-list-item class="text-error" density="compact" link @click.stop="onClick">
                 <v-list-item-title>Delete</v-list-item-title>
@@ -222,7 +226,12 @@
 
           <v-divider />
 
-          <confirmation-dialog v-if="isAdmin || isOwner" popup-content="Are you sure?" popup-title="Delete" @confirm="deleteEvent(event.id, event.images)">
+          <confirmation-dialog
+            v-if="isAdmin || isOwner"
+            popup-content="Are you sure?"
+            popup-title="Delete"
+            @confirm="deleteEvent(event.id, event.images)"
+          >
             <template #activator="{ onClick }">
               <v-list-item class="text-error" density="compact" link @click.stop="onClick">
                 <v-list-item-title>Delete</v-list-item-title>
@@ -249,7 +258,7 @@
           size="small"
           variant="tonal"
         >
-          Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? 'day' : 'days' }}
+          Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? "day" : "days" }}
         </v-chip>
       </div>
       <h3 class="mb-3">{{ event.title }}</h3>

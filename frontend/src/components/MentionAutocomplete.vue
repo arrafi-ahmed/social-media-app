@@ -26,7 +26,7 @@
   let searchTimeout = null
 
   // Watch for @ symbol in input
-  watch(() => props.modelValue, (newValue) => {
+  watch(() => props.modelValue, newValue => {
     if (!props.textareaRef || !newValue) {
       showDropdown.value = false
       return
@@ -42,7 +42,7 @@
 
       // Only set flag to true if cursor is right after @
       const isCursorRightAfterAt = cursorPos === lastAtIndex + 1
-console.log('isCursorRightAfterAt', isCursorRightAfterAt);
+      console.log('isCursorRightAfterAt', isCursorRightAfterAt)
 
       if (isCursorRightAfterAt) {
         // Cursor is right after @ - set flag to true

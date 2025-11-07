@@ -2,7 +2,6 @@
   import { computed, onMounted, ref } from 'vue'
   import { useStore } from 'vuex'
   import CollectionDialog from '@/components/CollectionDialog.vue'
-  import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
   import EventInfinite from '@/components/EventInfinite.vue'
   import PageTitle from '@/components/PageTitle.vue'
 
@@ -50,7 +49,9 @@
     store.commit('eventCollection/resetEvents')
     store.commit('eventCollection/resetPage')
     // Load events for the selected collection
-    loadEvents({ done: () => {} })
+    loadEvents({
+      done: () => {},
+    })
   }
 
   function openCreateDialog () {
@@ -70,7 +71,9 @@
     if (editingCollection.value && selectedCollection.value === editingCollection.value.id) {
       store.commit('eventCollection/resetEvents')
       store.commit('eventCollection/resetPage')
-      loadEvents({ done: () => {} })
+      loadEvents({
+        done: () => {},
+      })
     }
   }
 
@@ -142,70 +145,71 @@
         <div class="page-content">
           <div style="height: 40px;" />
 
-        <!-- Collections List -->
-        <div class="mb-4">
-          <div class="d-flex align-center mb-3" style="gap: 8px; flex-wrap: wrap;">
-            <!-- All Chip -->
-            <v-chip
-              class="clickable"
-              :color="selectedCollection === null ? 'primary' : 'default'"
-              size="large"
-              :variant="selectedCollection === null ? 'flat' : 'outlined'"
-              @click="selectCollection(null)"
-            >
-              <v-icon icon="mdi-view-grid" start />
-              All
-            </v-chip>
-            <!-- Collection Chips -->
-            <v-chip
-              v-for="collection in collections"
-              :key="collection.id"
-              class="clickable"
-              :color="selectedCollection === collection.id ? (collection.color || 'primary') : 'default'"
-              size="large"
-              :variant="selectedCollection === collection.id ? 'flat' : 'outlined'"
-              @click="selectCollection(collection.id)"
-            >
-              <v-icon :icon="collection.icon || 'mdi-folder'" start />
-              {{ collection.name }}
-              <span v-if="collection.event_count > 0" class="ml-1">({{ collection.event_count }})</span>
+          <!-- Collections List -->
+          <div class="mb-4">
+            <div class="d-flex align-center mb-3" style="gap: 8px; flex-wrap: wrap;">
+              <!-- All Chip -->
+              <v-chip
+                class="clickable"
+                :color="selectedCollection === null ? 'primary' : 'default'"
+                size="large"
+                :variant="selectedCollection === null ? 'flat' : 'outlined'"
+                @click="selectCollection(null)"
+              >
+                <v-icon icon="mdi-view-grid" start />
+                All
+              </v-chip>
+              <!-- Collection Chips -->
+              <v-chip
+                v-for="collection in collections"
+                :key="collection.id"
+                class="clickable"
+                :color="selectedCollection === collection.id ? (collection.color || 'primary') : 'default'"
+                size="large"
+                :variant="selectedCollection === collection.id ? 'flat' : 'outlined'"
+                @click="selectCollection(collection.id)"
+              >
+                <v-icon :icon="collection.icon || 'mdi-folder'" start />
+                {{ collection.name }}
+                <span v-if="collection.event_count > 0" class="ml-1">({{ collection.event_count }})</span>
 
-              <!-- Collection Menu -->
-              <v-menu location="bottom">
-                <template #activator="{ props: menuProps }">
-                  <v-icon
-                    v-bind="menuProps"
-                    class="ml-1"
-                    size="small"
-                    @click.stop
-                  >mdi-dots-vertical</v-icon>
-                </template>
-                <v-list density="compact">
-                  <v-list-item @click="openEditDialog(collection)">
-                    <v-list-item-title>Edit</v-list-item-title>
-                  </v-list-item>
-                  <v-divider />
-                  <v-list-item
-                    class="text-error"
-                    @click="() => { deletingCollection = collection; deleteDialogOpen = true }"
-                  >
-                    <v-list-item-title>Delete</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-chip>
+                <!-- Collection Menu -->
+                <v-menu location="bottom">
+                  <template #activator="{ props: menuProps }">
+                    <v-icon
+                      class="ml-1"
+                      size="small"
+                      v-bind="menuProps"
+                      @click.stop
+                    >mdi-dots-vertical
+                    </v-icon>
+                  </template>
+                  <v-list density="compact">
+                    <v-list-item @click="openEditDialog(collection)">
+                      <v-list-item-title>Edit</v-list-item-title>
+                    </v-list-item>
+                    <v-divider />
+                    <v-list-item
+                      class="text-error"
+                      @click="() => { deletingCollection = collection; deleteDialogOpen = true }"
+                    >
+                      <v-list-item-title>Delete</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-chip>
+            </div>
           </div>
-        </div>
 
-        <!-- Event Card Feed -->
-        <event-infinite
-          v-if="events"
-          :events="events"
-          :grid="{ sm: 6, md: 4 }"
-          source="collection"
-          type="has-header"
-          @fetch-events="loadEvents"
-        />
+          <!-- Event Card Feed -->
+          <event-infinite
+            v-if="events"
+            :events="events"
+            :grid="{ sm: 6, md: 4 }"
+            source="collection"
+            type="has-header"
+            @fetch-events="loadEvents"
+          />
         </div>
       </v-col>
     </v-row>

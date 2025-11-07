@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
@@ -30,7 +30,6 @@
   onMounted(() => {
     show.value = true
     store.dispatch('page/setPage', 'landing').then(() => {
-      console.log(32, initLanding.value)
       landing.value = initLanding.value.description
     })
     store.dispatch('subscription/setSubscriptionPlans')

@@ -6,7 +6,7 @@
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
-  import { formatPrice, getQueryParam, handleRemoveQueriesNRedirect, removeQueryParams } from '@/others/util.js'
+  import { formatPrice, handleRemoveQueriesNRedirect } from '@/others/util.js'
 
   definePage({
     name: 'pricing',
@@ -32,7 +32,6 @@
   )
 
   function isPlanSelected (planId) {
-    console.log(3, isSubscriptionActive.value)
     return isSubscriptionActive.value && subscription.value.planId === planId
   }
 
@@ -211,7 +210,7 @@
                               rounded-sm
                               variant="outlined"
                               @click="onClick"
-                            >{{ (pendingCancel && 'Cancelled') || 'Cancel' }}
+                            >{{ (pendingCancel && "Cancelled") || "Cancel" }}
                             </v-btn>
                           </template>
                         </confirmation-dialog>

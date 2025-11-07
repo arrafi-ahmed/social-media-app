@@ -64,7 +64,6 @@ export const getters = {
     return !!state.token
   },
   calcHome (state, getters) {
-    console.log(10, getters.isAdmin, getters.isCustomer)
     return getters.isAdmin
       ? { name: 'adminDashboard' }
       : (getters.isCustomer

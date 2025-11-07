@@ -20,7 +20,6 @@ export const mutations = {
   // Backwards-compatible specific setters (can be removed later)
   setLanding (state, payload) {
     state.landing = new Page(payload || {})
-    console.log(99, payload)
   },
 }
 

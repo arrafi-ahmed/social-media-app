@@ -46,7 +46,7 @@ const templates = {};
 
 function loadTemplates() {
   const files = fs.readdirSync(templatesDir);
-  
+
   files.forEach(file => {
     if (file.endsWith(".hbs") && file !== "base.hbs") {
       const templateName = file.replace(".hbs", "");
@@ -65,14 +65,14 @@ function renderTemplate(templateName, data = {}) {
   if (!templates[templateName]) {
     throw new Error(`Template ${templateName} not found`);
   }
-  
+
   // Add global variables available to all templates
   const templateData = {
     ...data,
     vueBaseUrl: VUE_BASE_URL,
     appName: appInfo.name
   };
-  
+
   return templates[templateName](templateData);
 }
 

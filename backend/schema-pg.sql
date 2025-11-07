@@ -154,10 +154,10 @@ CREATE TABLE subscription_plan
 );
 
 -- Insert subscription plans
-INSERT INTO subscription_plan (id, title, tagline, price, currency, lookup_key)
-VALUES (1, 'Ultimate', '* renews every year', 39.95, 'GBP', 'ultimate_yearly'),
-       (2, 'Standard', '* renews every month', 4.95, 'GBP', 'standard_monthly'),
-       (3, 'Basic', '* Free lifetime', 0.00, 'GBP', 'basic_free');
+-- INSERT INTO subscription_plan (id, title, tagline, price, currency, lookup_key)
+-- VALUES (1, 'Ultimate', '* renews every year', 39.95, 'GBP', 'ultimate_yearly'),
+--        (2, 'Standard', '* renews every month', 4.95, 'GBP', 'standard_monthly'),
+--        (3, 'Basic', '* Free lifetime', 0.00, 'GBP', 'basic_free');
 
 CREATE TABLE subscription
 (
@@ -214,12 +214,12 @@ CREATE TABLE event_group
     UNIQUE (event_id, group_id)
 );
 
-CREATE
-DATABASE wayzaway
-  WITH ENCODING 'UTF8'
-       LC_COLLATE='en_US.utf8'
-       LC_CTYPE='en_US.utf8'
-       TEMPLATE=template0;
+-- CREATE
+-- DATABASE wayzaway
+--   WITH ENCODING 'UTF8'
+--        LC_COLLATE='en_US.utf8'
+--        LC_CTYPE='en_US.utf8'
+--        TEMPLATE=template0;
 
 ALTER TABLE event_comment
 ALTER

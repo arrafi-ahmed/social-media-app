@@ -3,7 +3,7 @@ const CustomError = require("../model/CustomError");
 
 // Create a new collection
 exports.createCollection = async (userId, name, description = null, color = null, icon = null) => {
-  if (!name || name.trim() === '') {
+  if (!name || name.trim() === "") {
     throw new CustomError("Collection name is required!", 400);
   }
 
@@ -31,7 +31,7 @@ exports.updateCollection = async (collectionId, userId, updates) => {
   let paramIndex = 1;
 
   if (updates.name !== undefined) {
-    if (!updates.name || updates.name.trim() === '') {
+    if (!updates.name || updates.name.trim() === "") {
       throw new CustomError("Collection name cannot be empty!", 400);
     }
     fields.push(`name = $${paramIndex++}`);
@@ -61,7 +61,7 @@ exports.updateCollection = async (collectionId, userId, updates) => {
   values.push(collectionId, userId);
   const sql = `
     UPDATE event_collection 
-    SET ${fields.join(', ')}
+    SET ${fields.join(", ")}
     WHERE id = $${paramIndex++} AND user_id = $${paramIndex++}
     RETURNING *
   `;

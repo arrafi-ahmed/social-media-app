@@ -123,8 +123,8 @@
           v-model="name"
           class="mb-3"
           density="comfortable"
-          label="Collection Name"
           hide-details="auto"
+          label="Collection Name"
           required
           variant="solo"
         />
@@ -133,8 +133,8 @@
           v-model="description"
           class="mb-3"
           density="comfortable"
-          label="Description (optional)"
           hide-details="auto"
+          label="Description (optional)"
           rows="2"
           variant="solo"
         />
@@ -144,10 +144,10 @@
           <v-select
             v-model="icon"
             density="comfortable"
+            hide-details="auto"
             item-title="label"
             item-value="value"
             :items="iconOptions"
-            hide-details="auto"
             variant="solo"
           >
             <template #item="{ props, item }">
@@ -197,7 +197,7 @@
           variant="flat"
           @click="save"
         >
-          {{ isEditing ? 'Update' : 'Create' }}
+          {{ isEditing ? "Update" : "Create" }}
         </v-btn>
       </v-card-actions>
     </v-card>

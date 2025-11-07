@@ -2,7 +2,6 @@
   import { computed, onMounted, ref, watch } from 'vue'
   import { useStore } from 'vuex'
   import NameCard from '@/components/NameCard.vue'
-  import $axios from '@/plugins/axios'
 
   const props = defineProps({
     modelValue: {
@@ -39,16 +38,16 @@
   const filteredFriends = computed(() => {
     if (!friendSearch.value) return friends.value
     const search = friendSearch.value.toLowerCase()
-    return friends.value.filter(friend => 
-      friend.fullName?.toLowerCase().includes(search) ||
-      friend.email?.toLowerCase().includes(search)
+    return friends.value.filter(friend =>
+      friend.fullName?.toLowerCase().includes(search)
+      || friend.email?.toLowerCase().includes(search),
     )
   })
 
   const availableFriends = computed(() => {
     const memberIds = new Set(members.value.map(m => m.userId))
-    return filteredFriends.value.filter(friend => 
-      !memberIds.has(friend.id) && friend.id !== currentUser.value?.id
+    return filteredFriends.value.filter(friend =>
+      !memberIds.has(friend.id) && friend.id !== currentUser.value?.id,
     )
   })
 
@@ -108,12 +107,15 @@
 
   function getRoleLabel (role) {
     switch (role) {
-      case 'owner':
+      case 'owner': {
         return 'Owner'
-      case 'admin':
+      }
+      case 'admin': {
         return 'Admin'
-      default:
+      }
+      default: {
         return 'Member'
+      }
     }
   }
 
@@ -186,13 +188,22 @@
               </v-list-item>
             </v-list>
           </div>
-          <div v-else-if="friendSearch && availableFriends.length === 0" class="text-body-2 text-medium-emphasis mt-2 text-center py-2">
+          <div
+            v-else-if="friendSearch && availableFriends.length === 0"
+            class="text-body-2 text-medium-emphasis mt-2 text-center py-2"
+          >
             No friends found matching "{{ friendSearch }}"
           </div>
-          <div v-else-if="!friendSearch && friends.length === 0" class="text-body-2 text-medium-emphasis mt-2 text-center py-2">
+          <div
+            v-else-if="!friendSearch && friends.length === 0"
+            class="text-body-2 text-medium-emphasis mt-2 text-center py-2"
+          >
             You don't have any friends yet. Invite friends to add them to groups.
           </div>
-          <div v-else-if="!friendSearch && availableFriends.length === 0 && members.length > 0" class="text-body-2 text-medium-emphasis mt-2 text-center py-2">
+          <div
+            v-else-if="!friendSearch && availableFriends.length === 0 && members.length > 0"
+            class="text-body-2 text-medium-emphasis mt-2 text-center py-2"
+          >
             All your friends are already members of this group
           </div>
         </div>
@@ -204,8 +215,8 @@
           <div class="text-subtitle-2 mb-2">Current Members</div>
           <div v-if="isLoading" class="text-center py-4">
             <v-progress-circular
-              indeterminate
               color="primary"
+              indeterminate
               size="24"
             />
           </div>
@@ -265,4 +276,3 @@
 </template>
 
 <style scoped></style>
-

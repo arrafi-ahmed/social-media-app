@@ -52,7 +52,11 @@
 
   const currentExpirationDate = computed(() => {
     if (editingEvent.expiresAt) {
-      return new Date(editingEvent.expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      return new Date(editingEvent.expiresAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     }
     return null
   })
@@ -67,6 +71,7 @@
       customDays.value = null
     }
   }
+
   const allEventCategories = computed(() =>
     store.state.category.categories.map(item => item.name),
   )
@@ -277,204 +282,204 @@
 
     <div class="page-content">
       <v-row align="center" justify="center">
-      <v-col cols="12" md="8" sm="10">
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-          @submit.prevent="handleSubmitEditEvent"
-        >
-          <v-text-field
-            v-model="editingEvent.title"
-            class="mt-2"
-            clearable
-            hide-details="auto"
-            label="Title"
-            required
-            :rules="[
-              (v) => !!v || 'Title is required!',
-              (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            variant="solo"
-          />
-
-          <v-text-field
-            v-model="editingEvent.location"
-            class="mt-2"
-            clearable
-            hide-details="auto"
-            label="Location"
-            :rules="[
-              (v) => !v || (v && v.length <= 50) || 'Must not exceed 50 characters',
-            ]"
-            variant="solo"
-          />
-
-          <div class="mt-2">
-            <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
-            <rich-text-editor
-              v-model="editingEvent.description"
-              placeholder="Describe your event..."
-            />
-            <div class="text-caption text-medium-emphasis mt-1">
-              {{ getTextLength(editingEvent.description) }} / 1000 characters
-            </div>
-          </div>
-
-          <!-- Temporary Post Option -->
-          <v-card class="mt-4">
-            <v-card-text>
-              <div class="d-flex align-center mb-2">
-                <v-switch
-                  v-model="isTemporary"
-                  color="primary"
-                  hide-details="auto"
-                  label="Make this post temporary"
-                />
-              </div>
-              <div v-if="currentExpirationDate && !isTemporary" class="text-caption text-medium-emphasis mb-2">
-                Current expiration: <strong>{{ currentExpirationDate }}</strong>
-              </div>
-              <div v-if="isTemporary" class="mt-3">
-                <v-select
-                  v-model="autoDeleteDays"
-                  hide-details="auto"
-                  :items="dayOptions.map(d => typeof d === 'object' ? d : { title: `${d} ${d === 1 ? 'day' : 'days'}`, value: d })"
-                  label="Auto-delete after"
-                  variant="solo"
-                  @update:model-value="handleDaysChange"
-                />
-                <v-number-input
-                  v-if="isCustomDays"
-                  v-model="customDays"
-                  class="mt-3"
-                  hide-details="auto"
-                  label="Enter number of days"
-                  max="365"
-                  min="1"
-                  :rules="[
-                    (v) => !!v || 'Number of days is required',
-                    (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
-                    (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
-                  ]"
-                  variant="solo"
-                />
-                <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
-                  This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-
-          <v-row :no-gutters="!!mobile">
-            <v-col class="mt-2" cols="12" md="6">
-              <v-select
-                v-model="editingEvent.category"
-                clearable
-                hide-details
-                :items="allEventCategories"
-                label="Category"
-                required
-                :rules="[(v) => !!v || 'Category is required!']"
-                variant="solo"
-              />
-            </v-col>
-            <v-col class="mt-2" cols="12" md="6">
-              <v-date-input
-                v-model="editingEvent.date"
-                color="primary"
-                hide-details="auto"
-                label="Date"
-                prepend-icon=""
-                prepend-inner-icon="mdi-calendar"
-                :rules="[(v) => !!v || 'Date is required!']"
-                variant="solo"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row :no-gutters="!!mobile">
-            <v-col class="mt-2 mt-md-n3" cols="12" md="6">
-              <time-picker
-                v-model="editingEvent.startTime"
-                label="Start Time"
-                :rules="[(v) => !!v || 'Start Time is required!']"
-                :show-icon="true"
-                variant="solo"
-              />
-            </v-col>
-            <v-col class="mt-2 mt-md-n3" cols="12" md="6">
-              <time-picker
-                v-model="editingEvent.endTime"
-                label="End Time"
-                :show-icon="true"
-                variant="solo"
-              />
-            </v-col>
-          </v-row>
-
-          <VueDraggable
-            v-model="editingEvent.images"
-            animation="150"
-            class="images-grid container-border"
-            filter=".no-drag"
-            :force-fallback="true"
-            ghost-class="ghost"
+        <v-col cols="12" md="8" sm="10">
+          <v-form
+            ref="form"
+            v-model="isFormValid"
+            fast-fail
+            @submit.prevent="handleSubmitEditEvent"
           >
-            <div
-              v-for="(img, index) in editingEvent.images"
-              :key="img"
-              class="image-item"
-            >
-              <image-manager
-                v-if="img"
-                :hide-delete="false"
-                max-height="200px"
-                max-width="100%"
-                :src="getEventImageUrl(img)"
-                @delete="removeExistingImage(index)"
-              />
-            </div>
-          </VueDraggable>
-
-          <div class="container-border">
-            <v-alert
-              density="comfortable"
-              type="info"
-              variant="tonal"
-            >Add up to 25 new images. First selected becomes the cover if you remove the existing cover.
-            </v-alert>
-
-            <v-file-upload
-              accept="image/*"
+            <v-text-field
+              v-model="editingEvent.title"
               class="mt-2"
               clearable
-              density="compact"
-              :hide-browse="false"
-              :model-value="newUploads"
-              multiple
-              show-size
-              title="Upload New Images (up to 25)"
-              variant=""
-              @update:model-value="handleUploadChange"
+              hide-details="auto"
+              label="Title"
+              required
+              :rules="[
+                (v) => !!v || 'Title is required!',
+                (v) => (v && v.length <= 50) || 'Must not exceed 50 characters',
+              ]"
+              variant="solo"
             />
-          </div>
 
-          <v-row justify="end">
-            <v-col cols="auto">
-              <v-btn
-                class="mt-5"
-                color="primary"
-                :density="mobile ? 'comfortable' : 'default'"
-                type="submit"
-                variant="flat"
-              >Confirm
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-col>
-    </v-row>
+            <v-text-field
+              v-model="editingEvent.location"
+              class="mt-2"
+              clearable
+              hide-details="auto"
+              label="Location"
+              :rules="[
+                (v) => !v || (v && v.length <= 50) || 'Must not exceed 50 characters',
+              ]"
+              variant="solo"
+            />
+
+            <div class="mt-2">
+              <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+              <rich-text-editor
+                v-model="editingEvent.description"
+                placeholder="Describe your event..."
+              />
+              <div class="text-caption text-medium-emphasis mt-1">
+                {{ getTextLength(editingEvent.description) }} / 1000 characters
+              </div>
+            </div>
+
+            <!-- Temporary Post Option -->
+            <v-card class="mt-4">
+              <v-card-text>
+                <div class="d-flex align-center mb-2">
+                  <v-switch
+                    v-model="isTemporary"
+                    color="primary"
+                    hide-details="auto"
+                    label="Make this post temporary"
+                  />
+                </div>
+                <div v-if="currentExpirationDate && !isTemporary" class="text-caption text-medium-emphasis mb-2">
+                  Current expiration: <strong>{{ currentExpirationDate }}</strong>
+                </div>
+                <div v-if="isTemporary" class="mt-3">
+                  <v-select
+                    v-model="autoDeleteDays"
+                    hide-details="auto"
+                    :items="dayOptions.map(d => typeof d === 'object' ? d : { title: `${d} ${d === 1 ? 'day' : 'days'}`, value: d })"
+                    label="Auto-delete after"
+                    variant="solo"
+                    @update:model-value="handleDaysChange"
+                  />
+                  <v-number-input
+                    v-if="isCustomDays"
+                    v-model="customDays"
+                    class="mt-3"
+                    hide-details="auto"
+                    label="Enter number of days"
+                    max="365"
+                    min="1"
+                    :rules="[
+                      (v) => !!v || 'Number of days is required',
+                      (v) => (v && parseInt(v) >= 1) || 'Must be at least 1 day',
+                      (v) => (v && parseInt(v) <= 365) || 'Maximum 365 days'
+                    ]"
+                    variant="solo"
+                  />
+                  <div v-if="calculatedExpirationDate" class="text-caption text-medium-emphasis mt-2">
+                    This post will expire on: <strong>{{ calculatedExpirationDate }}</strong>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+
+            <v-row :no-gutters="!!mobile">
+              <v-col class="mt-2" cols="12" md="6">
+                <v-select
+                  v-model="editingEvent.category"
+                  clearable
+                  hide-details
+                  :items="allEventCategories"
+                  label="Category"
+                  required
+                  :rules="[(v) => !!v || 'Category is required!']"
+                  variant="solo"
+                />
+              </v-col>
+              <v-col class="mt-2" cols="12" md="6">
+                <v-date-input
+                  v-model="editingEvent.date"
+                  color="primary"
+                  hide-details="auto"
+                  label="Date"
+                  prepend-icon=""
+                  prepend-inner-icon="mdi-calendar"
+                  :rules="[(v) => !!v || 'Date is required!']"
+                  variant="solo"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row :no-gutters="!!mobile">
+              <v-col class="mt-2 mt-md-n3" cols="12" md="6">
+                <time-picker
+                  v-model="editingEvent.startTime"
+                  label="Start Time"
+                  :rules="[(v) => !!v || 'Start Time is required!']"
+                  :show-icon="true"
+                  variant="solo"
+                />
+              </v-col>
+              <v-col class="mt-2 mt-md-n3" cols="12" md="6">
+                <time-picker
+                  v-model="editingEvent.endTime"
+                  label="End Time"
+                  :show-icon="true"
+                  variant="solo"
+                />
+              </v-col>
+            </v-row>
+
+            <VueDraggable
+              v-model="editingEvent.images"
+              animation="150"
+              class="images-grid container-border"
+              filter=".no-drag"
+              :force-fallback="true"
+              ghost-class="ghost"
+            >
+              <div
+                v-for="(img, index) in editingEvent.images"
+                :key="img"
+                class="image-item"
+              >
+                <image-manager
+                  v-if="img"
+                  :hide-delete="false"
+                  max-height="200px"
+                  max-width="100%"
+                  :src="getEventImageUrl(img)"
+                  @delete="removeExistingImage(index)"
+                />
+              </div>
+            </VueDraggable>
+
+            <div class="container-border">
+              <v-alert
+                density="comfortable"
+                type="info"
+                variant="tonal"
+              >Add up to 25 new images. First selected becomes the cover if you remove the existing cover.
+              </v-alert>
+
+              <v-file-upload
+                accept="image/*"
+                class="mt-2"
+                clearable
+                density="compact"
+                :hide-browse="false"
+                :model-value="newUploads"
+                multiple
+                show-size
+                title="Upload New Images (up to 25)"
+                variant=""
+                @update:model-value="handleUploadChange"
+              />
+            </div>
+
+            <v-row justify="end">
+              <v-col cols="auto">
+                <v-btn
+                  class="mt-5"
+                  color="primary"
+                  :density="mobile ? 'comfortable' : 'default'"
+                  type="submit"
+                  variant="flat"
+                >Confirm
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

@@ -39,7 +39,6 @@ export const mutations = {
     state.events.splice(targetItemIndex, 1)
   },
   setEditingEvent (state, payload) {
-    console.log(2, payload)
     state.editingEvent = payload
   },
   updateEventReaction (state, { eventId, reactionType, isActive, previousReaction }) {
@@ -134,7 +133,12 @@ export const actions = {
   },
   async getUpcomingEvents ({ commit }, request) {
     try {
-      const response = await $axios.get('/event/getUpcomingEvents', { params: { userId: request.userId, source: request.source } })
+      const response = await $axios.get('/event/getUpcomingEvents', {
+        params: {
+          userId: request.userId,
+          source: request.source,
+        },
+      })
       commit('setUpcomingEvents', response.data.payload)
       return response
     } catch (error) {

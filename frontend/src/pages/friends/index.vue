@@ -87,86 +87,90 @@
 
         <div class="page-content">
           <v-row align="center" justify="center">
-          <v-col cols="12" md="7">
+            <v-col cols="12" md="7">
 
-            <v-data-iterator
-              v-if="friends.length > 0"
-              :items="friends"
-              :items-per-page="10"
-              :search="friendSearch"
-            >
-              <template #header>
-                <v-spacer />
-                <v-text-field
-                  v-model="friendSearch"
-                  class="mb-2 mb-md-4"
-                  clearable
-                  hide-details
-                  placeholder="Search friends"
-                  prepend-inner-icon="mdi-magnify"
-                  rounded="sm"
-                />
-              </template>
+              <v-data-iterator
+                v-if="friends.length > 0"
+                :items="friends"
+                :items-per-page="10"
+                :search="friendSearch"
+              >
+                <template #header>
+                  <v-spacer />
+                  <v-text-field
+                    v-model="friendSearch"
+                    class="mb-2 mb-md-4"
+                    clearable
+                    hide-details
+                    placeholder="Search friends"
+                    prepend-inner-icon="mdi-magnify"
+                    rounded="sm"
+                  />
+                </template>
 
-              <template #default="{ items }">
-                <v-list rounded="sm">
-                  <v-list-item
-                    v-for="({ raw: item }, index) in items"
-                    :key="item.id ?? index"
-                    :class="{ 'px-1': mobile }"
-                    link
-                  >
-                    <div
-                      class="d-flex justify-space-between align-center"
-                      @click="
-                        $router.push({ name: 'wall', params: { id: item.slug || item.id } })
-                      "
+                <template #default="{ items }">
+                  <v-list rounded="sm">
+                    <v-list-item
+                      v-for="({ raw: item }, index) in items"
+                      :key="item.id ?? index"
+                      :class="{ 'px-1': mobile }"
+                      link
                     >
-                      <name-card
-                        container-class="clickable"
-                        img-size="45"
-                        :profile="item"
-                        rounded="circle"
-                      />
-                      <confirmation-dialog popup-content="Are you sure?" popup-title="Remove Friend" @confirm="removeFriend(item.friendshipId)">
-                        <template #activator="{ onClick }">
-                          <v-btn
-                            color="error"
-                            icon="mdi-delete"
-                            size="small"
-                            variant="text"
-                            @click.stop="onClick"
-                          />
-                        </template>
-                      </confirmation-dialog>
-                    </div>
-                  </v-list-item>
-                </v-list>
-              </template>
+                      <div
+                        class="d-flex justify-space-between align-center"
+                        @click="
+                          $router.push({ name: 'wall', params: { id: item.slug || item.id } })
+                        "
+                      >
+                        <name-card
+                          container-class="clickable"
+                          img-size="45"
+                          :profile="item"
+                          rounded="circle"
+                        />
+                        <confirmation-dialog
+                          popup-content="Are you sure?"
+                          popup-title="Remove Friend"
+                          @confirm="removeFriend(item.friendshipId)"
+                        >
+                          <template #activator="{ onClick }">
+                            <v-btn
+                              color="error"
+                              icon="mdi-delete"
+                              size="small"
+                              variant="text"
+                              @click.stop="onClick"
+                            />
+                          </template>
+                        </confirmation-dialog>
+                      </div>
+                    </v-list-item>
+                  </v-list>
+                </template>
 
-              <template #footer="{ page, pageCount, setPage }">
-                <v-pagination
-                  density="compact"
-                  :length="pageCount"
-                  :model-value="page"
-                  :total-visible="3"
-                  @update:model-value="setPage"
-                />
-              </template>
+                <template #footer="{ page, pageCount, setPage }">
+                  <v-pagination
+                    density="compact"
+                    :length="pageCount"
+                    :model-value="page"
+                    :total-visible="3"
+                    @update:model-value="setPage"
+                  />
+                </template>
 
-              <template #no-data>
-                <no-items
-                  action-text="Invite a friend"
-                  description="Invite someone to get started."
-                  icon="mdi-account-multiple-outline"
-                  title="No friends yet"
-                  @action="$router.push({ name: 'friendsInvite' })"
-                />
-              </template>
-            </v-data-iterator>
+                <template #no-data>
+                  <no-items
+                    action-text="Invite a friend"
+                    description="Invite someone to get started."
+                    icon="mdi-account-multiple-outline"
+                    title="No friends yet"
+                    @action="$router.push({ name: 'friendsInvite' })"
+                  />
+                </template>
+              </v-data-iterator>
 
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
         </div>
 
       </v-col>

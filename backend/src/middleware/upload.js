@@ -34,12 +34,12 @@ function upload(configKey) {
       uploader.single(config.fieldName || "file")(req, res, function(err) {
         if (err) {
           // Handle MulterError for file size
-          if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+          if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
             const maxSizeMB = (config.maxSize / (1024 * 1024)).toFixed(1);
             return next(new CustomError(`File too large! Maximum allowed size is ${maxSizeMB}MB.`, 400));
           }
           // Handle file filter errors
-          if (err.message && err.message.startsWith('Invalid file type')) {
+          if (err.message && err.message.startsWith("Invalid file type")) {
             return next(new CustomError(err.message, 400));
           }
           return next(err);
@@ -66,12 +66,12 @@ function upload(configKey) {
       uploader.array(config.fieldName || "file", config.maxCount || 5)(req, res, function(err) {
         if (err) {
           // Handle MulterError for file size
-          if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+          if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
             const maxSizeMB = (config.maxSize / (1024 * 1024)).toFixed(1);
             return next(new CustomError(`File too large! Maximum allowed size is ${maxSizeMB}MB.`, 400));
           }
           // Handle file filter errors
-          if (err.message && err.message.startsWith('Invalid file type')) {
+          if (err.message && err.message.startsWith("Invalid file type")) {
             return next(new CustomError(err.message, 400));
           }
           return next(err);

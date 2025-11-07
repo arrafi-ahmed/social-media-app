@@ -23,7 +23,14 @@ export const mutations = {
     }
 
     // Store reactions and userReaction from payload BEFORE Object.assign
-    const reactions = payload.reactions || state.event.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }
+    const reactions = payload.reactions || state.event.reactions || {
+      like: 0,
+      unlike: 0,
+      heart: 0,
+      laugh: 0,
+      sad: 0,
+      angry: 0,
+    }
     const userReaction = payload.userReaction === undefined ? (state.event.userReaction || null) : payload.userReaction
     const comments = payload.comments || state.event.comments || []
 

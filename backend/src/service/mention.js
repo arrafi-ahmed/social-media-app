@@ -5,7 +5,7 @@ const CustomError = require("../model/CustomError");
 // Supports formats: @username, @Full Name, @John Doe
 // Stops at first space after the mention name
 exports.parseMentions = (text) => {
-  if (!text || typeof text !== 'string') {
+  if (!text || typeof text !== "string") {
     return [];
   }
 
@@ -35,7 +35,7 @@ exports.findMentionedUsers = async (mentionTexts) => {
   }
 
   const userIds = [];
-  
+
   // Search for each mention
   for (const mentionText of mentionTexts) {
     // Try to match by slug first (exact match)
@@ -45,7 +45,7 @@ exports.findMentionedUsers = async (mentionTexts) => {
       LIMIT 1
     `;
     let user = await db.getRow(sql, [mentionText]);
-    
+
     // If not found by slug, try matching by full_name (case-insensitive, partial match)
     if (!user) {
       sql = `
@@ -55,7 +55,7 @@ exports.findMentionedUsers = async (mentionTexts) => {
       `;
       user = await db.getRow(sql, [`%${mentionText}%`]);
     }
-    
+
     // If still not found, try exact match on full_name
     if (!user) {
       sql = `
@@ -65,7 +65,7 @@ exports.findMentionedUsers = async (mentionTexts) => {
       `;
       user = await db.getRow(sql, [mentionText]);
     }
-    
+
     if (user && user.id) {
       userIds.push(user.id);
     }
@@ -82,7 +82,7 @@ exports.saveMentions = async (commentId, mentionedUserIds) => {
   }
 
   const savedMentions = [];
-  
+
   for (const userId of mentionedUserIds) {
     try {
       const sql = `
@@ -119,7 +119,7 @@ exports.getCommentMentions = async (commentId) => {
     ORDER BY cm.created_at ASC
   `;
   const mentions = await db.getRows(sql, [commentId]);
-  
+
   // Format to match getCommentsMentions format
   return mentions.map(mention => ({
     id: mention.id,
@@ -136,7 +136,7 @@ exports.getCommentsMentions = async (commentIds) => {
     return {};
   }
 
-  const placeholders = commentIds.map((_, index) => `$${index + 1}`).join(',');
+  const placeholders = commentIds.map((_, index) => `$${index + 1}`).join(",");
   const sql = `
     SELECT 
       cm.comment_id,
@@ -151,7 +151,7 @@ exports.getCommentsMentions = async (commentIds) => {
     ORDER BY cm.comment_id, cm.created_at ASC
   `;
   const mentions = await db.getRows(sql, commentIds);
-  
+
   // Group by comment_id
   // Handle both camelCase (from db.js conversion) and snake_case
   const grouped = {};
@@ -159,13 +159,13 @@ exports.getCommentsMentions = async (commentIds) => {
     // db.js converts comment_id to commentId, so use commentId
     const commentId = mention.commentId || mention.comment_id;
     if (!commentId) {
-      console.warn('Mention missing commentId:', mention);
+      console.warn("Mention missing commentId:", mention);
       return;
     }
-    
+
     // Ensure consistent key type (use number for IDs)
     const key = Number(commentId) || commentId;
-    
+
     if (!grouped[key]) {
       grouped[key] = [];
     }
@@ -177,7 +177,7 @@ exports.getCommentsMentions = async (commentIds) => {
       image: mention.image
     });
   });
-  
+
   return grouped;
 };
 

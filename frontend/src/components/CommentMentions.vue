@@ -33,15 +33,15 @@
       const fullName = mention.fullName || ''
       if (!fullName) continue
 
-      const escapedName = fullName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const escapedName = fullName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
       // Match @name followed by space or end of string (mentions are stored with space after name)
       const regex = new RegExp(`@${escapedName}(?=\\s|$)`, 'gi')
-      
+
       result = result.replace(regex, match => {
         const userId = mention.userId || mention.mentionedUserId
         const slug = mention.slug || userId
         if (!userId) return match
-        
+
         return `<span class="mention-link" data-user-id="${userId}" data-slug="${slug}">${match}</span>`
       })
     }
@@ -84,4 +84,3 @@
   text-decoration: underline;
 }
 </style>
-

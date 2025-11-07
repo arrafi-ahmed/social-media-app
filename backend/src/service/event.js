@@ -7,7 +7,7 @@ const mentionService = require("./mention");
 const subscriptionService = require("./subscription");
 
 // Valid reaction types
-const VALID_REACTION_TYPES = ['like', 'unlike', 'heart', 'laugh', 'sad', 'angry'];
+const VALID_REACTION_TYPES = ["like", "unlike", "heart", "laugh", "sad", "angry"];
 
 exports.sendPostCreationEmail = async (userId, clientUrl) => {
   // find friends & send notification email to friends
@@ -106,7 +106,7 @@ exports.getPostLimitStatus = async (userId) => {
   const monthlyCount = await exports.getMonthlyPostCount(userId);
   const limit = 5; // Free users get 5 posts/month
   const remaining = isPremium ? -1 : Math.max(0, limit - monthlyCount); // -1 means unlimited
-  
+
   return {
     isPremium,
     monthlyCount,
@@ -131,7 +131,7 @@ exports.save = async (body, files, userId, clientUrl) => {
 
   const fileNames = JSON.stringify(files ? files.map((file) => file.filename) : []);
   const eventDate = new Date(body.date).toISOString().split("T")[0];
-  
+
   // Calculate expires_at if autoDeleteDays is provided
   let expiresAt = null;
   if (body.autoDeleteDays && parseInt(body.autoDeleteDays) > 0) {
@@ -140,7 +140,7 @@ exports.save = async (body, files, userId, clientUrl) => {
     // Use UTC date components to avoid timezone issues, normalize to midnight UTC
     expiresAt = new Date(Date.UTC(createdDate.getUTCFullYear(), createdDate.getUTCMonth(), createdDate.getUTCDate() + deleteDays, 0, 0, 0, 0));
   }
-  
+
   const sql = `
     INSERT INTO event_post (title, date, start_time, end_time, location, description, category, images, is_featured, user_id, created_at, expires_at) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10, $11, $12)
@@ -179,10 +179,10 @@ exports.edit = async (body, files, userId, clientUrl) => {
   const combinedImages = [...images, ...fileNames];
 
   const eventDate = new Date(body.date).toISOString().split("T")[0];
-  
+
   // Calculate expires_at if autoDeleteDays is provided
   let expiresAt = null;
-  if (body.autoDeleteDays !== undefined && body.autoDeleteDays !== '') {
+  if (body.autoDeleteDays !== undefined && body.autoDeleteDays !== "") {
     if (body.autoDeleteDays && parseInt(body.autoDeleteDays) > 0) {
       const deleteDays = parseInt(body.autoDeleteDays);
       // When editing, calculate from current date (not original created_at)
@@ -193,7 +193,7 @@ exports.edit = async (body, files, userId, clientUrl) => {
     }
     // If autoDeleteDays is empty string or 0, expiresAt remains null (permanent)
   }
-  
+
   let sql = `
     UPDATE event_post 
     SET title=$1, date=$2, start_time=$3, end_time=$4, location=$5, description=$6, category=$7, images=$8::jsonb, expires_at=$9
@@ -440,7 +440,7 @@ exports.getEvent = async (eventId, userId = null) => {
     WHERE e.id = $1 AND (e.expires_at IS NULL OR e.expires_at > NOW())
     GROUP BY e.id, c.full_name, c.image, c.slug
   `;
-  
+
   const result = await db.getRow(sql, [eventId]);
   if (!result) {
     return null;
@@ -508,25 +508,25 @@ exports.getCommentsByEventId = async (eventId) => {
     ORDER BY ec.created_at DESC
   `;
   const comments = await db.getRows(sql, [eventId]);
-  
+
   // Load mentions for all comments
   if (comments && comments.length > 0) {
     const commentIds = comments.map(c => c.id);
     const mentionsByComment = await mentionService.getCommentsMentions(commentIds);
-    
+
     // Add mentions to each comment
     // Ensure we match by both string and number to handle type differences
     comments.forEach(comment => {
       const commentId = comment.id;
       // Try both string and number keys in case of type mismatch
       const key = Number(commentId) || commentId;
-      comment.mentions = mentionsByComment[key] || 
-                         mentionsByComment[String(key)] || 
-                         mentionsByComment[Number(key)] || 
-                         [];
+      comment.mentions = mentionsByComment[key] ||
+        mentionsByComment[String(key)] ||
+        mentionsByComment[Number(key)] ||
+        [];
     });
   }
-  
+
   return comments;
 };
 
@@ -538,7 +538,7 @@ exports.addComment = async (newComment, userId) => {
   `;
   const values = [newComment.eventId, userId, newComment.text, new Date()];
   const comment = await db.getRow(sql, values);
-  
+
   // Parse and save mentions
   if (comment && comment.id) {
     const mentionTexts = mentionService.parseMentions(newComment.text);
@@ -557,7 +557,7 @@ exports.addComment = async (newComment, userId) => {
   } else {
     if (comment) comment.mentions = [];
   }
-  
+
   return comment;
 };
 
@@ -603,7 +603,7 @@ exports.getFavoriteEvents = async (userId, page = 1, collectionId = null) => {
   `;
   const values = [userId];
   let paramIndex = 2;
-  
+
   if (collectionId !== null && collectionId !== undefined) {
     sql += ` AND ef.collection_id = $${paramIndex++}`;
     values.push(collectionId);
@@ -612,10 +612,10 @@ exports.getFavoriteEvents = async (userId, page = 1, collectionId = null) => {
     // If not provided, get all events (backward compatibility)
     // This will be handled by collection service for better control
   }
-  
+
   sql += ` ORDER BY ef.created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
   values.push(itemsPerPage, offset);
-  
+
   return db.getRows(sql, values);
 };
 
@@ -673,15 +673,15 @@ exports.toggleReaction = async (eventId, reactionType, userId) => {
   // Check if user has existing reaction
   const existingSql = `SELECT * FROM event_reaction WHERE user_id = $1 AND event_id = $2`;
   const existing = await db.getRow(existingSql, [userId, eventId]);
-  
+
   // db.js converts snake_case to camelCase, so reaction_type becomes reactionType
   if (existing && existing.reactionType === reactionType) {
     // Same reaction - remove it
     const deleteSql = `DELETE FROM event_reaction WHERE id = $1`;
     await db.execute(deleteSql, [existing.id]);
     const updatedReactions = await exports.getEventReactions(eventId, userId);
-    return { 
-      reactionType: null, 
+    return {
+      reactionType: null,
       isActive: false,
       counts: updatedReactions.counts,
       userReaction: updatedReactions.userReaction
@@ -691,8 +691,8 @@ exports.toggleReaction = async (eventId, reactionType, userId) => {
     const updateSql = `UPDATE event_reaction SET reaction_type = $1, created_at = $2 WHERE id = $3`;
     await db.execute(updateSql, [reactionType, new Date(), existing.id]);
     const updatedReactions = await exports.getEventReactions(eventId, userId);
-    return { 
-      reactionType, 
+    return {
+      reactionType,
       isActive: true,
       counts: updatedReactions.counts,
       userReaction: updatedReactions.userReaction
@@ -702,8 +702,8 @@ exports.toggleReaction = async (eventId, reactionType, userId) => {
     const insertSql = `INSERT INTO event_reaction (user_id, event_id, reaction_type, created_at) VALUES ($1, $2, $3, $4)`;
     await db.execute(insertSql, [userId, eventId, reactionType, new Date()]);
     const updatedReactions = await exports.getEventReactions(eventId, userId);
-    return { 
-      reactionType, 
+    return {
+      reactionType,
       isActive: true,
       counts: updatedReactions.counts,
       userReaction: updatedReactions.userReaction
@@ -726,7 +726,7 @@ exports.getEventReactions = async (eventId, userId = null) => {
     like: 0,
     heart: 0,
     laugh: 0,
-      unlike: 0,
+    unlike: 0,
     sad: 0,
     angry: 0
   };
@@ -835,13 +835,13 @@ exports.deleteExpiredEvents = async () => {
     FROM event_post 
     WHERE expires_at IS NOT NULL AND expires_at <= NOW()
   `;
-  
+
   const expiredEvents = await db.getRows(sql, []);
-  
+
   if (!expiredEvents || expiredEvents.length === 0) {
     return 0;
   }
-  
+
   // Collect all images to delete
   const allImages = [];
   expiredEvents.forEach(event => {
@@ -849,20 +849,20 @@ exports.deleteExpiredEvents = async () => {
       allImages.push(...event.images);
     }
   });
-  
+
   // Delete images from filesystem
   if (allImages.length > 0) {
     await removeImages(allImages);
   }
-  
+
   // Delete expired events from database
   const deleteSql = `
     DELETE FROM event_post 
     WHERE expires_at IS NOT NULL AND expires_at <= NOW()
   `;
-  
+
   await db.execute(deleteSql, []);
-  
+
   return expiredEvents.length;
 };
 
@@ -900,34 +900,34 @@ exports.getAllEvents = async () => {
 // Export events to CSV
 exports.exportEventsToCSV = (events) => {
   if (!events || events.length === 0) {
-    return 'No events found';
+    return "No events found";
   }
 
   // CSV Header
   const headers = [
-    'ID',
-    'Title',
-    'Date',
-    'Start Time',
-    'End Time',
-    'Location',
-    'Category',
-    'Description',
-    'Featured',
-    'User Name',
-    'User Email',
-    'User Slug',
-    'Created At',
-    'Expires At'
+    "ID",
+    "Title",
+    "Date",
+    "Start Time",
+    "End Time",
+    "Location",
+    "Category",
+    "Description",
+    "Featured",
+    "User Name",
+    "User Email",
+    "User Slug",
+    "Created At",
+    "Expires At"
   ];
 
   // CSV Rows
   const rows = events.map(event => {
     const escapeCSV = (value) => {
-      if (value === null || value === undefined) return '';
+      if (value === null || value === undefined) return "";
       const str = String(value);
-      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`;
+      if (str.includes(",") || str.includes("\"") || str.includes("\n")) {
+        return `"${str.replace(/"/g, "\"\"")}"`;
       }
       return str;
     };
@@ -935,20 +935,20 @@ exports.exportEventsToCSV = (events) => {
     return [
       escapeCSV(event.id),
       escapeCSV(event.title),
-      escapeCSV(event.date ? new Date(event.date).toISOString().split('T')[0] : ''),
-      escapeCSV(event.startTime || ''),
-      escapeCSV(event.endTime || ''),
+      escapeCSV(event.date ? new Date(event.date).toISOString().split("T")[0] : ""),
+      escapeCSV(event.startTime || ""),
+      escapeCSV(event.endTime || ""),
       escapeCSV(event.location),
       escapeCSV(event.category),
-      escapeCSV(event.description ? event.description.replace(/\n/g, ' ') : ''),
-      escapeCSV(event.isFeatured ? 'Yes' : 'No'),
+      escapeCSV(event.description ? event.description.replace(/\n/g, " ") : ""),
+      escapeCSV(event.isFeatured ? "Yes" : "No"),
       escapeCSV(event.userFullName || event.user_full_name),
       escapeCSV(event.userEmail || event.user_email),
       escapeCSV(event.userSlug || event.user_slug),
-      escapeCSV(event.createdAt ? new Date(event.createdAt).toISOString() : ''),
-      escapeCSV(event.expiresAt ? new Date(event.expiresAt).toISOString() : '')
-    ].join(',');
+      escapeCSV(event.createdAt ? new Date(event.createdAt).toISOString() : ""),
+      escapeCSV(event.expiresAt ? new Date(event.expiresAt).toISOString() : "")
+    ].join(",");
   });
 
-  return [headers.join(','), ...rows].join('\n');
+  return [headers.join(","), ...rows].join("\n");
 };

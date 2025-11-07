@@ -53,23 +53,23 @@
     <div class="page-content">
       <!-- Blog Post Content -->
       <v-row justify="center">
-      <v-col cols="12" md="7">
-        <v-card v-if="blog.id">
-          <v-img
-            alt="Blog Post Image"
-            aspect-ratio="2.5"
-            cover
-            :src="getBlogImageUrl(blog.image)"
-          />
-          <v-card-subtitle class="mt-3">Posted on {{ formatDateFromTimestamp(blog.createdAt) }}
-          </v-card-subtitle>
-          <v-card-text
-            class="rich-text-content"
-            v-html="sanitizedDescription"
-          />
-        </v-card>
-      </v-col>
-    </v-row>
+        <v-col cols="12" md="7">
+          <v-card v-if="blog.id">
+            <v-img
+              alt="Blog Post Image"
+              aspect-ratio="2.5"
+              cover
+              :src="getBlogImageUrl(blog.image)"
+            />
+            <v-card-subtitle class="mt-3">Posted on {{ formatDateFromTimestamp(blog.createdAt) }}
+            </v-card-subtitle>
+            <v-card-text
+              class="rich-text-content"
+              v-html="sanitizedDescription"
+            />
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

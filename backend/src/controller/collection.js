@@ -8,7 +8,7 @@ const collectionService = require("../service/collection");
 router.post("/", auth, async (req, res, next) => {
   try {
     const { name, description, color, icon } = req.body;
-    if (!name || name.trim() === '') {
+    if (!name || name.trim() === "") {
       return next(new CustomError("Collection name is required!", 400));
     }
     const result = await collectionService.createCollection(

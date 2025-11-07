@@ -145,130 +145,130 @@
 
     <div class="page-content">
       <v-row align="center" justify="center">
-      <v-col cols="12" md="8" sm="10">
-        <v-form
-          ref="form"
-          v-model="isFormValid"
-          fast-fail
-          @submit.prevent="handleSubmitEditEvent()"
-        >
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="editingEvent.title"
-                class="mt-2"
-                clearable
-                density="compact"
-                hide-details="auto"
-                label="Title"
-                required
-                :rules="[
-                  (v) => !!v || 'Title is required!',
-                  (v) =>
-                    (v && v.length <= 50) || 'Must not exceed 50 characters',
-                ]"
-                variant="solo"
-              />
-
-              <v-text-field
-                v-model="editingEvent.location"
-                class="mt-2"
-                clearable
-                density="compact"
-                hide-details="auto"
-                label="Location"
-                required
-                :rules="[
-                  (v) => !!v || 'Location is required!',
-                  (v) =>
-                    (v && v.length <= 50) || 'Must not exceed 50 characters',
-                ]"
-                variant="solo"
-              />
-
-              <div class="mt-2">
-                <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
-                <rich-text-editor
-                  v-model="editingEvent.description"
-                  placeholder="Describe your wishlist item..."
+        <v-col cols="12" md="8" sm="10">
+          <v-form
+            ref="form"
+            v-model="isFormValid"
+            fast-fail
+            @submit.prevent="handleSubmitEditEvent()"
+          >
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="editingEvent.title"
+                  class="mt-2"
+                  clearable
+                  density="compact"
+                  hide-details="auto"
+                  label="Title"
+                  required
+                  :rules="[
+                    (v) => !!v || 'Title is required!',
+                    (v) =>
+                      (v && v.length <= 50) || 'Must not exceed 50 characters',
+                  ]"
+                  variant="solo"
                 />
-                <div class="text-caption text-medium-emphasis mt-1">
-                  {{ getTextLength(editingEvent.description) }} / 1000 characters
+
+                <v-text-field
+                  v-model="editingEvent.location"
+                  class="mt-2"
+                  clearable
+                  density="compact"
+                  hide-details="auto"
+                  label="Location"
+                  required
+                  :rules="[
+                    (v) => !!v || 'Location is required!',
+                    (v) =>
+                      (v && v.length <= 50) || 'Must not exceed 50 characters',
+                  ]"
+                  variant="solo"
+                />
+
+                <div class="mt-2">
+                  <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
+                  <rich-text-editor
+                    v-model="editingEvent.description"
+                    placeholder="Describe your wishlist item..."
+                  />
+                  <div class="text-caption text-medium-emphasis mt-1">
+                    {{ getTextLength(editingEvent.description) }} / 1000 characters
+                  </div>
                 </div>
+                <v-select
+                  v-model="editingEvent.category"
+                  class="mt-2"
+                  clearable
+                  density="compact"
+                  hide-details
+                  :items="allEventCategories"
+                  label="Category"
+                  required
+                  :rules="[(v) => !!v || 'Category is required!']"
+                  variant="solo"
+                />
+              </v-col>
+            </v-row>
+
+            <!-- Display existing images -->
+            <div v-if="editingEvent.images?.length > 0" class="images-grid container-border">
+              <div
+                v-for="(img, index) in editingEvent.images"
+                :key="img + '-' + index"
+                class="image-item"
+              >
+                <image-manager
+                  v-if="img"
+                  container-class="mt-2 px-2"
+                  :hide-delete="false"
+                  max-height="200px"
+                  max-width="100%"
+                  :src="getWishlistImageUrl(img)"
+                  @delete="removeExistingImage(index)"
+                />
               </div>
-              <v-select
-                v-model="editingEvent.category"
+            </div>
+
+            <div class="container-border">
+              <v-alert
+                class="mt-2"
+                density="comfortable"
+                type="info"
+                variant="tonal"
+              >Upload up to 2 images. First selected image will be used as the cover.
+              </v-alert>
+
+              <v-file-upload
+                accept="image/*"
                 class="mt-2"
                 clearable
                 density="compact"
-                hide-details
-                :items="allEventCategories"
-                label="Category"
-                required
-                :rules="[(v) => !!v || 'Category is required!']"
-                variant="solo"
-              />
-            </v-col>
-          </v-row>
-
-          <!-- Display existing images -->
-          <div v-if="editingEvent.images?.length > 0" class="images-grid container-border">
-            <div
-              v-for="(img, index) in editingEvent.images"
-              :key="img + '-' + index"
-              class="image-item"
-            >
-              <image-manager
-                v-if="img"
-                container-class="mt-2 px-2"
-                :hide-delete="false"
-                max-height="200px"
-                max-width="100%"
-                :src="getWishlistImageUrl(img)"
-                @delete="removeExistingImage(index)"
+                :hide-browse="false"
+                :model-value="newUploads"
+                multiple
+                show-size
+                title="Upload New Images (up to 2)"
+                variant=""
+                @update:model-value="handleUploadChange"
               />
             </div>
-          </div>
 
-          <div class="container-border">
-            <v-alert
-              class="mt-2"
-              density="comfortable"
-              type="info"
-              variant="tonal"
-            >Upload up to 2 images. First selected image will be used as the cover.
-            </v-alert>
-
-            <v-file-upload
-              accept="image/*"
-              class="mt-2"
-              clearable
-              density="compact"
-              :hide-browse="false"
-              :model-value="newUploads"
-              multiple
-              show-size
-              title="Upload New Images (up to 2)"
-              variant=""
-              @update:model-value="handleUploadChange"
-            />
-          </div>
-
-          <v-row justify="end">
-            <v-col cols="auto">
-              <v-btn
-                class="mt-5"
-                color="primary"
-                :density="mobile ? 'comfortable' : 'default'"
-                type="submit"
-                variant="flat"
-              >Confirm
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-col>
-    </v-row>
+            <v-row justify="end">
+              <v-col cols="auto">
+                <v-btn
+                  class="mt-5"
+                  color="primary"
+                  :density="mobile ? 'comfortable' : 'default'"
+                  type="submit"
+                  variant="flat"
+                >Confirm
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

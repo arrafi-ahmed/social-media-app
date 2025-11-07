@@ -40,10 +40,10 @@
         <v-menu>
           <template #activator="{ props }">
             <v-btn
-              v-bind="props"
               class="toolbar-button"
               rounded="sm"
               size="small"
+              v-bind="props"
               variant="outlined"
             >
               <v-icon start>mdi-format-header-1</v-icon>
@@ -144,7 +144,7 @@
   import Underline from '@tiptap/extension-underline'
   import StarterKit from '@tiptap/starter-kit'
   import { EditorContent, useEditor } from '@tiptap/vue-3'
-  import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+  import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
   const props = defineProps({
     modelValue: {

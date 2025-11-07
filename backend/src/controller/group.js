@@ -8,7 +8,7 @@ const groupService = require("../service/group");
 router.post("/", auth, async (req, res, next) => {
   try {
     const { name, description, color, icon } = req.body;
-    if (!name || name.trim() === '') {
+    if (!name || name.trim() === "") {
       return next(new CustomError("Group name is required!", 400));
     }
     const result = await groupService.createGroup(
@@ -101,7 +101,7 @@ router.post("/:id/member", auth, async (req, res, next) => {
       groupId,
       req.currentUser.id,
       userId,
-      role || 'member'
+      role || "member"
     );
     res.status(200).json(new ApiResponse("Member added successfully!", result));
   } catch (error) {

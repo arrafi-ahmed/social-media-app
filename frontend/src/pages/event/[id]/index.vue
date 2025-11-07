@@ -12,7 +12,14 @@
   import MentionAutocomplete from '@/components/MentionAutocomplete.vue'
   import ReactionButtons from '@/components/ReactionButtons.vue'
   import UserAvatar from '@/components/UserAvatar.vue'
-  import { formatDateFromTimestamp, formatExpirationDate, formatTimeFromTime, getDaysUntilExpiration, getEventImageUrl, goUserProfile } from '@/others/util.js'
+  import {
+    formatDateFromTimestamp,
+    formatExpirationDate,
+    formatTimeFromTime,
+    getDaysUntilExpiration,
+    getEventImageUrl,
+    goUserProfile,
+  } from '@/others/util.js'
 
   // Helper to check if content is HTML and sanitize it
   function getSanitizedDescription (html) {
@@ -342,7 +349,7 @@
                 <v-icon class="mr-3" color="warning" size="small">mdi-clock-alert</v-icon>
                 <div>
                   <div class="text-body-2 text-warning font-weight-medium">
-                    Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? 'day' : 'days' }}
+                    Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? "day" : "days" }}
                   </div>
                   <div class="text-caption text-medium-emphasis mt-1">
                     {{ expirationDateFormatted }}
@@ -380,7 +387,7 @@
                     size="small"
                     variant="flat"
                   >
-                    <v-icon :icon="group.icon || 'mdi-account-group'" start size="x-small" />
+                    <v-icon :icon="group.icon || 'mdi-account-group'" size="x-small" start />
                     <span class="text-caption">{{ group.name }}</span>
                   </v-chip>
                 </div>
@@ -440,9 +447,9 @@
               required
               rows="2"
               variant="solo"
+              @focus="mentionAutocompleteRef?.checkActiveMention"
               @keydown="mentionAutocompleteRef?.handleKeydown"
               @keyup.enter="addComment"
-              @focus="mentionAutocompleteRef?.checkActiveMention"
             />
             <mention-autocomplete
               ref="mentionAutocompleteRef"
@@ -529,7 +536,7 @@
     >
       <v-card>
         <v-card-title class="text-h6 pa-4 pb-3">
-          {{ event?.isFavorite ? 'Move to Collection' : 'Save to Collection' }}
+          {{ event?.isFavorite ? "Move to Collection" : "Save to Collection" }}
         </v-card-title>
         <v-card-text class="pa-4">
           <v-radio-group
@@ -605,7 +612,7 @@
             variant="flat"
             @click="saveToCollection"
           >
-            {{ removeFromSaved ? 'Remove' : 'Save' }}
+            {{ removeFromSaved ? "Remove" : "Save" }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -629,8 +636,8 @@
         <v-card-text class="pa-4">
           <div v-if="isLoadingGroups" class="text-center py-4">
             <v-progress-circular
-              indeterminate
               color="primary"
+              indeterminate
               size="24"
             />
           </div>
@@ -653,7 +660,7 @@
               :key="group.id"
               v-model="selectedGroupIds"
               class="mb-2"
-              hide-details='auto'
+              hide-details="auto"
               :value="group.id"
             >
               <template #label>

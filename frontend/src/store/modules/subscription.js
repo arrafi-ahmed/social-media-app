@@ -4,13 +4,13 @@ import $axios from '@/plugins/axios'
 export const namespaced = true
 
 // Initialize post limit status from localStorage if available
-const getInitialPostLimitStatus = () => {
+function getInitialPostLimitStatus () {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('postLimitStatus')
     if (stored) {
       try {
         return JSON.parse(stored)
-      } catch (e) {
+      } catch {
         // Ignore parse errors
       }
     }
@@ -123,7 +123,7 @@ export const actions = {
         if (stored) {
           try {
             commit('setPostLimitStatus', JSON.parse(stored))
-          } catch (e) {
+          } catch {
             // Ignore parse errors
           }
         }
@@ -142,7 +142,12 @@ export const actions = {
   },
   async saveSubscription ({ commit }, request) {
     try {
-      const response = await $axios.get('/subscription/saveSubscription', { params: { planId: request.id, planTitle: request.title } })
+      const response = await $axios.get('/subscription/saveSubscription', {
+        params: {
+          planId: request.id,
+          planTitle: request.title,
+        },
+      })
       if (request.title === 'basic') {
         commit('setSubscription', response.data?.payload?.insertedSubscription)
       }
@@ -153,7 +158,13 @@ export const actions = {
   },
   async saveSubscriptionManually ({ commit }, request) {
     try {
-      const response = await $axios.get('/subscription/saveSubscriptionManually', { params: { planId: request.planId, planTitle: request.planTitle, userId: request.userId } })
+      const response = await $axios.get('/subscription/saveSubscriptionManually', {
+        params: {
+          planId: request.planId,
+          planTitle: request.planTitle,
+          userId: request.userId,
+        },
+      })
       return response.data?.payload
     } catch (error) {
       throw error
@@ -196,7 +207,6 @@ export const getters = {
     return state.postLimitStatus?.remaining > 0 || state.postLimitStatus?.isPremium === true
   },
   isSubscriptionActive (state) {
-    console.log(4, state.subscription?.active)
     return state.subscription?.active === true
   },
   pendingCancel (state) {

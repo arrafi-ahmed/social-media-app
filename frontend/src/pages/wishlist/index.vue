@@ -99,13 +99,13 @@
 
         <div class="page-content">
           <!-- Event Card Feed -->
-        <event-infinite
-          :events="events"
-          :grid="{ sm: 6, md: 4 }"
-          source="wishlist"
-          type="headerless"
-          @fetch-events="loadEvents"
-        />
+          <event-infinite
+            :events="events"
+            :grid="{ sm: 6, md: 4 }"
+            source="wishlist"
+            type="headerless"
+            @fetch-events="loadEvents"
+          />
         </div>
       </v-col>
     </v-row>

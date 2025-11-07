@@ -8,18 +8,24 @@
     >
       <template #activator="{ props: tooltipProps }">
         <v-btn
-          v-bind="tooltipProps"
           class="reaction-button"
           :class="{ 'reaction-active': userReaction === reaction.type }"
           :color="userReaction === reaction.type ? reaction.color : 'default'"
           density="default"
           :disabled="loading"
           :size="compact ? 'default' : 'large'"
+          v-bind="tooltipProps"
           variant="text"
           @click="handleReaction(reaction.type)"
         >
-          <v-icon :icon="userReaction === reaction.type ? reaction.iconActive : reaction.icon" :size="compact ? 'default' : 'x-large'" />
-          <span v-if="!compact || showCounts" class="ml-1">{{ (reactions && reactions[reaction.type]) ? reactions[reaction.type] : 0 }}</span>
+          <v-icon
+            :icon="userReaction === reaction.type ? reaction.iconActive : reaction.icon"
+            :size="compact ? 'default' : 'x-large'"
+          />
+          <span
+            v-if="!compact || showCounts"
+            class="ml-1"
+          >{{ (reactions && reactions[reaction.type]) ? reactions[reaction.type] : 0 }}</span>
         </v-btn>
       </template>
     </v-tooltip>
@@ -69,7 +75,13 @@
     { type: 'heart', icon: 'mdi-heart-outline', iconActive: 'mdi-heart', color: 'error', label: 'Heart' },
     { type: 'laugh', icon: 'mdi-emoticon-lol-outline', iconActive: 'mdi-emoticon-lol', color: 'warning', label: 'Laugh' },
     { type: 'sad', icon: 'mdi-emoticon-sad-outline', iconActive: 'mdi-emoticon-sad', color: 'info', label: 'Sad' },
-    { type: 'angry', icon: 'mdi-emoticon-angry-outline', iconActive: 'mdi-emoticon-angry', color: 'error', label: 'Angry' },
+    {
+      type: 'angry',
+      icon: 'mdi-emoticon-angry-outline',
+      iconActive: 'mdi-emoticon-angry',
+      color: 'error',
+      label: 'Angry',
+    },
   ]
 
   async function handleReaction (reactionType) {

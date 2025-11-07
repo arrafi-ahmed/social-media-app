@@ -127,23 +127,23 @@ export const actions = {
   async setEvents ({ commit, state }, request) {
     try {
       let url = '/event/getAllEventsByFriends'
-      if (state.selectedGroup !== null) {
-        // Specific group view
-        url = `/group/${state.selectedGroup}/events`
-        const response = await $axios.get(url, {
-          params: {
-            page: request.page,
-          },
-        })
-        commit('setEvents', response.data.payload)
-        return response
-      } else {
+      if (state.selectedGroup === null) {
         // All events view
         const response = await $axios.get(url, {
           params: {
             userId: request.userId,
             page: request.page,
             sort: request.sort || 'LATEST',
+          },
+        })
+        commit('setEvents', response.data.payload)
+        return response
+      } else {
+        // Specific group view
+        url = `/group/${state.selectedGroup}/events`
+        const response = await $axios.get(url, {
+          params: {
+            page: request.page,
           },
         })
         commit('setEvents', response.data.payload)
@@ -178,4 +178,3 @@ export const actions = {
     }
   },
 }
-

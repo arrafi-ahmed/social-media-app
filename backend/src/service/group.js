@@ -3,7 +3,7 @@ const CustomError = require("../model/CustomError");
 
 // Create a new group
 exports.createGroup = async (userId, name, description = null, color = null, icon = null) => {
-  if (!name || name.trim() === '') {
+  if (!name || name.trim() === "") {
     throw new CustomError("Group name is required!", 400);
   }
 
@@ -17,7 +17,7 @@ exports.createGroup = async (userId, name, description = null, color = null, ico
 
   // Add creator as owner
   if (group) {
-    await exports.addMember(group.id, userId, userId, 'owner');
+    await exports.addMember(group.id, userId, userId, "owner");
   }
 
   return group;
@@ -42,7 +42,7 @@ exports.updateGroup = async (groupId, userId, updates) => {
   let paramIndex = 1;
 
   if (updates.name !== undefined) {
-    if (!updates.name || updates.name.trim() === '') {
+    if (!updates.name || updates.name.trim() === "") {
       throw new CustomError("Group name cannot be empty!", 400);
     }
     fields.push(`name = $${paramIndex++}`);
@@ -68,7 +68,7 @@ exports.updateGroup = async (groupId, userId, updates) => {
   values.push(groupId);
   const sql = `
     UPDATE user_group 
-    SET ${fields.join(', ')}
+    SET ${fields.join(", ")}
     WHERE id = $${paramIndex++}
     RETURNING *
   `;
@@ -132,7 +132,7 @@ exports.getGroupById = async (groupId, userId) => {
 };
 
 // Add member to group
-exports.addMember = async (groupId, userId, memberUserId, role = 'member') => {
+exports.addMember = async (groupId, userId, memberUserId, role = "member") => {
   // Verify user is owner or admin
   const checkSql = `
     SELECT ug.id, gm.role
@@ -179,7 +179,7 @@ exports.removeMember = async (groupId, userId, memberUserId) => {
     `SELECT role FROM group_member WHERE group_id = $1 AND user_id = $2`,
     [groupId, memberUserId]
   );
-  if (ownerCheck && ownerCheck.role === 'owner') {
+  if (ownerCheck && ownerCheck.role === "owner") {
     throw new CustomError("Cannot remove the group owner!", 400);
   }
 

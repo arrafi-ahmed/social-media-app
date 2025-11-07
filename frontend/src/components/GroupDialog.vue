@@ -194,7 +194,7 @@
           variant="flat"
           @click="save"
         >
-          {{ isEditing ? 'Update' : 'Create' }}
+          {{ isEditing ? "Update" : "Create" }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -202,4 +202,3 @@
 </template>
 
 <style scoped></style>
-

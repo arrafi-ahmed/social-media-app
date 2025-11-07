@@ -158,12 +158,12 @@ router.post("/sendInvite", auth, async (req, res, next) => {
     );
 
     const messages = [];
-    
+
     if (successfulInvites.length > 0) {
       messages.push("Invitation sent successfully to:");
       messages.push(successfulInvites.map((item) => item.email).join("\n"));
     }
-    
+
     if (failedInvites.length > 0) {
       if (successfulInvites.length > 0) {
         messages.push("\n");
@@ -176,7 +176,7 @@ router.post("/sendInvite", auth, async (req, res, next) => {
       );
       throw new CustomError(messages.join("\n"), 400, { successfulInvites, failedInvites });
     }
-    
+
     const msg = messages.join("\n");
     res
       .status(200)
@@ -190,18 +190,18 @@ router.get("/acceptInvite", async (req, res, next) => {
   try {
     const token = req.query?.token;
     const result = await userService.acceptInvite(token);
-    
+
     const redirectMap = {
       friends: {
         url: "/friends",
         message: "Friend invitation accepted!"
       },
       register: {
-        url: "/register", 
+        url: "/register",
         message: "Friend invitation will be accepted after registration!"
       }
     };
-    
+
     const redirect = redirectMap[result.redirect];
     if (redirect) {
       const clientUrl = VUE_BASE_URL + redirect.url;
@@ -280,7 +280,7 @@ router.get("/addAllUsersToAdminFriendlist", auth, async (req, res, next) => {
 
 router.get("/search", auth, async (req, res, next) => {
   try {
-    const query = req.query?.q || '';
+    const query = req.query?.q || "";
     const limit = req.query?.limit ? parseInt(req.query.limit, 10) : 10;
     const userId = req.currentUser.id;
     const result = await userService.searchUsers(query, userId, limit);

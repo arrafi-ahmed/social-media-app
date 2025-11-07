@@ -2,7 +2,6 @@
   import { computed, reactive, ref } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
   import { useStore } from 'vuex'
-  import DatePicker from '@/components/DatePicker.vue'
 
   const { mobile } = useDisplay()
   const theme = useTheme()
@@ -133,8 +132,8 @@
                 <v-btn
                   density="comfortable"
                   icon="mdi-dots-vertical"
-                  v-bind="props"
                   :ripple="false"
+                  v-bind="props"
                   variant="text"
                 />
               </template>
@@ -190,11 +189,12 @@
 </template>
 
 <style>
-.event-form .mdi-close-circle{
+.event-form .mdi-close-circle {
   position: absolute;
   right: 2px;
 }
-.event-form .mdi-menu-down{
+
+.event-form .mdi-menu-down {
   position: absolute;
   right: 20px;
 }

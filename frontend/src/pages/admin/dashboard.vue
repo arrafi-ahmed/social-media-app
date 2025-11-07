@@ -3,7 +3,6 @@
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
-  import NameCard from '@/components/NameCard.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
   import RichTextEditor from '@/components/RichTextEditor.vue'
@@ -181,7 +180,6 @@
     for (let i = 0; i < updatingLanding.value.length; i++) {
       const item = updatingLanding.value[i]
       if (item.newImage instanceof File) {
-        console.log(4, item.newImage.name)
         formData.append('files', item.newImage)
         updatingLandingImages.push({ index: i, rmImage: item.image, newImage: item.newImage.name })
         delete updatingLanding.value[i].newImage
@@ -189,11 +187,8 @@
     }
     formData.append('updatingLandingImages', JSON.stringify(updatingLandingImages))
     formData.append('description', JSON.stringify(updatingLanding.value))
-    console.log(31, initLanding.value.description)
-    console.log(32, updatingLanding.value)
 
     await store.dispatch('page/savePage', formData)
-    console.log(100, store.state.page.landing)
 
     // Update the local reactive reference with the new data from store
     if (initLanding.value?.description?.length > 0) {
@@ -262,7 +257,7 @@
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `users_export_${new Date().toISOString().split('T')[0]}.csv`)
-      document.body.appendChild(link)
+      document.body.append(link)
       link.click()
       link.remove()
       window.URL.revokeObjectURL(url)
@@ -280,7 +275,7 @@
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `events_export_${new Date().toISOString().split('T')[0]}.csv`)
-      document.body.appendChild(link)
+      document.body.append(link)
       link.click()
       link.remove()
       window.URL.revokeObjectURL(url)
@@ -367,74 +362,394 @@
     <page-title :show-back-button="false" subtitle="Manage your site" title="Admin Panel" />
     <div class="page-content">
       <v-row justify="center">
-      <v-col cols="12">
-        <v-tabs v-model="tab" bg-color="primary" density="comfortable">
-          <v-tab value="site">Site</v-tab>
-          <v-tab value="blog">Blog</v-tab>
-          <v-tab value="pages">Pages</v-tab>
-        </v-tabs>
+        <v-col cols="12">
+          <v-tabs v-model="tab" bg-color="primary" density="comfortable">
+            <v-tab value="site">Site</v-tab>
+            <v-tab value="blog">Blog</v-tab>
+            <v-tab value="pages">Pages</v-tab>
+          </v-tabs>
 
-        <v-window v-model="tab">
-          <v-window-item value="site">
-            <div class="mt-4">
-              <v-expansion-panels variant="accordion">
-                <!-- Categories Section -->
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Categories</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Manage event categories
+          <v-window v-model="tab">
+            <v-window-item value="site">
+              <div class="mt-4">
+                <v-expansion-panels variant="accordion">
+                  <!-- Categories Section -->
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Categories</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Manage event categories
+                          </div>
                         </div>
+                        <v-chip
+                          v-if="categories.length > 0"
+                          color="primary"
+                          size="small"
+                          variant="flat"
+                        >
+                          {{ categories.length }}
+                        </v-chip>
                       </div>
-                      <v-chip
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <div class="d-flex justify-end mb-4">
+                        <v-btn
+                          color="primary"
+                          prepend-icon="mdi-plus"
+                          variant="flat"
+                          @click="newCategoryDialog = !newCategoryDialog"
+                        >
+                          New Category
+                        </v-btn>
+                      </div>
+                      <v-data-table
                         v-if="categories.length > 0"
-                        color="primary"
-                        size="small"
-                        variant="flat"
+                        class="text-no-wrap"
+                        :headers="[
+                          { title: 'Name', key: 'name', sortable: true },
+                          { title: 'Actions', key: 'actions', sortable: false, width: '120px' }
+                        ]"
+                        :items="categories"
+                        :items-per-page="10"
+                        :search="categorySearch"
                       >
-                        {{ categories.length }}
-                      </v-chip>
-                    </div>
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <div class="d-flex justify-end mb-4">
-                      <v-btn
-                        color="primary"
-                        prepend-icon="mdi-plus"
-                        variant="flat"
-                        @click="newCategoryDialog = !newCategoryDialog"
+                        <template #top>
+                          <div class="pa-4 pb-2">
+                            <v-text-field
+                              v-model="categorySearch"
+                              clearable
+                              hide-details
+                              placeholder="Search categories..."
+                              prepend-inner-icon="mdi-magnify"
+                              variant="solo"
+                            />
+                          </div>
+                        </template>
+                        <template #item.name="{ item }">
+                          <div class="text-body-1 font-weight-medium">
+                            {{ item.name }}
+                          </div>
+                        </template>
+                        <template #item.actions="{ item }">
+                          <div class="d-flex align-center gap-1">
+                            <v-btn
+                              color="primary"
+                              icon="mdi-pencil"
+                              size="small"
+                              variant="text"
+                              @click="openEditCategoryDialog(item)"
+                            />
+                            <confirmation-dialog
+                              popup-content="Are you sure you want to delete this category?"
+                              popup-title="Delete Category"
+                              @confirm="deleteCategory(item.id)"
+                            >
+                              <template #activator="{ onClick }">
+                                <v-btn
+                                  color="error"
+                                  icon="mdi-delete-outline"
+                                  size="small"
+                                  variant="text"
+                                  @click="onClick"
+                                />
+                              </template>
+                            </confirmation-dialog>
+                          </div>
+                        </template>
+                        <template #no-data>
+                          <div class="pa-8 text-center">
+                            <no-items
+                              action-icon="mdi-plus"
+                              action-text="Create Category"
+                              description="Create your first category to organize events."
+                              icon="mdi-tag-outline"
+                              :show-action="true"
+                              title="No categories found"
+                              @action="newCategoryDialog = true"
+                            />
+                          </div>
+                        </template>
+                      </v-data-table>
+                      <div v-else class="pa-8 text-center">
+                        <no-items
+                          action-icon="mdi-plus"
+                          action-text="Create Category"
+                          description="Create your first category to organize events."
+                          icon="mdi-tag-outline"
+                          :show-action="true"
+                          title="No categories found"
+                          @action="newCategoryDialog = true"
+                        />
+                      </div>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+
+                  <!-- Users Section -->
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Users</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Search and manage user accounts
+                          </div>
+                        </div>
+                        <v-chip
+                          v-if="foundUsersWSucscription.length > 0"
+                          color="primary"
+                          size="small"
+                          variant="flat"
+                        >
+                          {{ foundUsersWSucscription.length }}
+                        </v-chip>
+                      </div>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <v-data-table
+                        class="text-no-wrap"
+                        :headers="[
+                          { title: 'User', key: 'user', sortable: false },
+                          { title: 'Email', key: 'email', sortable: true },
+                          { title: 'Premium', key: 'premium', sortable: false, width: '120px', align: 'center' },
+                          { title: 'Actions', key: 'actions', sortable: false, width: '100px' }
+                        ]"
+                        :items="foundUsersWSucscription"
+                        :items-per-page="10"
                       >
-                        New Category
-                      </v-btn>
+                        <template #top>
+                          <div class="pa-4 pb-2">
+                            <v-text-field
+                              v-model="searchingUser"
+                              append-inner-icon="mdi-magnify"
+                              clearable
+                              hide-details
+                              placeholder="Search by ID, name, or email..."
+                              variant="solo"
+                              @click:append-inner="searchUser"
+                              @keyup.enter="searchUser"
+                            />
+                          </div>
+                        </template>
+                        <template #item.user="{ item }">
+                          <div class="d-flex align-center gap-3">
+                            <v-avatar size="40">
+                              <v-img
+                                v-if="item.image"
+                                cover
+                                :src="item.image"
+                              />
+                              <v-icon v-else>mdi-account</v-icon>
+                            </v-avatar>
+                            <div>
+                              <div
+                                class="text-body-1 font-weight-medium cursor-pointer"
+                                @click="
+                                  $router.push({
+                                    name: 'wall',
+                                    params: { id: item.id || item.id },
+                                  })
+                                "
+                              >
+                                {{ item.fullName || item.full_name }}
+                              </div>
+                              <div class="text-caption text-medium-emphasis">
+                                ID: {{ item.id }}
+                              </div>
+                            </div>
+                          </div>
+                        </template>
+                        <template #item.email="{ item }">
+                          <div class="text-body-2">
+                            {{ item.email }}
+                          </div>
+                        </template>
+                        <template #item.premium="{ item }">
+                          <v-switch
+                            v-model="item.isSubscriptionActive"
+                            color="primary"
+                            density="compact"
+                            hide-details
+                            @update:model-value="updateSubscription(item.id, $event)"
+                          />
+                        </template>
+                        <template #item.actions="{ item }">
+                          <confirmation-dialog
+                            popup-content="Are you sure you want to delete this user?"
+                            popup-title="Delete User"
+                            @confirm="deleteUser(item.id)"
+                          >
+                            <template #activator="{ onClick }">
+                              <v-btn
+                                color="error"
+                                icon="mdi-delete-outline"
+                                size="small"
+                                variant="text"
+                                @click="onClick"
+                              />
+                            </template>
+                          </confirmation-dialog>
+                        </template>
+                        <template #no-data>
+                          <div class="pa-8 text-center">
+                            <no-items
+                              description="Try adjusting your search terms or browse all users."
+                              :full-page="true"
+                              icon="mdi-account-search-outline"
+                              title="No users found"
+                            />
+                          </div>
+                        </template>
+                      </v-data-table>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+
+                  <!-- Admin Tools Section -->
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Admin Tools</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Quick actions and data export
+                          </div>
+                        </div>
+                        <v-icon color="primary">mdi-tools</v-icon>
+                      </div>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <v-row class="mt-2">
+                        <!-- Quick Actions Card -->
+                        <v-col cols="12" md="6">
+                          <v-card
+                            class="h-100"
+                            elevation="1"
+                          >
+                            <v-card-title class="d-flex align-center gap-2 pa-4">
+                              <v-icon color="primary">mdi-lightning-bolt</v-icon>
+                              <span class="text-h6 font-weight-bold">Quick Actions</span>
+                            </v-card-title>
+                            <v-divider />
+                            <v-card-text class="pa-4">
+                              <v-btn
+                                block
+                                color="primary"
+                                prepend-icon="mdi-account-plus"
+                                size="large"
+                                variant="flat"
+                                @click="addAllUsersToAdminFriendlist()"
+                              >
+                                Add All Users as Friends
+                              </v-btn>
+                              <div class="text-caption text-medium-emphasis mt-3">
+                                Automatically add all registered users to your friend list
+                              </div>
+                            </v-card-text>
+                          </v-card>
+                        </v-col>
+
+                        <!-- Export Data Card -->
+                        <v-col cols="12" md="6">
+                          <v-card
+                            class="h-100"
+                            elevation="1"
+                          >
+                            <v-card-title class="d-flex align-center gap-2 pa-4">
+                              <v-icon color="primary">mdi-download</v-icon>
+                              <span class="text-h6 font-weight-bold">Export Data</span>
+                            </v-card-title>
+                            <v-divider />
+                            <v-card-text class="pa-4">
+                              <div class="d-flex flex-column gap-3">
+                                <v-btn
+                                  block
+                                  color="primary"
+                                  prepend-icon="mdi-file-excel"
+                                  size="large"
+                                  variant="flat"
+                                  @click="exportUsers"
+                                >
+                                  Export User Data
+                                </v-btn>
+                                <v-btn
+                                  block
+                                  class="mt-2"
+                                  color="primary"
+                                  prepend-icon="mdi-file-excel"
+                                  size="large"
+                                  variant="flat"
+                                  @click="exportEvents"
+                                >
+                                  Export Event Data
+                                </v-btn>
+                              </div>
+                              <div class="text-caption text-medium-emphasis mt-3">
+                                Download all user or event data as excel files
+                              </div>
+                            </v-card-text>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+            </v-window-item>
+
+            <v-window-item value="blog">
+              <div class="mt-4">
+                <v-card elevation="2">
+                  <v-card-title class="d-flex align-center justify-space-between pa-4">
+                    <div>
+                      <div class="text-h6 font-weight-bold">Blog Posts</div>
+                      <div class="text-caption text-medium-emphasis mt-1">
+                        Create and manage blog content
+                      </div>
                     </div>
+                    <v-btn
+                      color="primary"
+                      prepend-icon="mdi-plus"
+                      variant="flat"
+                      @click="openNewBlogDialog"
+                    >
+                      New Blog
+                    </v-btn>
+                  </v-card-title>
+                  <v-divider />
+                  <v-card-text class="pa-0">
                     <v-data-table
-                      v-if="categories.length > 0"
+                      v-if="blogs.length > 0"
+                      class="text-no-wrap"
                       :headers="[
-                        { title: 'Name', key: 'name', sortable: true },
+                        { title: 'Title', key: 'title', sortable: true },
+                        { title: 'Created', key: 'createdAt', sortable: true },
                         { title: 'Actions', key: 'actions', sortable: false, width: '120px' }
                       ]"
-                      :items="categories"
+                      :items="blogs"
                       :items-per-page="10"
-                      :search="categorySearch"
-                      class="text-no-wrap"
+                      :search="blogSearch"
                     >
                       <template #top>
                         <div class="pa-4 pb-2">
                           <v-text-field
-                            v-model="categorySearch"
-                            clearable                            
+                            v-model="blogSearch"
+                            clearable
                             hide-details
-                            placeholder="Search categories..."
+                            placeholder="Search blogs..."
                             prepend-inner-icon="mdi-magnify"
                             variant="solo"
                           />
                         </div>
                       </template>
-                      <template #item.name="{ item }">
+                      <template #item.title="{ item }">
                         <div class="text-body-1 font-weight-medium">
-                          {{ item.name }}
+                          {{ item.title }}
+                        </div>
+                      </template>
+                      <template #item.createdAt="{ item }">
+                        <div class="text-body-2">
+                          {{ formatDateFromTimestamp(item.createdAt) }}
                         </div>
                       </template>
                       <template #item.actions="{ item }">
@@ -444,12 +759,12 @@
                             icon="mdi-pencil"
                             size="small"
                             variant="text"
-                            @click="openEditCategoryDialog(item)"
+                            @click="openEditBlogDialog(item)"
                           />
                           <confirmation-dialog
-                            popup-content="Are you sure you want to delete this category?"
-                            popup-title="Delete Category"
-                            @confirm="deleteCategory(item.id)"
+                            popup-content="Are you sure you want to delete this blog post?"
+                            popup-title="Delete Blog"
+                            @confirm="deleteBlog(item.id, item.image)"
                           >
                             <template #activator="{ onClick }">
                               <v-btn
@@ -467,12 +782,12 @@
                         <div class="pa-8 text-center">
                           <no-items
                             action-icon="mdi-plus"
-                            action-text="Create Category"
-                            description="Create your first category to organize events."
-                            icon="mdi-tag-outline"
+                            action-text="Create Blog"
+                            description="There are no blog posts to manage. Create your first blog post to share updates and engage with your community."
+                            icon="mdi-blog-outline"
                             :show-action="true"
-                            title="No categories found"
-                            @action="newCategoryDialog = true"
+                            title="No blogs listed"
+                            @action="openNewBlogDialog"
                           />
                         </div>
                       </template>
@@ -480,361 +795,212 @@
                     <div v-else class="pa-8 text-center">
                       <no-items
                         action-icon="mdi-plus"
-                        action-text="Create Category"
-                        description="Create your first category to organize events."
-                        icon="mdi-tag-outline"
+                        action-text="Create Blog"
+                        description="There are no blog posts to manage. Create your first blog post to share updates and engage with your community."
+                        icon="mdi-blog-outline"
                         :show-action="true"
-                        title="No categories found"
-                        @action="newCategoryDialog = true"
+                        title="No blogs listed"
+                        @action="openNewBlogDialog"
                       />
                     </div>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-
-                <!-- Users Section -->
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Users</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Search and manage user accounts
-                        </div>
-                      </div>
-                      <v-chip
-                        v-if="foundUsersWSucscription.length > 0"
-                        color="primary"
-                        size="small"
-                        variant="flat"
-                      >
-                        {{ foundUsersWSucscription.length }}
-                      </v-chip>
-                    </div>
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <v-data-table
-                      :headers="[
-                        { title: 'User', key: 'user', sortable: false },
-                        { title: 'Email', key: 'email', sortable: true },
-                        { title: 'Premium', key: 'premium', sortable: false, width: '120px', align: 'center' },
-                        { title: 'Actions', key: 'actions', sortable: false, width: '100px' }
-                      ]"
-                      :items="foundUsersWSucscription"
-                      :items-per-page="10"
-                      class="text-no-wrap"
-                    >
-                      <template #top>
-                        <div class="pa-4 pb-2">
-                          <v-text-field
-                            v-model="searchingUser"
-                            append-inner-icon="mdi-magnify"
-                            clearable                            
-                            hide-details
-                            variant="solo"
-                            placeholder="Search by ID, name, or email..."                            
-                            @click:append-inner="searchUser"
-                            @keyup.enter="searchUser"
-                          />
-                        </div>
-                      </template>
-                      <template #item.user="{ item }">
-                        <div class="d-flex align-center gap-3">
-                          <v-avatar size="40">
-                            <v-img
-                              v-if="item.image"
-                              :src="item.image"
-                              cover
-                            />
-                            <v-icon v-else>mdi-account</v-icon>
-                          </v-avatar>
-                          <div>
-                            <div
-                              class="text-body-1 font-weight-medium cursor-pointer"
-                              @click="
-                                $router.push({
-                                  name: 'wall',
-                                  params: { id: item.id || item.id },
-                                })
-                              "
-                            >
-                              {{ item.fullName || item.full_name }}
-                            </div>
-                            <div class="text-caption text-medium-emphasis">
-                              ID: {{ item.id }}
-                            </div>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </v-window-item>
+            <v-window-item value="pages">
+              <div class="mt-4">
+                <v-expansion-panels variant="accordion">
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Landing</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Manage landing page content and sections
                           </div>
                         </div>
-                      </template>
-                      <template #item.email="{ item }">
-                        <div class="text-body-2">
-                          {{ item.email }}
-                        </div>
-                      </template>
-                      <template #item.premium="{ item }">
-                        <v-switch
-                          v-model="item.isSubscriptionActive"
-                          color="primary"
-                          density="compact"
-                          hide-details
-                          @update:model-value="updateSubscription(item.id, $event)"
-                        />
-                      </template>
-                      <template #item.actions="{ item }">
-                        <confirmation-dialog
-                          popup-content="Are you sure you want to delete this user?"
-                          popup-title="Delete User"
-                          @confirm="deleteUser(item.id)"
-                        >
-                          <template #activator="{ onClick }">
-                            <v-btn
-                              color="error"
-                              icon="mdi-delete-outline"
-                              size="small"
-                              variant="text"
-                              @click="onClick"
-                            />
-                          </template>
-                        </confirmation-dialog>
-                      </template>
-                      <template #no-data>
-                        <div class="pa-8 text-center">
-                          <no-items
-                            description="Try adjusting your search terms or browse all users."
-                            :full-page="true"
-                            icon="mdi-account-search-outline"
-                            title="No users found"
+                        <v-icon color="primary">mdi-home</v-icon>
+                      </div>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text
+                      v-if="updatingLanding && updatingLanding.length > 0"
+                    >
+                      <v-card class="mb-4">
+                        <v-card-title>Section 1</v-card-title>
+                        <v-card-text>
+                          <v-text-field
+                            v-model="updatingLanding[0].title"
+                            class="mb-2"
+                            clearable
+                            density="compact"
+                            hide-details="auto"
+                            label="Title"
+                            required
+                            :rules="[(v) => !!v || 'Title is required!']"
+                            variant="solo"
                           />
-                        </div>
-                      </template>
-                    </v-data-table>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-
-                <!-- Admin Tools Section -->
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Admin Tools</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Quick actions and data export
-                        </div>
-                      </div>
-                      <v-icon color="primary">mdi-tools</v-icon>
-                    </div>
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <v-row class="mt-2">
-                      <!-- Quick Actions Card -->
-                      <v-col cols="12" md="6">
-                        <v-card
-                          class="h-100"
-                          elevation="1"                        
-                        >
-                          <v-card-title class="d-flex align-center gap-2 pa-4">
-                            <v-icon color="primary">mdi-lightning-bolt</v-icon>
-                            <span class="text-h6 font-weight-bold">Quick Actions</span>
-                          </v-card-title>
-                          <v-divider />
-                          <v-card-text class="pa-4">
-                            <v-btn
-                              block
-                              color="primary"
-                              prepend-icon="mdi-account-plus"
-                              size="large"
-                              variant="flat"
-                              @click="addAllUsersToAdminFriendlist()"
-                            >
-                              Add All Users as Friends
-                            </v-btn>
-                            <div class="text-caption text-medium-emphasis mt-3">
-                              Automatically add all registered users to your friend list
-                            </div>
-                          </v-card-text>
-                        </v-card>
-                      </v-col>
-
-                      <!-- Export Data Card -->
-                      <v-col cols="12" md="6">
-                        <v-card
-                          class="h-100"
-                          elevation="1"                          
-                        >
-                          <v-card-title class="d-flex align-center gap-2 pa-4">
-                            <v-icon color="primary">mdi-download</v-icon>
-                            <span class="text-h6 font-weight-bold">Export Data</span>
-                          </v-card-title>
-                          <v-divider />
-                          <v-card-text class="pa-4">
-                            <div class="d-flex flex-column gap-3">
-                              <v-btn
-                                block
-                                color="primary"
-                                prepend-icon="mdi-file-excel"
-                                size="large"
-                                variant="flat"
-                                @click="exportUsers"
-                              >
-                                Export User Data
-                              </v-btn>
-                              <v-btn
-                                block
-                                color="primary"
-                                prepend-icon="mdi-file-excel"
-                                size="large"
-                                variant="flat"
-                                class='mt-2'
-                                @click="exportEvents"
-                              >
-                                Export Event Data
-                              </v-btn>
-                            </div>
-                            <div class="text-caption text-medium-emphasis mt-3">
-                              Download all user or event data as excel files
-                            </div>
-                          </v-card-text>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </div>
-          </v-window-item>
-
-          <v-window-item value="blog">
-            <div class="mt-4">
-              <v-card elevation="2">
-                <v-card-title class="d-flex align-center justify-space-between pa-4">
-                  <div>
-                    <div class="text-h6 font-weight-bold">Blog Posts</div>
-                    <div class="text-caption text-medium-emphasis mt-1">
-                      Create and manage blog content
-                    </div>
-                  </div>
-                  <v-btn
-                    color="primary"
-                    prepend-icon="mdi-plus"
-                    variant="flat"
-                    @click="openNewBlogDialog"
-                  >
-                    New Blog
-                  </v-btn>
-                </v-card-title>
-                <v-divider />
-                <v-card-text class="pa-0">
-                  <v-data-table
-                    v-if="blogs.length > 0"
-                    :headers="[
-                      { title: 'Title', key: 'title', sortable: true },
-                      { title: 'Created', key: 'createdAt', sortable: true },
-                      { title: 'Actions', key: 'actions', sortable: false, width: '120px' }
-                    ]"
-                    :items="blogs"
-                    :items-per-page="10"
-                    :search="blogSearch"
-                    class="text-no-wrap"
-                  >
-                    <template #top>
-                      <div class="pa-4 pb-2">
-                        <v-text-field
-                          v-model="blogSearch"
-                          clearable
-                          hide-details
-                          placeholder="Search blogs..."
-                          prepend-inner-icon="mdi-magnify"
-                          variant="solo"
-                        />
-                      </div>
-                    </template>
-                    <template #item.title="{ item }">
-                      <div class="text-body-1 font-weight-medium">
-                        {{ item.title }}
-                      </div>
-                    </template>
-                    <template #item.createdAt="{ item }">
-                      <div class="text-body-2">
-                        {{ formatDateFromTimestamp(item.createdAt) }}
-                      </div>
-                    </template>
-                    <template #item.actions="{ item }">
-                      <div class="d-flex align-center gap-1">
+                          <v-textarea
+                            v-model="updatingLanding[0].description"
+                            class="text-pre-wrap"
+                            label="Description"
+                            rows="10"
+                            variant="solo"
+                          />
+                          <ImageManager
+                            v-if="updatingLanding[0]?.image"
+                            container-class="mt-2 mt-md-4"
+                            :hide-delete="true"
+                            :src="getPageImageUrl(updatingLanding[0]?.image)"
+                          />
+                          <v-file-upload
+                            v-model="updatingLanding[0].newImage"
+                            accept="image/*"
+                            class="mt-2"
+                            clearable
+                            density="compact"
+                            :hide-browse="false"
+                            :rules="[
+                              (v) =>
+                                (Array.isArray(v) ? v : [v]).every((file) =>
+                                  isValidImage(file),
+                                ) || 'Only jpeg/png allowed!',
+                            ]"
+                            show-size
+                            title="Update Image"
+                            variant=""
+                          />
+                        </v-card-text>
+                      </v-card>
+                      <v-card class="mb-4">
+                        <v-card-title>Section 2</v-card-title>
+                        <v-card-text>
+                          <v-text-field
+                            v-model="updatingLanding[1].title"
+                            class="mb-2"
+                            clearable
+                            density="compact"
+                            hide-details="auto"
+                            label="Title"
+                            required
+                            :rules="[(v) => !!v || 'Title is required!']"
+                            variant="solo"
+                          />
+                          <v-textarea
+                            v-model="updatingLanding[1].description"
+                            class="text-pre-wrap"
+                            label="Description"
+                            rows="10"
+                            variant="solo"
+                          />
+                          <ImageManager
+                            v-if="updatingLanding[1]?.image"
+                            container-class="mt-2 mt-md-4"
+                            :hide-delete="true"
+                            :src="getPageImageUrl(updatingLanding[1]?.image)"
+                          />
+                          <v-file-upload
+                            v-model="updatingLanding[1].newImage"
+                            accept="image/*"
+                            class="mt-2"
+                            clearable
+                            density="compact"
+                            :hide-browse="false"
+                            :rules="[
+                              (v) =>
+                                (Array.isArray(v) ? v : [v]).every((file) =>
+                                  isValidImage(file),
+                                ) || 'Only jpeg/png allowed!',
+                            ]"
+                            show-size
+                            title="Update Image"
+                            variant=""
+                          />
+                        </v-card-text>
+                      </v-card>
+                      <v-card class="mb-4">
+                        <v-card-title>Section 3</v-card-title>
+                        <v-card-text>
+                          <v-text-field
+                            v-model="updatingLanding[2].title"
+                            class="mb-2"
+                            clearable
+                            density="compact"
+                            hide-details="auto"
+                            label="Title"
+                            required
+                            :rules="[(v) => !!v || 'Title is required!']"
+                            variant="solo"
+                          />
+                          <v-textarea
+                            v-model="updatingLanding[2].description"
+                            class="text-pre-wrap"
+                            label="Description"
+                            rows="10"
+                            variant="solo"
+                          />
+                          <ImageManager
+                            v-if="updatingLanding[2]?.image"
+                            container-class="mt-2 mt-md-4"
+                            :hide-delete="true"
+                            :src="getPageImageUrl(updatingLanding[2]?.image)"
+                          />
+                          <v-file-upload
+                            v-model="updatingLanding[2].newImage"
+                            accept="image/*"
+                            class="mt-2"
+                            clearable
+                            density="compact"
+                            :hide-browse="false"
+                            :rules="[
+                              (v) =>
+                                (Array.isArray(v) ? v : [v]).every((file) =>
+                                  isValidImage(file),
+                                ) || 'Only jpeg/png allowed!',
+                            ]"
+                            show-size
+                            title="Update Image"
+                            variant=""
+                          />
+                        </v-card-text>
+                      </v-card>
+                      <v-card class="mb-4">
+                        <v-card-title>Section 4</v-card-title>
+                        <v-card-text>
+                          <v-textarea
+                            v-model="updatingLanding[3].description"
+                            class="text-pre-wrap"
+                            label="Description"
+                            rows="10"
+                            variant="solo"
+                          />
+                        </v-card-text>
+                      </v-card>
+                      <div class="d-flex justify-end mb-1">
                         <v-btn
                           color="primary"
-                          icon="mdi-pencil"
-                          size="small"
+                          :density="xs ? 'comfortable' : 'default'"
                           variant="text"
-                          @click="openEditBlogDialog(item)"
-                        />
-                        <confirmation-dialog
-                          popup-content="Are you sure you want to delete this blog post?"
-                          popup-title="Delete Blog"
-                          @confirm="deleteBlog(item.id, item.image)"
-                        >
-                          <template #activator="{ onClick }">
-                            <v-btn
-                              color="error"
-                              icon="mdi-delete-outline"
-                              size="small"
-                              variant="text"
-                              @click="onClick"
-                            />
-                          </template>
-                        </confirmation-dialog>
+                          @click="handleUpdateLanding"
+                        >Update
+                        </v-btn>
                       </div>
-                    </template>
-                    <template #no-data>
-                      <div class="pa-8 text-center">
-                        <no-items
-                          action-icon="mdi-plus"
-                          action-text="Create Blog"
-                          description="There are no blog posts to manage. Create your first blog post to share updates and engage with your community."
-                          icon="mdi-blog-outline"
-                          :show-action="true"
-                          title="No blogs listed"
-                          @action="openNewBlogDialog"
-                        />
-                      </div>
-                    </template>
-                  </v-data-table>
-                  <div v-else class="pa-8 text-center">
-                    <no-items
-                      action-icon="mdi-plus"
-                      action-text="Create Blog"
-                      description="There are no blog posts to manage. Create your first blog post to share updates and engage with your community."
-                      icon="mdi-blog-outline"
-                      :show-action="true"
-                      title="No blogs listed"
-                      @action="openNewBlogDialog"
-                    />
-                  </div>
-                </v-card-text>
-              </v-card>
-            </div>
-          </v-window-item>
-          <v-window-item value="pages">
-            <div class="mt-4">
-              <v-expansion-panels variant="accordion">
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Landing</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Manage landing page content and sections
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">About Us</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Edit about us page content
+                          </div>
                         </div>
+                        <v-icon color="primary">mdi-information</v-icon>
                       </div>
-                      <v-icon color="primary">mdi-home</v-icon>
-                    </div>
-                  </v-expansion-panel-title>
-                <v-expansion-panel-text
-                  v-if="updatingLanding && updatingLanding.length > 0"
-                >
-                  <v-card class="mb-4">
-                    <v-card-title>Section 1</v-card-title>
-                    <v-card-text>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
                       <v-text-field
-                        v-model="updatingLanding[0].title"
+                        v-model="updatingAboutTitle"
                         class="mb-2"
                         clearable
                         density="compact"
@@ -844,43 +1010,36 @@
                         :rules="[(v) => !!v || 'Title is required!']"
                         variant="solo"
                       />
-                      <v-textarea
-                        v-model="updatingLanding[0].description"
-                        class="text-pre-wrap"
-                        label="Description"
-                        rows="10"
-                        variant="solo"
+                      <rich-text-editor
+                        v-model="updatingAboutText"
+                        placeholder="Start typing your About Us content..."
                       />
-                      <ImageManager
-                        v-if="updatingLanding[0]?.image"
-                        container-class="mt-2 mt-md-4"
-                        :hide-delete="true"
-                        :src="getPageImageUrl(updatingLanding[0]?.image)"
-                      />
-                      <v-file-upload
-                        v-model="updatingLanding[0].newImage"
-                        accept="image/*"
-                        class="mt-2"
-                        clearable
-                        density="compact"
-                        :hide-browse="false"
-                        :rules="[
-                          (v) =>
-                            (Array.isArray(v) ? v : [v]).every((file) =>
-                              isValidImage(file),
-                            ) || 'Only jpeg/png allowed!',
-                        ]"
-                        show-size
-                        title="Update Image"
-                        variant=""
-                      />
-                    </v-card-text>
-                  </v-card>
-                  <v-card class="mb-4">
-                    <v-card-title>Section 2</v-card-title>
-                    <v-card-text>
+                      <div class="d-flex justify-end mb-1">
+                        <v-btn
+                          color="primary"
+                          :density="xs ? 'comfortable' : 'default'"
+                          variant="text"
+                          @click="updateAbout"
+                        >Update
+                        </v-btn>
+                      </div>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Terms & Conditions</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Manage terms and conditions page
+                          </div>
+                        </div>
+                        <v-icon color="primary">mdi-file-document</v-icon>
+                      </div>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
                       <v-text-field
-                        v-model="updatingLanding[1].title"
+                        v-model="updatingTermsTitle"
                         class="mb-2"
                         clearable
                         density="compact"
@@ -890,43 +1049,36 @@
                         :rules="[(v) => !!v || 'Title is required!']"
                         variant="solo"
                       />
-                      <v-textarea
-                        v-model="updatingLanding[1].description"
-                        class="text-pre-wrap"
-                        label="Description"
-                        rows="10"
-                        variant="solo"
+                      <rich-text-editor
+                        v-model="updatingTermsText"
+                        placeholder="Start typing your Terms & Conditions..."
                       />
-                      <ImageManager
-                        v-if="updatingLanding[1]?.image"
-                        container-class="mt-2 mt-md-4"
-                        :hide-delete="true"
-                        :src="getPageImageUrl(updatingLanding[1]?.image)"
-                      />
-                      <v-file-upload
-                        v-model="updatingLanding[1].newImage"
-                        accept="image/*"
-                        class="mt-2"
-                        clearable
-                        density="compact"
-                        :hide-browse="false"
-                        :rules="[
-                          (v) =>
-                            (Array.isArray(v) ? v : [v]).every((file) =>
-                              isValidImage(file),
-                            ) || 'Only jpeg/png allowed!',
-                        ]"
-                        show-size
-                        title="Update Image"
-                        variant=""
-                      />
-                    </v-card-text>
-                  </v-card>
-                  <v-card class="mb-4">
-                    <v-card-title>Section 3</v-card-title>
-                    <v-card-text>
+                      <div class="d-flex justify-end mb-1">
+                        <v-btn
+                          color="primary"
+                          :density="xs ? 'comfortable' : 'default'"
+                          variant="text"
+                          @click="updateTerms"
+                        >Update
+                        </v-btn>
+                      </div>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <div class="d-flex align-center justify-space-between w-100 pr-4">
+                        <div>
+                          <div class="text-h6 font-weight-bold">Privacy Policy</div>
+                          <div class="text-caption text-medium-emphasis">
+                            Manage privacy policy page
+                          </div>
+                        </div>
+                        <v-icon color="primary">mdi-shield-lock</v-icon>
+                      </div>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
                       <v-text-field
-                        v-model="updatingLanding[2].title"
+                        v-model="updatingPrivacyTitle"
                         class="mb-2"
                         clearable
                         density="compact"
@@ -936,184 +1088,27 @@
                         :rules="[(v) => !!v || 'Title is required!']"
                         variant="solo"
                       />
-                      <v-textarea
-                        v-model="updatingLanding[2].description"
-                        class="text-pre-wrap"
-                        label="Description"
-                        rows="10"
-                        variant="solo"
+                      <rich-text-editor
+                        v-model="updatingPrivacyText"
+                        placeholder="Start typing your Privacy Policy..."
                       />
-                      <ImageManager
-                        v-if="updatingLanding[2]?.image"
-                        container-class="mt-2 mt-md-4"
-                        :hide-delete="true"
-                        :src="getPageImageUrl(updatingLanding[2]?.image)"
-                      />
-                      <v-file-upload
-                        v-model="updatingLanding[2].newImage"
-                        accept="image/*"
-                        class="mt-2"
-                        clearable
-                        density="compact"
-                        :hide-browse="false"
-                        :rules="[
-                          (v) =>
-                            (Array.isArray(v) ? v : [v]).every((file) =>
-                              isValidImage(file),
-                            ) || 'Only jpeg/png allowed!',
-                        ]"
-                        show-size
-                        title="Update Image"
-                        variant=""
-                      />
-                    </v-card-text>
-                  </v-card>
-                  <v-card class="mb-4">
-                    <v-card-title>Section 4</v-card-title>
-                    <v-card-text>
-                      <v-textarea
-                        v-model="updatingLanding[3].description"
-                        class="text-pre-wrap"
-                        label="Description"
-                        rows="10"
-                        variant="solo"
-                      />
-                    </v-card-text>
-                  </v-card>
-                  <div class="d-flex justify-end mb-1">
-                    <v-btn
-                      color="primary"
-                      :density="xs ? 'comfortable' : 'default'"
-                      variant="text"
-                      @click="handleUpdateLanding"
-                    >Update
-                    </v-btn>
-                  </div>
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">About Us</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Edit about us page content
-                        </div>
+                      <div class="d-flex justify-end mb-1">
+                        <v-btn
+                          color="primary"
+                          :density="xs ? 'comfortable' : 'default'"
+                          variant="text"
+                          @click="updatePrivacy"
+                        >Update
+                        </v-btn>
                       </div>
-                      <v-icon color="primary">mdi-information</v-icon>
-                    </div>
-                  </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <v-text-field
-                    v-model="updatingAboutTitle"
-                    class="mb-2"
-                    clearable
-                    density="compact"
-                    hide-details="auto"
-                    label="Title"
-                    required
-                    :rules="[(v) => !!v || 'Title is required!']"
-                    variant="solo"
-                  />
-                  <rich-text-editor
-                    v-model="updatingAboutText"
-                    placeholder="Start typing your About Us content..."
-                  />
-                  <div class="d-flex justify-end mb-1">
-                    <v-btn
-                      color="primary"
-                      :density="xs ? 'comfortable' : 'default'"
-                      variant="text"
-                      @click="updateAbout"
-                    >Update
-                    </v-btn>
-                  </div>
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Terms & Conditions</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Manage terms and conditions page
-                        </div>
-                      </div>
-                      <v-icon color="primary">mdi-file-document</v-icon>
-                    </div>
-                  </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <v-text-field
-                    v-model="updatingTermsTitle"
-                    class="mb-2"
-                    clearable
-                    density="compact"
-                    hide-details="auto"
-                    label="Title"
-                    required
-                    :rules="[(v) => !!v || 'Title is required!']"
-                    variant="solo"
-                  />
-                  <rich-text-editor
-                    v-model="updatingTermsText"
-                    placeholder="Start typing your Terms & Conditions..."
-                  />
-                  <div class="d-flex justify-end mb-1">
-                    <v-btn
-                      color="primary"
-                      :density="xs ? 'comfortable' : 'default'"
-                      variant="text"
-                      @click="updateTerms"
-                    >Update
-                    </v-btn>
-                  </div>
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <div class="d-flex align-center justify-space-between w-100 pr-4">
-                      <div>
-                        <div class="text-h6 font-weight-bold">Privacy Policy</div>
-                        <div class="text-caption text-medium-emphasis">
-                          Manage privacy policy page
-                        </div>
-                      </div>
-                      <v-icon color="primary">mdi-shield-lock</v-icon>
-                    </div>
-                  </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <v-text-field
-                    v-model="updatingPrivacyTitle"
-                    class="mb-2"
-                    clearable
-                    density="compact"
-                    hide-details="auto"
-                    label="Title"
-                    required
-                    :rules="[(v) => !!v || 'Title is required!']"
-                    variant="solo"
-                  />
-                  <rich-text-editor
-                    v-model="updatingPrivacyText"
-                    placeholder="Start typing your Privacy Policy..."
-                  />
-                  <div class="d-flex justify-end mb-1">
-                    <v-btn
-                      color="primary"
-                      :density="xs ? 'comfortable' : 'default'"
-                      variant="text"
-                      @click="updatePrivacy"
-                    >Update
-                    </v-btn>
-                  </div>
-                </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </div>
-          </v-window-item>
-        </v-window>
-      </v-col>
-    </v-row>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+            </v-window-item>
+          </v-window>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 
