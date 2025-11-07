@@ -2,20 +2,18 @@
 node_modules
 frontend/dist
 
-backend/public/product-certificates/*
-backend/public/product-images/*
-backend/public/product-manuals/*
-backend/public/user-images/*
-backend/public/tmp/*
-backend/public/qr/*
+backend/public/blog/*
+backend/public/event/*
+backend/public/user/*
+backend/public/page/*
+backend/public/temp/*
 
 # allow all the folders themselves to be tracked
-!backend/public/product-certificates/.gitkeep
-!backend/public/product-images/.gitkeep
-!backend/public/product-manuals/.gitkeep
-!backend/public/user-images/.gitkeep
-!backend/public/tmp/.gitkeep
-!backend/public/qr/.gitkeep
+!backend/public/blog/.gitkeep
+!backend/public/event/.gitkeep
+!backend/public/user/.gitkeep
+!backend/public/page/.gitkeep
+!backend/public/temp/.gitkeep
 
 # env files
 .env

@@ -451,8 +451,13 @@ exports.getEvent = async (eventId, userId = null) => {
   const groupCheck = await db.getRow(groupCheckSql, [eventId]);
   const isSharedWithGroups = groupCheck && parseInt(groupCheck.count) > 0;
 
+  // Authorization check: userId is required for all events
+  if (!userId) {
+    throw new CustomError("Event not found or access denied!", 404);
+  }
+
   // If event is shared with groups, verify user has access
-  if (isSharedWithGroups && userId) {
+  if (isSharedWithGroups) {
     // Check if user is the event creator or a member of any group the event is shared with
     // Note: Friends are NOT allowed if event is shared with groups (group-only privacy)
     const accessSql = `
@@ -468,9 +473,20 @@ exports.getEvent = async (eventId, userId = null) => {
     if (!hasAccess) {
       throw new CustomError("Event not found or access denied!", 404);
     }
-  } else if (isSharedWithGroups && !userId) {
-    // Event is shared with groups but no userId provided - deny access
-    throw new CustomError("Event not found or access denied!", 404);
+  } else {
+    // Event is NOT shared with groups - check if user is the creator or a friend
+    const eventCreatorId = result.userId || result.user_id;
+    
+    // If user is the event creator, allow access
+    if (eventCreatorId === userId) {
+      // Access granted - user is the creator
+    } else {
+      // Check if user is friends with the event creator
+      const areFriends = await userService.checkFriends(userId, eventCreatorId);
+      if (!areFriends) {
+        throw new CustomError("Event not found or access denied!", 404);
+      }
+    }
   }
 
   // Format reaction counts
