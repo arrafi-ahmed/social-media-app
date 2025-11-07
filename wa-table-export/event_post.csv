@@ -1,0 +1,967 @@
+id,title,date,start_time,end_time,location,description,category,images,is_featured,new_notification,user_id,created_at
+38,Joined WayzAway!,2023-10-23 00:00:00,15:13:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,17,2023-10-24 21:13:41
+39,Pumpkins R US,2023-10-14 00:00:00,02:00:00,06:00:00,Warwickshire,"Halloween shop, pumpkins, rides and cafe",Family Attractions,"[""event-1698193208883-40077.jpg"",""event-1698157103157-81901.jpg"",""event-1698157103309-30599.jpg"",""event-1698157103983-67828.jpg"",""event-1698193208885-71820.jpg""]",0,,17,2023-10-24 21:18:26
+40,RAF Museum,2023-09-30 00:00:00,12:00:00,05:00:00,Cosford,"Museum dedicated to the history of aviation and the Royal Air Force. There is a playground for kids, VR rides and a gift shop.",Museums & Exhibitions,"[""event-1698157879740-87264.jpg"",""event-1698157879762-48239.jpg"",""event-1698157879787-50009.jpg"",""event-1698157879805-64799.jpg"",""event-1698157879821-24316.jpg""]",0,,17,2023-10-24 21:31:22
+41,Rock Up Wall Climbing,2023-08-25 00:00:00,12:30:00,03:00:00,Birmingham,Indoor Wall and Tower climbing for adults and children. Has a soft play area for little kids.,Indoor Activities,"[""event-1698158650299-37511.jpg"",""event-1698158650311-89702.jpg"",""event-1698158650323-80019.jpg"",""event-1698158650333-74107.jpg"",""event-1698158650342-39657.jpg""]",0,,17,2023-10-24 21:44:13
+42,Wyre Forest,2023-08-23 00:00:00,12:00:00,18:00:00,Bewdley,"Large woodland nature reserve. Great for long walks, horse riding cycling, picnic spots and has plenty of outdoor activities for adults and children. There is a go ape in the forest for zip lining, treetop challenges and treetop adventures.",Outdoor Activities,"[""event-1698159081988-16174.jpg"",""event-1698159082010-28921.jpg"",""event-1698159082035-94849.jpg""]",0,0,17,2023-10-24 21:51:24
+43,Indoor Roller Skating,2023-08-19 00:00:00,13:00:00,16:00:00,"Onchan, Isle of Man",Large indoor room for roller blading. For adults and kids. There's a cafe nearby for food.,Indoor Activities,"[""event-1698159428937-93510.jpg"",""event-1698159345958-85575.jpg"",""event-1698159345971-19014.jpg""]",0,,17,2023-10-24 21:55:48
+44,Maughold Beach,2023-08-04 00:00:00,12:00:00,16:00:00,"Maughold, Isle of Man",Located on the east of Isle of Man. Lovely cost line and scenery. Nice walk along the beach.,Nature Walks,"[""event-1698160496474-22677.jpg"",""event-1698160496491-72195.jpg"",""event-1698160496509-71894.jpg""]",0,,17,2023-10-24 22:14:58
+45,The Great Laxey Wheel,2023-08-03 00:00:00,12:00:00,16:00:00,"Laxey, Isle of Man",Historic Laxey Wheel built into the hillside above the village if Laxey. The wheel was built in 1854 to pump water. You can use the steep steps to climb to the very top of the wheel. Also includes a quick trip into the nearby old mine.,Culture & History,"[""event-1698160868140-99713.jpg"",""event-1698160868168-44336.jpg"",""event-1698160868185-79874.jpg"",""event-1698160868244-43236.jpg"",""event-1698160868753-4068.jpg""]",0,,17,2023-10-24 22:21:12
+46,Glen Wyllin,2023-07-25 00:00:00,12:30:00,17:30:00,"Kirk Michael, Isle of Man",Stopped at the beach. But also has a campsite,Outdoor Activities,"[""event-1698161507425-18338.jpg"",""event-1698161507449-76848.jpg"",""event-1698161507467-42844.jpg""]",0,,17,2023-10-24 22:31:49
+47,Woodgate Valley Country Park,2023-07-02 00:00:00,16:00:00,19:00:00,Birmingham,"Rural park with Brook running through the middle. Great for long walks and horse riding. There is an apple orchard for apple picking. And a children's playground. The park also has a small farm in the middle with pigs, goats, chickens and cows.",Parks & Garden,"[""event-1698162002083-32063.jpg"",""event-1698162002110-5631.jpg"",""event-1698162002185-18683.jpg"",""event-1698162002216-19768.jpg"",""event-1698162002275-17268.jpg""]",0,,17,2023-10-24 22:40:05
+48,Manor Farm Fruits,2023-07-01 00:00:00,12:30:00,18:45:00,Tamworth,Fruit picking. A wide range if fruits available to pick in the summer. There's a playground and bouncy castle for kids. Outdoor BBQ and cafe.,Outdoor Activities,"[""event-1698162338867-96293.jpg"",""event-1698162338886-93629.jpg"",""event-1698162338900-12262.jpg"",""event-1698162338915-35344.jpg"",""event-1698162338939-63296.jpg""]",0,,17,2023-10-24 22:45:41
+49,Claremont Landscape Garden,2023-06-24 00:00:00,12:00:00,17:00:00,"Esher, Surrey","Grade 1 listed garden. Great nature walk, woodland and beautiful lake. There's a playground and cafe on site. Part of the National Trust.",Nature Walks,"[""event-1698162739047-84718.jpg"",""event-1698162739060-36366.jpg"",""event-1698162739077-8596.jpg"",""event-1698162739095-33414.jpg"",""event-1698162739110-51660.jpg""]",0,,17,2023-10-24 22:52:22
+50,Gheluvelt Park,2023-06-03 00:00:00,12:30:00,16:15:00,Worcester,"Public park with plenty of space for outdoor activities, walking and picnics. There is a splash park in the summer and playground for kids. There is a small shop that sells drinks and refreshments and tennis courts.",Parks & Garden,"[""event-1698163327672-37179.jpg"",""event-1698163169784-24786.jpg"",""event-1698163327674-41312.jpg""]",0,,17,2023-10-24 22:59:31
+51,Habberley Trail,2023-04-15 00:00:00,12:00:00,18:30:00,"Low Habberley, Kidderminster","Outdoor nature adventure and walk. Includes plenty of fun outdoor activities such as zip lining, bouncy castles for kids, large slides, rides and more
+There's a small cafe that sells food and drinks.",Adventure Activities,"[""event-1698163680777-80735.jpg"",""event-1698163680788-47299.jpg"",""event-1698163680805-34344.jpg"",""event-1698163680818-99740.jpg"",""event-1698163680844-43061.jpg""]",0,,17,2023-10-24 23:08:05
+52,Dudley Canal and Caverns,2023-04-08 00:00:00,12:00:00,15:30:00,Dudley,"Boat tour of black country canal and tunnel networks. We did this around Easther, hence the Easter theme.",Tours,"[""event-1698164068890-43021.jpg"",""event-1698164068919-37719.jpg"",""event-1698164068925-71238.jpg"",""event-1698164068935-29602.jpg"",""event-1698164068949-91634.jpg""]",0,,17,2023-10-24 23:14:32
+53,Sheldon Country Park,2023-03-19 00:00:00,01:45:00,15:30:00,Birmingham,Country Park and Farm with children's play area and walking path that leads to the airport.,Parks & Garden,"[""event-1698166494776-7353.jpg"",""event-1698166494795-31064.jpg"",""event-1698166494809-62488.jpg"",""event-1698189235007-74926.jpg"",""event-1698189235009-11882.jpg""]",0,,17,2023-10-24 23:54:56
+54,Basel,2022-08-17 00:00:00,00:00:00,18:30:00,Switzerland,Holiday to Basel,Holidays,"[""event-1698166944994-1544.jpg"",""event-1698166945007-57625.jpg"",""event-1698166945033-94775.jpg"",""event-1698166945048-2704.jpg"",""event-1698166945061-73946.jpg""]",0,,17,2023-10-25 00:02:28
+55,Wrens Nest National Nature Reserve,2022-12-04 00:00:00,14:29:00,17:30:00,Dudley,Geological location. Circular walk around large limestone outcrop.,Nature Walks,"[""event-1698186614503-49788.jpg"",""event-1698186614504-91899.jpg"",""event-1698171025890-39138.jpg"",""event-1698171025913-74783.jpg"",""event-1698186614507-21393.jpg""]",0,,17,2023-10-25 01:10:29
+56,Center Parcs,2022-06-24 00:00:00,00:30:00,19:30:00,Whinfell,Wildlife sanctuary on the edge of Lake District. Holiday Park with wide variety of indoor and outdoor activities for adults and kids.,Holidays,"[""event-1698172086974-93036.jpg"",""event-1698172040435-10233.jpg"",""event-1698172040520-90695.jpg"",""event-1698172040687-30475.jpg"",""event-1698172086990-28916.jpg""]",0,,17,2023-10-25 01:27:25
+57,Sea Life Centre,2019-04-27 00:00:00,12:30:00,18:30:00,Birmingham,Large Aquarium with displays of sea creatures,Family Attractions,"[""event-1698172259309-48047.jpg"",""event-1698172259310-40918.jpg"",""event-1698172259310-27404.jpg"",""event-1698172259311-31910.jpg""]",0,,17,2023-10-25 01:31:00
+58,Ash End Farm,2019-08-18 00:00:00,12:30:00,19:34:00,Tamworth,"Farm with tractor wides, animal feeding and large play area for kids",Animal and Wildlife,"[""event-1698172493654-18724.jpg"",""event-1698172493654-90242.jpg"",""event-1698172493655-5299.jpg"",""event-1698172493656-53158.jpg""]",0,,17,2023-10-25 01:34:54
+59,Playa Del Carmen,2019-09-27 00:00:00,00:35:00,23:30:00,Lanzarote,"Resort town on southeast cost of Lanzarote. Plenty of sandy beaches, restaurants and long walks in the warm weather.",Holidays,"[""event-1698172699598-7549.jpg"",""event-1698172699599-689.jpg"",""event-1698172699600-12431.jpg"",""event-1698172699601-1578.jpg""]",0,,17,2023-10-25 01:38:20
+60,Brueton Park Lake,2020-12-19 00:00:00,12:30:00,15:30:00,Solihull,Big Park with great easy pathway for long walks and cycling. Play area for children.,Parks & Garden,"[""event-1698172973949-46919.jpg""]",0,,17,2023-10-25 01:42:54
+61,Highbury Park and Highbury Hall,2020-11-08 00:00:00,14:30:00,17:29:00,Moseley,Park with plenty of woodland and an historic house. Large open spaces for the dog to run around.,Parks & Garden,"[""event-1698173181388-70203.jpg"",""event-1698173181389-95707.jpg"",""event-1698173181391-67785.jpg"",""event-1698173181392-9744.jpg""]",0,,17,2023-10-25 01:46:22
+62,Coombe Abbey,2020-10-31 00:00:00,12:30:00,17:30:00,"Binley, Warwickshire","Large park with children play area, independent shops, cafe, long walks and outdoor activites. There's a large historic house in the park with  maze garden and lake.",Parks & Garden,"[""event-1698173596057-42691.jpg"",""event-1698173596059-39428.jpg"",""event-1698173596060-41245.jpg"",""event-1698173596062-87469.jpg""]",0,,17,2023-10-25 01:53:16
+63,Apple Orchard,2020-09-26 00:00:00,12:30:00,17:30:00,Woodgate Valley Park,Apple picking located in the orchard in Woodgate Valley Park.,Outdoor Activities,"[""event-1698173740081-77003.jpg"",""event-1698173740082-92631.jpg"",""event-1698173740083-34109.jpg""]",0,,17,2023-10-25 01:55:40
+64,Nature Walk,2020-09-20 00:00:00,12:00:00,06:00:00,Coughton,Long walk through woodlands and farmland.,Nature Walks,"[""event-1698174095982-80474.jpg"",""event-1698174095984-19855.jpg"",""event-1698174095985-90484.jpg"",""event-1698174095986-44095.jpg"",""event-1698174095986-18617.jpg""]",0,,17,2023-10-25 02:01:37
+65,Clent Hills,2020-08-02 00:00:00,12:30:00,05:30:00,Clent,Countryside haven that is part of the National Trust,Nature Walks,"[""event-1698174389835-75440.jpg"",""event-1698174389835-5024.jpg"",""event-1698174389836-3541.jpg"",""event-1698174389837-9580.jpg"",""event-1698174389838-76877.jpg""]",0,,17,2023-10-25 02:06:30
+66,Manor Farm Fruits,2020-07-18 00:00:00,12:30:00,12:30:00,Tamworth,Fruit picking farm,Outdoor Activities,"[""event-1698174614286-68575.jpg"",""event-1698174614287-99899.jpg"",""event-1698174614289-41499.jpg""]",0,,17,2023-10-25 02:10:15
+67,Lickey Hills,2020-07-12 00:00:00,01:30:00,17:30:00,Cofton,Lickey Hills is a large country park. But this was a walk through the wooded section of the park.,Parks & Garden,"[""event-1698174788813-79786.jpg"",""event-1698174788813-80499.jpg"",""event-1698174788814-41446.jpg"",""event-1698174788815-30641.jpg"",""event-1698174788816-30435.jpg""]",0,,17,2023-10-25 02:13:10
+68,Atwell Farm,2020-07-11 00:00:00,12:30:00,18:30:00,Redditch,"Met and fed animals. Enjoyed indoor and outdoor play areas, a jumping pillow and some art and craft",Animal and Wildlife,"[""event-1698175057072-50350.jpg"",""event-1698175057073-59712.jpg"",""event-1698175057075-59976.jpg"",""event-1698175057075-52077.jpg"",""event-1698175057076-73945.jpg""]",0,,17,2023-10-25 02:17:38
+69,Cannon Hill,2020-03-03 00:00:00,12:30:00,17:30:00,Birmingham,Large park in the middle of Birmingham. Great for walks and there's a play area for children. ,Parks & Garden,"[""event-1698175258486-93972.jpg"",""event-1698175258487-8337.jpg"",""event-1698175258489-97050.jpg""]",0,,17,2023-10-25 02:20:59
+70,Charlecote Park,2020-02-29 00:00:00,12:30:00,18:30:00,Warwick,A historic grand 16th century country house surrounded by a deer park on the banks of River Avon.,Historic Houses & Castles,"[""event-1698175449849-88668.jpg"",""event-1698175449850-24699.jpg"",""event-1698175449852-7946.jpg"",""event-1698175449853-56250.jpg"",""event-1698175449854-95859.jpg""]",0,,17,2023-10-25 02:24:10
+71,Villa el Palacete,2020-02-17 00:00:00,12:30:00,18:30:00,Lanzarote,Spent 5 nights in a large villa in Lanzarote for mums 60th birthday.,Holidays,"[""event-1698175809810-47227.jpg"",""event-1698175809810-95488.jpg"",""event-1698175809812-99194.jpg"",""event-1698175809812-91068.jpg"",""event-1698175809814-14407.jpg""]",0,,17,2023-10-25 02:30:10
+72,Packwood House,2020-02-01 00:00:00,12:30:00,17:30:00,Solihull,Tutor manor house in Solihull. Owned by the National Trust and known for its garden of yews.,Historic Houses & Castles,"[""event-1698176202791-90988.jpg"",""event-1698176202792-87850.jpg"",""event-1698176202794-43106.jpg""]",0,,17,2023-10-25 02:34:03
+73,Hanbury Hall,2020-02-08 00:00:00,12:40:00,19:35:00,"Hanbury, Worcestershire",Large 18th century stately home surrounded by large open fields and gardens.,Historic Houses & Castles,"[""event-1698176406862-43121.jpg"",""event-1698176406864-61820.jpg"",""event-1698176406865-52222.jpg"",""event-1698176406866-96251.jpg"",""event-1698176406867-32963.jpg""]",0,,17,2023-10-25 02:40:07
+74,Adventure Mini Golf,2021-12-11 00:00:00,14:35:00,17:30:00,"Star City, Birmingham",18 holes indoor mini adenture golf.,Sport & Leisure,"[""event-1698176598728-14072.jpg"",""event-1698176559193-22110.jpg""]",0,,17,2023-10-25 02:42:39
+75,Wightwick Manor,2022-01-08 00:00:00,12:30:00,18:30:00,Wolverhampton,"A Victorian Manor owned by the National Trust. The house is surrounded by woodland, gardens. There is a woodland play area in the woods.",Historic Houses & Castles,"[""event-1698176907295-25617.jpg"",""event-1698176907296-69578.jpg"",""event-1698176907298-78328.jpg"",""event-1698176907299-62325.jpg"",""event-1698176907301-37307.jpg""]",0,,17,2023-10-25 02:48:28
+76,Baddesley Clinton,2022-01-15 00:00:00,12:30:00,18:30:00,"Baddesley, Warwickshire",A moated Manor house originating from the 13th century. Located in the middle of the Forest of Arden and owned by the National Trust.,Historic Houses & Castles,"[""event-1698177323490-95385.jpg"",""event-1698177323492-76932.jpg"",""event-1698177323493-15170.jpg"",""event-1698177323494-41318.jpg"",""event-1698177323495-7328.jpg""]",0,,17,2023-10-25 02:55:24
+77,Upton House & Garden,2022-01-22 00:00:00,12:30:00,18:30:00,Banbury,Historic house built on the site of hamlet of Upton. The house and gardens are owned by the National Trust.,Historic Houses & Castles,"[""event-1698177607987-2741.jpg"",""event-1698177607987-41126.jpg"",""event-1698177607989-23580.jpg"",""event-1698177607990-62056.jpg"",""event-1698177607992-74924.jpg""]",0,,17,2023-10-25 03:00:09
+78,Cannon Hill Park,2022-01-23 00:00:00,12:30:00,18:30:00,Birmingham,"Large park in middle of Birmingham with excellent pathway for walking, running and cycling. Plenty of open grass area for children and dogs to play.",Parks & Garden,"[""event-1698177903017-68555.jpg"",""event-1698177903020-99248.jpg"",""event-1698177903023-75124.jpg"",""event-1698177903028-20674.jpg"",""event-1698177903029-42530.jpg""]",0,,17,2023-10-25 03:05:03
+79,Berrington Hall,2022-02-05 00:00:00,12:30:00,18:30:00,Leominster,A country house owned by the National Trust. A Georgian neoclassical mansion by Henry Rolland built in 1778. It's surrounded by browns final landscape and gardens. ,Historic Houses & Castles,"[""event-1698178242125-43362.jpg"",""event-1698178242126-54287.jpg"",""event-1698178242127-87040.jpg"",""event-1698178242128-8403.jpg"",""event-1698178242129-16744.jpg""]",0,,17,2023-10-25 03:10:42
+80,Rush Trampoline,2022-03-04 00:00:00,01:30:00,18:30:00,"Stirchley, Birmingham",A large trampoline park for children. Plenty of fun and unique activities.,Indoor Activities,"[""event-1698178478406-89577.jpg"",""event-1698178478407-47556.jpg""]",0,,17,2023-10-25 03:14:38
+81,Croome Park,2022-02-12 00:00:00,12:30:00,17:30:00,Worcestershire,Mid 18th-century mansion surrounded by extensive landscaped parkland at Croome D'Abitot. The property is owned by the National Trust.,Historic Houses & Castles,"[""event-1698179144571-67151.jpg"",""event-1698179144571-89287.jpg"",""event-1698179144572-76403.jpg"",""event-1698179144573-71287.jpg"",""event-1698179144574-9677.jpg""]",0,,17,2023-10-25 03:25:45
+82,Hippodrome & Las Iguanas,2022-02-25 00:00:00,16:30:00,20:45:00,Birmingham,Ballet show for children and restaurant after.,Theatre,"[""event-1698179965760-45981.jpg"",""event-1698179965760-69086.jpg"",""event-1698179965761-25382.jpg"",""event-1698179965762-72473.jpg""]",0,,17,2023-10-25 03:39:26
+83,Hanbury Hall,2022-02-26 00:00:00,12:30:00,17:15:00,"Hanbury, Worcestershire",18 Century House owned by the National Trust,Historic Houses & Castles,"[""event-1698180169732-76214.jpg"",""event-1698180169734-56860.jpg"",""event-1698180169735-31615.jpg"",""event-1698180169738-63827.jpg"",""event-1698180169740-83656.jpg""]",0,,17,2023-10-25 03:42:50
+84,Play 360,2022-03-20 00:00:00,01:30:00,19:30:00,Redditch,Soft play and Party venue. The center also has rides for kids and plenty of toys for kids.,Play Centres,"[""event-1698180447328-12887.jpg"",""event-1698180447328-76827.jpg""]",0,,17,2023-10-25 03:46:52
+85,Coughton Court,2022-03-12 00:00:00,12:30:00,18:30:00,Alcester,"Grade I English Tudor country house owned by the National Trust. The house holds a variety of Catholic treasures and is set in a beautiful garden.
+",Historic Houses & Castles,"[""event-1698180859583-5047.jpg"",""event-1698180859584-98158.jpg"",""event-1698180859585-22777.jpg"",""event-1698180859586-19378.jpg"",""event-1698180859587-74408.jpg""]",0,,17,2023-10-25 03:54:20
+86,Baggeridge Country Park,2022-04-11 00:00:00,13:30:00,18:25:00,Dudley,"Country Park with acres of open space for walking and cycling. There's a children play area, open grass to play and a high rope adventure area.",Parks & Garden,"[""event-1698181467416-38636.jpg"",""event-1698181467419-21662.jpg"",""event-1698181467421-35335.jpg"",""event-1698181467423-71283.jpg"",""event-1698181467425-10098.jpg""]",0,,17,2023-10-25 04:04:29
+87,Old Hall,2022-04-16 00:00:00,12:30:00,19:30:00,Wolverhampton,One of the hiding places of Charles II during his escape to France following defeat at Battle of Worcester in 1651. We visited around easther and took part in the egg hunt. The house is surrounded by woodland and a curated garden. We played games from Elizabethan times in the garden.,Historic Houses & Castles,"[""event-1698181749551-62984.jpg"",""event-1698181749555-24122.jpg"",""event-1698181749557-66493.jpg"",""event-1698181749558-56160.jpg""]",0,,17,2023-10-25 04:09:11
+88,Kingsbury Water Park,2022-05-02 00:00:00,12:30:00,18:15:00,Sutton Coldfield,"The park has fifteen lakes and situated in over 600 acres of land. There is a miniature railway to ride, a children's play area, you can hire bikes and plenty of outdoor activities for children.",Parks & Garden,"[""event-1698182334535-63348.jpg"",""event-1698182334536-96159.jpg"",""event-1698182334539-36788.jpg""]",0,,17,2023-10-25 04:18:56
+89,Upper Bittell Reservoir,2022-07-11 00:00:00,16:30:00,19:30:00,"Barnt Green, Cofton",Wall around the Bittell Reservoir in Cofton.,Nature Walks,"[""event-1698182844460-85699.jpg"",""event-1698182844462-44556.jpg"",""event-1698182844473-16882.jpg""]",0,,17,2023-10-25 04:27:25
+90,Lido in Cirencester ,2022-07-16 00:00:00,11:00:00,19:30:00,"Cirencester, Cotsworld",Visited the Lido in Cirencester. Then explored the Cotsworld town before stopping at a pub for dinner.,Day Trips,"[""event-1698183225297-98713.jpg"",""event-1698183225299-97617.jpg"",""event-1698183225301-98569.jpg"",""event-1698183225305-68998.jpg"",""event-1698183225307-98763.jpg""]",0,,17,2023-10-25 04:33:47
+91,Earlswood Lakes,2022-07-17 00:00:00,02:35:00,17:30:00,Solihull,Man made reservoirs in Solihull. Great for a nice walk around the lake.,Nature Walks,"[""event-1698183402524-5044.jpg"",""event-1698183402526-21001.jpg"",""event-1698183402527-70524.jpg""]",0,,17,2023-10-25 04:36:43
+92,Chasewater Country Park,2022-08-07 00:00:00,13:00:00,17:30:00,Brownhills,"Large park with a walking path around a beautiful lake. Includes a lakeside cafe, art and craft, activities like wake-boarding, sailing and water skiing. There were also trampoline for kids and a play area.",Parks & Garden,"[""event-1698184184244-88731.jpg"",""event-1698184184246-68141.jpg"",""event-1698184184247-41234.jpg""]",0,,17,2023-10-25 04:49:45
+93,City Walk,2022-08-27 00:00:00,12:30:00,20:29:00,Birmingham,Day out in Birmingham,General,"[""event-1698184382540-79708.jpg"",""event-1698184382545-5447.jpg"",""event-1698184382546-21428.jpg"",""event-1698184382548-26638.jpg""]",0,,17,2023-10-25 04:53:04
+94,Mount Pilatus,2022-08-21 00:00:00,11:30:00,20:30:00,Switzerland,Took a gondola up the mountain. Then a train down. Up in the moutain we explored the tunnels and took in the sights.,Day Trips,"[""event-1698184761516-68822.jpg"",""event-1698184761518-43136.jpg"",""event-1698184761519-28138.jpg"",""event-1698184761520-67525.jpg"",""event-1698184761521-2664.jpg""]",0,,17,2023-10-25 04:59:23
+95,Colmar,2022-08-20 00:00:00,09:30:00,21:30:00,France,Day trip from Basel to the markets in Colmar,Day Trips,"[""event-1698184905201-88090.jpg"",""event-1698184905202-63019.jpg""]",0,,17,2023-10-25 05:01:46
+96,Live Peter Rabbit Show,2022-08-28 00:00:00,14:30:00,17:30:00,Birmingham,Live play of Peter Rabbit in the park,Live Shows,"[""event-1698185095544-81464.jpg"",""event-1698185095547-2262.jpg"",""event-1698185095549-52183.jpg""]",0,,17,2023-10-25 05:04:57
+97,Basel Zoo,2022-08-23 00:00:00,14:05:00,17:30:00,Basel,Switzerland's biggest zoo. ,Animal and Wildlife,"[""event-1698185210370-10338.jpg"",""event-1698185210372-68419.jpg"",""event-1698185210374-15391.jpg"",""event-1698185210376-48839.jpg"",""event-1698185210377-82608.jpg""]",0,,17,2023-10-25 05:06:52
+98,Milkshake Live,2022-09-24 00:00:00,15:15:00,17:30:00,Coventry,Live show of Milkshake,Theatre,"[""event-1698185343102-7874.jpg"",""event-1698185343103-4748.jpg"",""event-1698185343104-95441.jpg""]",0,,17,2023-10-25 05:09:04
+99,Charlecote Park,2022-10-01 00:00:00,13:29:00,14:30:00,Warwick,16th century house surrounded by a deer park.,Historic Houses & Castles,"[""event-1698185896523-38759.jpg"",""event-1698185785208-83346.jpg"",""event-1698185785210-17814.jpg"",""event-1698185896524-35486.jpg"",""event-1698185785212-49816.jpg""]",0,,17,2023-10-25 05:16:27
+100,Packwood House,2022-11-12 00:00:00,14:15:00,18:30:00,Solihull,Tudor Manor house sorrounded yew garden owned by thr National Trust.,Historic Houses & Castles,"[""event-1698186127454-46241.jpg"",""event-1698186127456-18755.jpg"",""event-1698186127457-62602.jpg"",""event-1698186127458-21859.jpg"",""event-1698186127459-31847.jpg""]",0,,17,2023-10-25 05:22:09
+101,Jimmy Spices,2022-12-17 00:00:00,17:30:00,20:30:00,Birmingham,Global buffet restaurant on Broad Street.,Food & Drinks,"[""event-1698186838728-73839.jpg"",""event-1698186838730-54210.jpg"",""event-1698186838731-50905.jpg"",""event-1698186838732-4037.jpg""]",0,,17,2023-10-25 05:34:00
+102,Basel Munster,2022-08-18 00:00:00,13:30:00,18:30:00,Basel,Originally a Catholic cathedral. Now a Reformed Protestant church. We were able to climb the towers all the way to the top.,Culture & History,"[""event-1698187052801-25942.jpg"",""event-1698187052802-34769.jpg"",""event-1698187052803-98773.jpg"",""event-1698187052805-26388.jpg"",""event-1698187052806-24585.jpg""]",0,,17,2023-10-25 05:37:34
+103,Shustoke Reservoir,2023-01-21 00:00:00,13:30:00,16:30:00,Coleshill,9km Circular walking path around Shustoke Reservoir with beautiful views and wildlife.,Nature Walks,"[""event-1698187666143-25179.jpg"",""event-1698187666144-35170.jpg"",""event-1698187666145-24881.jpg"",""event-1698187666146-2940.jpg"",""event-1698187666147-78033.jpg""]",0,,17,2023-10-25 05:47:48
+104,Chinese New Year,2023-01-22 00:00:00,11:30:00,16:30:00,Birmingham,"Chinese New year celebrations in the Chinese Quarter. Live shows, performances and celebrations.",Live Shows,"[""event-1698187861658-55288.jpg"",""event-1698187861659-54156.jpg"",""event-1698187861661-76379.jpg"",""event-1698187861664-38974.jpg""]",0,,17,2023-10-25 05:51:03
+105,Woodgate Valley Park,2023-01-29 00:00:00,16:45:00,18:30:00,Birmingham,Circular walk through the woods and around a horse field.,Nature Walks,"[""event-1698188024637-57724.jpg"",""event-1698188024638-91314.jpg""]",0,,17,2023-10-25 05:53:45
+106,Biddulph Grange Garden,2023-02-04 00:00:00,12:30:00,17:30:00,Stoke-on-Trent,National Trust landscaped garden.,Parks & Garden,"[""event-1698188206178-39201.jpg"",""event-1698188206179-38764.jpg"",""event-1698188206180-54325.jpg"",""event-1698188206182-7782.jpg"",""event-1698188206183-75073.jpg""]",0,,17,2023-10-25 05:56:48
+107,The Falconry Centre,2023-03-11 00:00:00,13:30:00,16:30:00,Hagley,Located in Webbs Garden Centre. A lovely little place with beautiful birds.,Animal and Wildlife,"[""event-1698188457583-97882.jpg"",""event-1698188457584-70597.jpg"",""event-1698188457586-44766.jpg"",""event-1698188457588-38013.jpg""]",0,,17,2023-10-25 06:00:59
+108,Witley Court and Gardens,2023-03-11 00:00:00,12:30:00,18:15:00,Worcestershire ,"Magnificent house built in 17th century. But now lays in ruin after a fire in 1937.
+
+Beautiful gardens, walking path, tree house, wobbly Bridge and Great Witley Chruch.",Historic Houses & Castles,"[""event-1698188911145-95037.jpg"",""event-1698188911146-94083.jpg"",""event-1698188911149-23783.jpg"",""event-1698188911149-64781.jpg"",""event-1698188911151-7613.jpg""]",0,,17,2023-10-25 06:08:33
+109,Mary Stevens Park,2023-03-12 00:00:00,14:30:00,17:30:00,Stourbridge,Public park opened in 1931. Large grass fields ideal for play and dogs. There's a play area for children and a cafe.,Parks & Garden,"[""event-1698189099517-23022.jpg"",""event-1698189099519-73912.jpg"",""event-1698189099520-97183.jpg""]",0,,17,2023-10-25 06:11:40
+110,Sedgley Adventure Golf,2023-03-25 00:00:00,12:30:00,14:00:00,Dudley,Outdoor mini golf,Sport & Leisure,"[""event-1698189362608-54523.jpg""]",0,,17,2023-10-25 06:16:03
+111,Black Country Museum,2023-03-25 00:00:00,12:30:00,19:30:00,Dudley,An open-air museum of rebuilt historic buildings in Dudley. Museum staff role play as characters from the late 19th and early 20th century. The museum contains many of the tools and equipments used during mining and you can visit one of the mines in a guided tour. The village and shops around the mines have been rebuilt to match early 20th century lifestyle.,Museums & Exhibitions,"[""event-1698189707342-46332.jpg"",""event-1698189707344-48597.jpg"",""event-1698189707345-7663.jpg"",""event-1698189707346-95093.jpg"",""event-1698189707347-60732.jpg""]",0,,17,2023-10-25 06:21:49
+112,Kenilworth Castle and Elizabeth Ian Garden,2023-04-03 00:00:00,12:30:00,18:30:00,Warwickshire,"Used to be one of the country's most formidable fortresses. Robert Dudley later transformed it into a spectacular Palace in order to impress Queen Elizabeth I.
+
+We partook in an Easter egg hunt, watched a live medieval show and walked around the ruined castle. There is a cafe and shop on site.
+
+There is also a museum with information detailing the relationship between Elizabeth I and Robert Dudley.",Historic Houses & Castles,"[""event-1698190074879-78726.jpg"",""event-1698190074881-22125.jpg"",""event-1698190074882-70266.jpg""]",0,,17,2023-10-25 06:27:56
+113,Atwell Farm Park,2023-04-03 00:00:00,13:30:00,19:30:00,Redditch ,"Feed farm animals, see a wide variety of animals and large insects. There are some indoor rides and soft play. Plus giant outdoor jumping pillows. ",Animal and Wildlife,"[""event-1698190255117-6821.jpg"",""event-1698190255119-9840.jpg"",""event-1698190255120-48115.jpg""]",0,,17,2023-10-25 06:30:56
+114,Ryton Pools Country Park,2023-06-10 00:00:00,13:30:00,16:00:00,Ryton-on-Dunsmore,"Plenty of area to explore. Can walk or hire a bike. There is a woodland to play in and a lake.
+
+The park has more than one children's play area and a cafe.
+
+The park covers 100 acres of land and the flat walking path makes it easy for buggies.",Nature Walks,"[""event-1698190824807-82944.jpg"",""event-1698190824808-93260.jpg"",""event-1698190824809-71484.jpg""]",0,,17,2023-10-25 06:40:26
+115,Kings Heath Park,2023-06-11 00:00:00,14:30:00,18:30:00,Kings Heath,"Large Park with a circular path around a grass area. Ideal for playing and cycling. Has a couple of children's play area. Great for dog walking. There is a very small pond in some woodlands and a small cafe.
+
+Zoe learnt to ride her bike here.",Parks & Garden,"[""event-1698191023160-27491.jpg"",""event-1698191023162-59186.jpg"",""event-1698191023163-40841.jpg""]",0,,17,2023-10-25 06:43:44
+116,Treasure Island,2023-07-15 00:00:00,13:30:00,17:30:00,Redditch ,Soft play indoor for kids. Includes an indoor trampoline park.,Play Centres,"[""event-1698191289670-19002.jpg"",""event-1698191289672-2358.jpg""]",0,,17,2023-10-25 06:48:10
+117,The Sound,2023-07-25 00:00:00,14:30:00,17:45:00,"Cregneash, Isle of Man",Lovely spot on the very edge of the Island to see the seals and other wildlife. Can spot the Calf of Man here and have something to eat at the cafe.,Nature Walks,"[""event-1698191508077-99154.jpg"",""event-1698191508078-33043.jpg"",""event-1698191508079-69477.jpg""]",0,,17,2023-10-25 06:51:49
+118,Peel Castle & Beach,2023-07-27 00:00:00,15:30:00,18:30:00,"Peel, Isle of Man ",Visited the historic Peel castle and walked along the beautiful beach. Built some sand castle and waded in the sea.,Day Trips,"[""event-1698191651225-89789.jpg"",""event-1698191651226-34139.jpg"",""event-1698191651228-13790.jpg"",""event-1698191651230-28311.jpg"",""event-1698191651231-74824.jpg""]",0,,17,2023-10-25 06:54:13
+119,Douglas Beach,2023-07-28 00:00:00,13:55:00,16:30:00,"Douglas, Isle of Man",Enjoyed the beach at Douglas and stopped at a small ice cream cafe.,Day Trips,"[""event-1698191797343-77461.jpg"",""event-1698191797344-86238.jpg"",""event-1698191797346-34221.jpg"",""event-1698191797347-47458.jpg""]",0,,17,2023-10-25 06:56:39
+120,Day Out in Birmingham & Restaurant,2023-08-29 00:00:00,12:30:00,18:15:00,Birmingham,Explored Birmingham Central. Visited Europe's biggest libary and eat at Zizi,Day Trips,"[""event-1698192028514-48839.jpg"",""event-1698192028515-3245.jpg"",""event-1698192028516-90330.jpg"",""event-1698192028517-68194.jpg"",""event-1698192028520-25472.jpg""]",0,,17,2023-10-25 07:00:30
+121,Wildlife Conservation Park,2023-08-30 00:00:00,14:30:00,18:00:00,Birmingham,"A small zoo in Birmingham with a wide variety of animals. Theres a small restaurant, a shop and a children's play area on site.",Animal and Wildlife,"[""event-1698192190401-93765.jpg"",""event-1698192190403-9110.jpg"",""event-1698192190404-84472.jpg"",""event-1698192190406-47350.jpg"",""event-1698192190407-75764.jpg""]",0,,17,2023-10-25 07:03:12
+122,Day Trip To Weymouth Beach,2023-09-02 00:00:00,23:00:00,18:30:00,Weymouth,Day trip to Weymouth beach. Enjoyed rides on the beach and various games. Attended an arcade with family games and eat at a sea side restaurant.,Day Trips,"[""event-1698332005328-26995.jpg"",""event-1698192370369-83551.jpg"",""event-1698192370370-40720.jpg"",""event-1698192370371-93074.jpg"",""event-1698192370373-280.jpg""]",0,,17,2023-10-25 07:06:12
+123,Beacons Park,2023-09-04 00:00:00,13:30:00,17:30:00,Lichfield,70 acres of beautiful open space. There is a large children's play area and rides for kids to enjoy. The park also has outdoor mini golf and walking path. There is a small cafe in the park.,Parks & Garden,"[""event-1698192657508-25010.jpg""]",0,,17,2023-10-25 07:10:10
+124,Abbey Park,2023-09-05 00:00:00,13:00:00,17:00:00,Evesham,"An open park with a splash park. The park has a children's play area, basket ball court, sand pit and an historic church at the other end.",Parks & Garden,"[""event-1698193395549-3758.jpg""]",0,,17,2023-10-25 07:15:40
+125,St Nicholas Park,2023-09-09 00:00:00,13:30:00,17:15:00,Warwick,"Large open park with rides, a beautiful stream, large lake for water activities a splash pool and more",Parks & Garden,"[""event-1698193113277-8881.jpg"",""event-1698193113278-7365.jpg""]",0,,17,2023-10-25 07:18:34
+177,Grange Park and Playground,2023-11-03 00:00:00,11:00:00,01:00:00,Coulsdon,"Large open park with playground. The park also has a small cafe which sells hot drinks, ice cream, deserts and other snacks. There are toilets available.",Parks & Garden,"[""event-1699020697044-19217.jpeg"",""event-1699020697044-68838.jpeg"",""event-1699020697045-82179.jpeg"",""event-1699020697046-92752.jpeg"",""event-1699020697046-957.jpeg""]",0,,17,2023-11-03 21:11:38
+179,Leamington RFC Bonfire Night ,2023-11-05 00:00:00,16:00:00,19:00:00,Leamington ,"Fireworks display at Leamington Spa Rugby Club. There were rides for the kids, food stand and an indoor bar to sit.
+
+Toilets were available and everyone had a great view of the fireworks.
+
+The display itself was about 20 mins. Entry was £20 for family of 4 (Two adults and 2 kids).",Family Attractions,"[""event-1699367435942-69819.jpeg"",""event-1699231973404-6198.jpeg"",""event-1699367436296-42054.jpeg"",""event-1699367436577-39021.jpeg""]",0,,17,2023-11-06 07:52:56
+180,West Midland Zoo,2023-06-05 00:00:00,15:25:00,18:25:00,Bewdley,"Safari and Leisure Park is a safari park located in Bewdley in Worcestershire, England. ",Animal and Wildlife,"[""event-1699543715371-69625.jpeg"",""event-1702990220646-21680.jpeg"",""event-1702990220651-41703.jpeg"",""event-1702990220652-85070.jpeg""]",0,,28,2023-11-09 22:28:36
+181,Worcester Park Festival,2023-06-07 00:00:00,09:33:00,20:34:00,Worcester,"Great day out with Mike and Sarah. Music was great, really enjoyed myself. Should've bought a bigger tent though.",Concerts,"[""event-1699544064937-15703.jpeg"",""event-1699544064950-23070.jpeg"",""event-1699544064956-79959.jpeg""]",1,1,28,2023-11-09 22:34:26
+182,British Museum,2023-07-18 00:00:00,15:37:00,20:37:00,London,Day out in London visiting the sites ,Culture & History,"[""event-1699544250317-5901.jpeg"",""event-1699544250336-77614.jpeg"",""event-1699544250347-83356.jpeg""]",0,0,28,2023-11-09 22:37:33
+183,Worcester Park,2023-06-11 00:00:00,15:46:00,15:47:00,Worcester,"It was a nice day, so John and I took the kids to the park to enjoy the sunshine and some icecream",Parks & Garden,"[""event-1699544843349-4257.jpeg""]",0,,29,2023-11-09 22:47:24
+184,Lea Valley Zoo,2023-07-17 00:00:00,15:50:00,18:50:00,Stourbridge,"A wonderful day out with the kids at Dudley Zoo. Lisa really liked the giraffes. After seeing the penguins, we stopped for a nice picnic and an ice cream.
+
+The kids ended the day in the zoo playground.
+",Animal and Wildlife,"[""event-1699545034880-65969.jpeg"",""event-1699545034881-61510.jpeg"",""event-1720807185283-89762.jpeg""]",0,,29,2023-11-09 22:50:35
+185,Weymouth Beach,2023-07-17 00:00:00,16:00:00,20:00:00,Dorset,Weekend away with John and the kids at Weymouth,Weekend Away,"[""event-1699545677623-63316.jpeg"",""event-1699545677641-12559.jpeg""]",0,,29,2023-11-09 23:01:20
+186,Moor Castle,2023-07-19 00:00:00,17:08:00,18:09:00,Marystone,Historic castle and house in the middle of the countryside.,Historic Houses & Castles,"[""event-1699546140740-27903.jpeg""]",0,,29,2023-11-09 23:09:01
+187,Trinity Play Centre,2023-08-19 00:00:00,16:10:00,19:12:00,Maidhead,Soft lay centre for the kids to enjoy. Sace for adults to sit and a reasonably rice cafe.,Play Centres,"[""event-1702990344143-18694.jpeg""]",0,,29,2023-11-09 23:12:12
+188,Aquarium,2023-08-19 00:00:00,16:15:00,20:15:00,London,"The Sea Life London Aquarium is located on the ground floor of County Hall on the South Bank of the River Thames in central London, near the London Eye. ",Animal and Wildlife,"[""event-1702990322936-33647.jpeg"",""event-1699546553762-7493.jpeg"",""event-1699546553760-26617.jpeg""]",0,,29,2023-11-09 23:15:54
+189,Peter Hook,2023-11-09 00:00:00,17:20:00,19:20:00,London,A show of Peter Hook at the local theatre,Theatre,"[""event-1699546823445-10807.jpeg"",""event-1699546823445-29609.jpeg"",""event-1699546823447-80310.jpeg""]",1,1,29,2023-11-09 23:20:24
+193,Joined WayzAway!,2023-11-10 00:00:00,13:22:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,38,2023-11-10 20:22:01
+194,We finally off to New Zealand,2023-11-14 00:00:00,12:34:00,21:15:00,England,The start of our delayed 25th Wedding Anniversary Trip to New Zealand,Holidays,"[""event-1699707561522-69862.jpeg"",""event-1699979426974-65412.jpeg"",""event-1699979426979-77882.jpeg"",""event-1700048980527-94219.jpeg""]",0,0,38,2023-11-10 20:27:58
+195,Joined WayzAway!,2023-11-11 00:00:00,13:03:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,39,2023-11-11 20:03:04
+196,Joined WayzAway!,2023-11-11 00:00:00,13:12:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,40,2023-11-11 20:12:39
+197,Joined WayzAway!,2023-11-11 00:00:00,14:50:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,41,2023-11-11 21:50:48
+199,Day 3 - Arrival,2023-11-16 00:00:00,12:05:00,00:00:00,Auckland,"The starting point of our adventure after a ""Short Flight"" from Blighty via Malaysia.",Holidays,"[""event-1700119388516-92650.jpeg"",""event-1700119652143-91122.jpeg"",""event-1700157854992-18923.jpeg""]",0,1,38,2023-11-13 20:46:35
+200,Day 4 - Our Road Trip Begins,2023-11-17 00:00:00,07:30:00,21:29:00,Auckland to Rotorua,"Lots to do first thing, collect Camper, Bikes and off to see Hobbington before arriving at our first campsite in Rotorua ",Holidays,"[""event-1700277390407-65664.jpeg"",""event-1700277583226-70345.jpeg"",""event-1700277583229-24481.jpeg"",""event-1700277583232-78698.jpeg"",""event-1700286024189-1874.jpeg""]",0,1,38,2023-11-13 20:49:41
+201,Day 5,2023-11-18 00:00:00,07:15:00,22:00:00,Rotorua,Plans for today include a park run and Spa Treat,Holidays,"[""event-1700278292298-41878.jpeg"",""event-1700278458409-72034.jpeg"",""event-1700278458411-60971.jpeg"",""event-1700278576396-13312.jpeg"",""event-1700286680263-97296.jpeg""]",0,1,38,2023-11-13 20:51:30
+203,Joined WayzAway!,2023-11-14 00:00:00,12:03:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,43,2023-11-14 19:03:19
+204,Joined WayzAway!,2023-11-14 00:00:00,18:44:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,44,2023-11-15 01:44:24
+205,Play Opera Live,2023-11-11 00:00:00,15:00:00,17:30:00,Birmingham,"Went to Birmingham Hippodrome theatre to watch the Welsh National Opera. 
+
+Before the show kids could get face painted",Theatre,"[""event-1700218469758-40238.jpeg"",""event-1700218469765-83508.jpeg"",""event-1700218470172-72939.jpeg""]",0,,17,2023-11-17 17:54:31
+206,Extra Photos,2023-11-19 00:00:00,09:00:00,22:01:00,New Zealand,Random Photos,Holidays,"[""event-1700288150899-83568.jpeg"",""event-1700288150903-78521.jpeg"",""event-1700288150906-41767.jpeg"",""event-1700288150917-8992.jpeg"",""event-1700288151031-15018.jpeg""]",0,,38,2023-11-18 13:02:09
+207,Joined WayzAway!,2023-11-18 00:00:00,07:40:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,45,2023-11-18 14:40:26
+208,Day-6 Huka Falls Bike Ride,2023-11-19 00:00:00,00:00:00,00:00:00,Huka Falls,"Time to break the bikes in,  and Nikki on a simple 16k route",Holidays,"[""event-1700464079695-1486.jpeg"",""event-1700463460347-76509.jpeg"",""event-1700463460352-90474.jpeg"",""event-1700464160342-65891.jpeg"",""event-1700464209288-67716.jpeg""]",0,,38,2023-11-19 15:01:33
+209,Day-7 Napier,2023-11-20 00:00:00,10:00:00,00:00:00,Napier,On to Napier,Holidays,"[""event-1700464910575-13247.jpeg"",""event-1700464991602-15903.jpeg"",""event-1700464991603-77887.jpeg"",""event-1700464991604-72064.jpeg""]",0,,38,2023-11-19 15:04:15
+210,Day-5 & 6 Lake Taupo,2023-11-19 00:00:00,08:00:00,23:59:00,Lake Taupo,2 nights at Lake Taupo,Holidays,"[""event-1700464410218-43070.jpeg"",""event-1700464702174-69445.jpeg"",""event-1700464702177-62851.jpeg""]",0,,38,2023-11-20 14:13:31
+211,Day-8 Napier to Martinborough,2023-11-21 00:00:00,09:00:00,00:00:00,Martinborough,Road trip to Martinborough via Waiki Falls,Holidays,"[""event-1700724973175-53569.jpeg""]",0,,38,2023-11-20 14:27:38
+212,Day-9 Martinborough to Wellington,2023-11-22 00:00:00,09:00:00,23:55:00,Wellington,Our journey on North NZ Mars an end. Last stop Wellington before the ferry to Picton,Holidays,"[""event-1700724676921-2114.jpeg""]",0,,38,2023-11-23 14:31:17
+213,North to South Island,2023-11-22 00:00:00,16:00:00,19:30:00,New Zealand,Ferry crossing from Wellington to Picton,Holidays,"[""event-1700725339709-9753.jpeg"",""event-1700727975910-23989.jpeg""]",0,,38,2023-11-23 14:42:20
+214,Day-10 Picton to Spring Creek,2023-11-23 00:00:00,09:00:00,23:55:00,New Zealand South Island,"Scenic route via Queen Charlotte drive from Picton, via Havelok, Renwick and Blenhiem. Wine country and sight seeing.",Holidays,"[""event-1700728323101-31778.jpeg"",""event-1700728534490-72158.jpeg"",""event-1700728534491-8054.jpeg"",""event-1700728534493-92575.jpeg""]",0,,38,2023-11-23 15:32:03
+215,Day-11 Road trip to Kiakoura,2023-11-24 00:00:00,09:00:00,23:55:00,New Zealand South Island,Leisurely Road trip along the coast. ,Holidays,[],0,,38,2023-11-23 15:38:03
+217,Joined WayzAway!,2023-11-24 00:00:00,14:15:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,46,2023-11-24 21:15:28
+218,Joined WayzAway!,2023-11-27 00:00:00,14:26:00,,Ukraine,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,47,2023-11-28 12:26:37
+219,Joined WayzAway!,2023-11-27 00:00:00,11:33:00,,Sri Lanka,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,48,2023-11-28 13:03:13
+220,Joined WayzAway!,2023-11-27 00:00:00,11:51:00,,India,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,1,49,2023-11-28 13:21:10
+221,Joined WayzAway!,2023-11-28 00:00:00,09:24:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,50,2023-11-28 16:24:46
+222,Holiday,2023-12-26 00:00:00,12:30:00,09:26:00,Waterford ,Driving home for xmas,Holidays,[],0,,50,2023-11-28 16:26:36
+223,Crazy Golf,2023-11-25 00:00:00,12:30:00,17:30:00,Birmingham Star City,Crazy golf for the family. 18 holes. Followed by arcade,Indoor Activities,"[""event-1701730522080-69431.jpeg"",""event-1701730444391-69189.jpeg"",""event-1701730444394-70336.jpeg""]",0,,17,2023-12-05 05:54:06
+224,Thai Express,2023-12-06 00:00:00,12:30:00,13:30:00,Birmingham,"Thai restaurant in Birmingham Grand Central.
+
+",Food & Drinks,"[""event-1701871800866-49053.jpeg"",""event-1701871800888-41993.jpeg"",""event-1701871801330-16089.jpeg""]",0,,17,2023-12-06 21:10:04
+225,Joined WayzAway!,2023-12-11 00:00:00,14:47:00,,France,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,51,2023-12-12 20:47:28
+226,Test,2023-12-12 00:00:00,15:00:00,18:00:00,Ifs,Lorem ipsum,Tours,[],0,,51,2023-12-12 20:48:16
+227,Becketts Farm,2023-12-09 00:00:00,12:00:00,16:30:00,Birmingham,"Farm shop and restaurant.
+
+Zoe went to Ayanna's birthday party and we stopped at the shop and restaurant.",Food & Drinks,"[""event-1702477913221-23238.jpeg""]",0,,17,2023-12-13 21:31:54
+228,Cocks Moors Swimming,2023-12-10 00:00:00,16:00:00,18:00:00,Birmingham,Gabriel's swimming birthday party,Indoor Activities,"[""event-1702477999048-95431.jpeg""]",0,0,17,2023-12-13 21:33:20
+245,Seaside,2023-12-19 00:00:00,12:48:00,12:48:00,Brighton,Beach Day,Animal and Wildlife,"[""event-1702990126573-11273.jpeg"",""event-1702990190073-73671.jpeg""]",0,,28,2023-12-19 19:48:48
+247,Joined WayzAway!,2023-12-21 00:00:00,02:10:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,56,2023-12-21 09:10:23
+248,Joined WayzAway!,2023-12-21 00:00:00,17:27:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,57,2023-12-22 00:27:39
+249,Knowle Locks,2023-12-16 00:00:00,15:30:00,17:30:00,Solihull,Beautiful Walk along a canal in the country side,Nature Walks,"[""event-1703306584595-59953.jpeg"",""event-1703306772967-19045.jpeg"",""event-1703306772968-31258.jpeg"",""event-1703306772985-73861.jpeg"",""event-1703306773018-49344.jpeg""]",0,,17,2023-12-23 11:43:05
+250,Birmingham German Market,2023-12-21 00:00:00,16:30:00,19:30:00,Birmingham Central,Went for a meal at Nandos then stopped at the German market,Food & Drinks,"[""event-1703307133356-93436.jpeg"",""event-1703307011488-36623.jpeg"",""event-1703307011864-78701.jpeg"",""event-1703307012089-82041.jpeg"",""event-1703307133374-65611.jpeg""]",0,,17,2023-12-23 11:50:14
+251,Joined WayzAway!,2023-12-24 00:00:00,17:01:00,,United States,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,58,2023-12-25 06:01:31
+252,Priory Park,2023-12-26 00:00:00,14:00:00,17:30:00,Reigate,"Large open space park with walking path, skate park, children's play area and a food stall",Parks & Garden,"[""event-1703638063673-60593.jpeg"",""event-1703638064088-79964.jpeg"",""event-1703638064090-93056.jpeg"",""event-1703638064090-72578.jpeg"",""event-1703638064225-78504.jpeg""]",0,,17,2023-12-27 07:47:45
+253,Kinver Edge Rock Houses,2023-10-28 00:00:00,12:30:00,17:30:00,Kinver,"Kinver Edge is home to the last troglodyte dwellings occupied in England, with a set of complete cave-houses excavated into the local sandstone. It's owned by the National Trust. There's a lovely cafe and it's sorrounded by hills, great for walking.",Historic Houses & Castles,"[""event-1703638434338-30488.jpeg"",""event-1703638434361-5873.jpeg"",""event-1703638434377-45186.jpeg"",""event-1703638434445-74522.jpeg"",""event-1703638434576-93594.jpeg""]",0,,17,2023-12-27 07:53:56
+254,Joined WayzAway!,2023-12-26 00:00:00,10:20:00,,Australia,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,59,2023-12-27 15:20:47
+256,Joined WayzAway!,2023-12-28 00:00:00,09:48:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,60,2023-12-28 16:48:55
+257,Joined WayzAway!,2023-12-27 00:00:00,17:50:00,,India,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,61,2023-12-28 16:50:39
+258,Joined WayzAway!,2023-12-27 00:00:00,11:52:00,,Romania,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,62,2023-12-28 16:52:12
+259,Joined WayzAway!,2023-12-27 00:00:00,14:14:00,,South Africa,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,63,2023-12-28 17:14:06
+260,Joined WayzAway!,2023-12-28 00:00:00,10:18:00,,Belgium,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,64,2023-12-28 17:18:09
+261,Joined WayzAway!,2023-12-27 00:00:00,11:28:00,,Belgium,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,65,2023-12-28 17:28:03
+262,Joined WayzAway!,2023-12-27 00:00:00,22:10:00,,Australia,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,66,2023-12-28 18:10:05
+263,Joined WayzAway!,2023-12-28 00:00:00,11:21:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,67,2023-12-28 18:21:28
+264,Joined WayzAway!,2023-12-28 00:00:00,11:36:00,,Sweden,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,68,2023-12-28 18:36:01
+265,Joined WayzAway!,2023-12-28 00:00:00,07:08:00,,Jamaica,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,69,2023-12-28 19:08:24
+266,Joined WayzAway!,2023-12-28 00:00:00,12:14:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,70,2023-12-28 19:14:36
+267,Joined WayzAway!,2023-12-27 00:00:00,13:19:00,,Austria,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,71,2023-12-28 19:19:24
+268,Joined WayzAway!,2023-12-27 00:00:00,14:37:00,,Finland,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,72,2023-12-28 19:37:35
+269,Joined WayzAway!,2023-12-28 00:00:00,09:14:00,,United States,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,73,2023-12-28 21:14:36
+270,Joined WayzAway!,2023-12-28 00:00:00,14:01:00,,Canada,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,74,2023-12-29 05:01:48
+271,Joined WayzAway!,2023-12-29 00:00:00,15:45:00,,Canada,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,75,2023-12-30 03:45:08
+276,Christmas 2023,2023-12-24 00:00:00,16:00:00,00:00:00,Toronto,"Spending Christmas with family. My mom, my dad, my sister and her daughter, my husband and my daughters, my cousin",Holidays,"[""event-1703883215936-34706.jpeg"",""event-1703883215942-1015.jpeg"",""event-1703883215952-81377.jpeg"",""event-1703883215959-17571.jpeg"",""event-1703883215972-12755.jpeg""]",0,,75,2023-12-30 03:53:37
+277,Christmas 2023,2023-12-25 00:00:00,00:00:00,14:30:00,Coulsdon,Spent Christmas with the family in London,Holidays,"[""event-1703887637629-71763.jpeg"",""event-1703887598420-48243.jpeg"",""event-1703887745382-9313.jpeg"",""event-1703887745382-5277.jpeg"",""event-1703887745383-45753.jpeg""]",0,,17,2023-12-30 05:06:39
+278,Pre-Christmas Meal,2023-12-23 00:00:00,16:00:00,21:30:00,Bromley,Meal and family get together at our sister's house,Holidays,"[""event-1703887975014-50220.jpeg"",""event-1703887933821-6524.jpeg"",""event-1703887904553-46937.jpeg"",""event-1703887904554-11448.jpeg"",""event-1703887975014-75059.jpeg""]",0,,17,2023-12-30 05:11:45
+279,Travel to Winslet Manor,2024-01-04 00:00:00,17:45:00,22:45:00,Isle of Wight,Memorable day out,Culture & History,"[""event-1704160125194-94620.jpeg""]",0,,29,2024-01-02 08:42:51
+284,Chase valley Park,2023-01-17 00:00:00,02:13:00,02:13:00,Elmsley,Park Day,Parks & Garden,"[""event-1704161667752-45110.jpeg""]",0,,77,2024-01-02 09:14:28
+285,Bon Jova,2024-01-10 00:00:00,02:20:00,02:22:00,Leicester,Eat Out,Food & Drinks,"[""event-1704162200758-83740.jpeg""]",0,,76,2024-01-02 09:23:21
+286,2024 New Year at Isle of Man,2024-01-01 00:00:00,00:00:00,21:00:00,Peel,Spent New years with family at Isle of Man. Played party games ,Holidays,"[""event-1704529319049-35532.jpeg"",""event-1704529319051-10002.jpeg"",""event-1704529319053-66289.jpeg"",""event-1704529319059-10731.jpeg"",""event-1704529319061-74255.jpeg""]",0,0,17,2024-01-06 15:21:59
+287,Steph's 38th at Laxey,2024-01-06 00:00:00,15:00:00,00:00:00,Isle of Man,Day trip to Laxey for stephs birthday,Day Trips,"[""event-1704529748964-58898.jpeg"",""event-1704529624266-8819.jpeg"",""event-1704529624432-89255.jpeg"",""event-1704529624785-57915.jpeg"",""event-1704529625132-25417.jpeg""]",0,,17,2024-01-06 15:27:06
+288,La Mona lisa,2024-01-03 00:00:00,19:15:00,21:30:00,Laxey,Italian restaurant in laxey.,Food & Drinks,"[""event-1704530018665-4278.jpeg"",""event-1704530018687-15870.jpeg"",""event-1704530018700-96842.jpeg""]",0,0,17,2024-01-06 15:33:40
+289,Peel Evening Walk,2024-01-04 00:00:00,18:30:00,20:30:00,Isle of Man,Evening walk in Peel,Outdoor Activities,"[""event-1704530318657-35719.jpeg"",""event-1704530318674-57831.jpeg"",""event-1704530318686-95385.jpeg"",""event-1704530318883-67673.jpeg"",""event-1704530318894-60361.jpeg""]",0,,17,2024-01-06 15:38:41
+290,Kirk Michael Beach,2024-01-06 00:00:00,15:30:00,17:30:00,Isle of Man,Walk on the beach,Nature Walks,"[""event-1704530593504-60110.jpeg"",""event-1704530593519-92013.jpeg"",""event-1704530593532-99164.jpeg"",""event-1704530593545-8160.jpeg"",""event-1704530593553-16585.jpeg""]",0,,17,2024-01-06 15:43:15
+291,Boat back home,2024-01-06 00:00:00,08:00:00,11:00:00,Manx Man,On the new boat back home,Adventure Activities,"[""event-1704566028355-59096.jpeg"",""event-1704530694245-49060.jpeg"",""event-1704530694255-71088.jpeg"",""event-1704566028357-24040.jpeg"",""event-1704566028358-12414.jpeg""]",0,0,17,2024-01-06 15:44:55
+292,Upton House Gardens,2024-01-13 00:00:00,13:30:00,17:30:00,Banbury,"Upton House is a country house in the civil parish of Ratley and Upton, in the English county of Warwickshire. 
+
+Lord Bearsted donated the house, gardens and art collection to the National Trust in 1948.
+
+There is a large woodland walk, a beautiful lake and plenty of open greens for kids to run around. The place also has a cosy cafe that sells sandwiches, cakes, hot food and hot drinks.",Historic Houses & Castles,"[""event-1705327087323-88236.jpeg"",""event-1705327087345-99376.jpeg"",""event-1705327087946-81793.jpeg"",""event-1705327087947-95534.jpeg"",""event-1705327087952-72501.jpeg""]",0,,17,2024-01-15 20:58:09
+294,Little Tinkers,2024-01-15 00:00:00,13:15:00,14:30:00,Birmingham,"Sensory play centre for little babies.
+
+We took Isabel for about an hour",Indoor Activities,"[""event-1705397188342-52961.jpeg"",""event-1705397188342-79350.jpeg"",""event-1705397188343-13444.jpeg"",""event-1705397188344-60413.jpeg"",""event-1705397188345-10170.jpeg""]",0,0,17,2024-01-16 16:26:29
+297,Black Country Museum,2024-01-27 00:00:00,13:10:00,16:20:00,Dudley,"Winter visit to black country museum and coal mines. Zoe's friend, Daniel joined us",Museums & Exhibitions,"[""event-1706403795101-10095.jpeg"",""event-1706403795125-69842.jpeg"",""event-1706403795292-62646.jpeg"",""event-1706403795374-41815.jpeg"",""event-1706403795942-57893.jpeg""]",0,,17,2024-01-28 08:03:18
+298,Joined WayzAway!,2024-01-31 00:00:00,12:08:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,87,2024-02-01 13:38:55
+299,Q Bar & Kitchen,2024-02-03 00:00:00,10:30:00,12:30:00,Beckenham,"Breakfast at Q Bar for Lekan's birthday. Spent time with Sister, brother wife and kids.
+",Food & Drinks,"[""event-1707097606607-74657.jpeg"",""event-1707097606610-28985.jpeg"",""event-1707097606612-34720.jpeg"",""event-1707097606617-67935.jpeg"",""event-1707097606618-13189.jpeg""]",0,,17,2024-02-05 08:46:46
+300,Canon Hill Park,2024-02-04 00:00:00,16:30:00,18:00:00,Birmingham ,Evening Winter walk. Simi got to ride her bike,Parks & Garden,"[""event-1707097760154-60241.jpeg"",""event-1707097733463-73197.jpeg"",""event-1707097733466-43022.jpeg"",""event-1707097760155-69064.jpeg"",""event-1707097733469-90874.jpeg""]",0,,17,2024-02-05 08:48:53
+301,Hickory Dickory,2024-02-05 00:00:00,11:30:00,12:30:00,Birmingham ,Isabel first time playing at Hickory Dickory,Play Centres,"[""event-1707143678295-48596.jpeg"",""event-1707143678313-19351.jpeg""]",0,,17,2024-02-05 21:34:39
+302,Hazelwell Pub,2024-02-16 00:00:00,13:00:00,14:30:00,Stirchley,Friday afternoon lunch with nan,Food & Drinks,"[""event-1708167651003-47690.jpeg"",""event-1708167651006-3721.jpeg"",""event-1708167651009-64586.jpeg"",""event-1708167651012-26664.jpeg""]",0,,17,2024-02-17 18:00:51
+303,Northern Ireland,2024-02-18 00:00:00,11:00:00,15:30:00,Ballyclare,Steph goes to Wendy's at N.Ireland for work,Holidays,"[""event-1708286070179-19251.jpeg"",""event-1708286070182-38286.jpeg"",""event-1708286070183-51292.jpeg""]",0,,17,2024-02-19 02:54:30
+304,Carrick-a-Rede,2024-02-18 00:00:00,16:30:00,17:50:00,Ballintoy,"Steph visited a rope bridge that was first erected by salmon fishermen in 1755. The name, from the Gaelic 'Carraig-a-Rade', means 'The Rock in the Road'. It's part of the National Trust. It's one of Northern Irelands most popular tourist destination.",Landmarks & Monuments,"[""event-1708286574006-89395.jpeg"",""event-1708286547267-6890.jpeg"",""event-1708286547267-46355.jpeg"",""event-1708286547270-3179.jpeg"",""event-1708286574007-13425.jpeg""]",0,,17,2024-02-19 03:02:27
+305,Belfast ,2024-02-19 00:00:00,18:30:00,20:30:00,N.Ireland,Steph went out for drinks with work friends in Belfast ,Food & Drinks,"[""event-1708403407489-40908.jpeg"",""event-1708805386159-37126.jpeg""]",0,,17,2024-02-20 11:30:07
+306,F1,2024-02-25 00:00:00,16:00:00,19:30:00,Birmingham,Formula one racing bar for Wes' 30th,Food & Drinks,"[""event-1708905265507-73403.jpeg"",""event-1708905265526-11473.jpeg"",""event-1708905265529-2710.jpeg"",""event-1708905265533-98312.jpeg"",""event-1708905265534-9415.jpeg""]",0,,17,2024-02-26 06:54:26
+307,Joined WayzAway!,2024-03-02 00:00:00,05:49:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,88,2024-03-02 12:49:24
+308,Sanders Park,2024-03-03 00:00:00,16:00:00,18:30:00,Bromsgrove,Bike riding for muddy Zoe and a walk around Sanders. ,Parks & Garden,"[""event-1709767277287-28009.jpeg"",""event-1709767277289-22671.jpeg"",""event-1709767277291-83849.jpeg"",""event-1709767277294-83695.jpeg"",""event-1709767277297-78219.jpeg""]",0,,17,2024-03-07 06:21:17
+311,Mary Stevens Park,2024-03-17 00:00:00,17:30:00,18:40:00,Stourbridge,The family went for a Sunday evening walk and bike ride. Zoe rode her bike and stopped to play in the playground.,Parks & Garden,"[""event-1710727099100-82792.jpeg"",""event-1710727099101-47031.jpeg"",""event-1710727099120-53546.jpeg"",""event-1710727099123-6767.jpeg"",""event-1710727099124-11831.jpeg""]",0,,17,2024-03-18 08:58:19
+312,Joined WayzAway!,2024-03-18 00:00:00,10:32:00,,United Kingdom,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,91,2024-03-19 12:02:06
+313,Rush ,2024-03-23 00:00:00,15:30:00,18:30:00,Birmingham,Fun playhouse for kids. Trampoline and bounce area,Play Centres,"[""event-1711223788749-67701.jpeg"",""event-1711223788750-69353.jpeg"",""event-1711223788751-60080.jpeg"",""event-1711223788753-48189.jpeg"",""event-1711223788755-58271.jpeg""]",0,,17,2024-03-24 02:56:28
+314,Kings Norton Park,2024-03-23 00:00:00,18:30:00,19:00:00,Birmingham,Stopped at King's Norton Park and the kids used the playground. Anu went on her first swing.,Parks & Garden,"[""event-1711223976416-57121.jpeg"",""event-1711223976417-36163.jpeg"",""event-1711223976450-9623.jpeg"",""event-1711223977142-31369.jpeg"",""event-1711223977522-19617.jpeg""]",0,,17,2024-03-24 02:59:38
+315,Spring into sculpture event,2024-03-24 00:00:00,15:15:00,18:30:00,Birmingham,Alice in wonderland theme in Moseley Park. Fun activities and story time for toddlers,Parks & Garden,"[""event-1711321275826-65355.jpeg"",""event-1711321275826-84092.jpeg"",""event-1711321275827-17625.jpeg"",""event-1711311634354-15339.jpeg"",""event-1711311634355-86402.jpeg""]",0,,17,2024-03-25 03:20:34
+316,Moseley Park,2024-03-24 00:00:00,15:30:00,18:30:00,Birmingham,Walk in Moseley Park and around the lake.,Parks & Garden,"[""event-1711320909459-50360.jpeg"",""event-1711320909685-67271.jpeg"",""event-1711320909813-98317.jpeg"",""event-1711320910558-81119.jpeg"",""event-1711320910940-22691.jpeg""]",0,,17,2024-03-25 05:55:13
+317,JAQKS Restaurant,2024-03-24 00:00:00,18:00:00,19:00:00,Birmingham,Chips and chicken. Serves very large portion. In the heart of Moseley.,Food & Drinks,"[""event-1711321174865-75152.jpeg"",""event-1711321174879-41479.jpeg"",""event-1711321125386-91121.jpeg""]",0,,17,2024-03-25 05:58:45
+318,Malvern Park,2024-03-30 00:00:00,17:00:00,18:15:00,Solihull,"Nice Park in middle of Solihull and linked to Brueton. Great for walking cycling.
+
+Has a playground and tennis court.",Parks & Garden,"[""event-1711843513153-83351.jpeg"",""event-1711843465809-88071.jpeg"",""event-1711843513167-97741.jpeg"",""event-1711843466340-7452.jpeg"",""event-1711843467014-44782.jpeg""]",0,,17,2024-03-31 07:04:29
+319,Hickory Dickory,2024-03-30 00:00:00,14:00:00,16:00:00,Birmingham,Zoe went for Matteo's 6th birthday party,Play Centres,"[""event-1711843720643-84525.jpeg"",""event-1711843720644-66194.jpeg""]",0,,17,2024-03-31 07:08:14
+320,Easter Egg Hunt,2024-03-31 00:00:00,15:00:00,18:00:00,Moseley,Easter egg hunt and walka around the lake at Moseley park with Nan,Parks & Garden,"[""event-1711919755929-67071.jpeg"",""event-1711919755932-3166.jpeg"",""event-1711919755938-57581.jpeg"",""event-1711919755941-63082.jpeg"",""event-1711919947927-13912.jpeg""]",0,,17,2024-04-01 04:15:56
+322,Becketts Farm & Aquatics,2024-04-01 00:00:00,14:30:00,16:00:00,Birmingham,Visited Becketts farm shop and Shirley Aquatics. Fed some Koi fishes and saw some reptiles and a small shark.,Indoor Activities,"[""event-1711994708651-36032.jpeg"",""event-1711994708797-53195.jpeg"",""event-1711994709158-39804.jpeg"",""event-1711994709289-736.jpeg"",""event-1711994709301-34829.jpeg""]",0,,17,2024-04-02 01:05:11
+323,Kingsbury Water Park,2024-04-06 00:00:00,15:30:00,18:00:00,Sutton Coldfield,Park with a large lake. Went for a bike ride and long walk around the lake,Parks & Garden,"[""event-1712436581910-11777.jpeg"",""event-1712436582135-68657.jpeg"",""event-1712436582509-83196.jpeg"",""event-1712436582984-68435.jpeg"",""event-1712436583464-45149.jpeg""]",0,,17,2024-04-07 03:49:46
+324,Joined WayzAway!,2024-04-09 00:00:00,18:22:00,,France,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,94,2024-04-10 23:22:54
+325,Matilda,2024-04-13 00:00:00,11:00:00,12:30:00,Mac - Birmingham,Matilda musical at Mac Birmingham. Produced by Riverside Church featuring Daniel's sister.,Theatre,"[""event-1713050731107-89986.jpeg"",""event-1713050731131-16859.jpeg"",""event-1713050731525-90813.jpeg"",""event-1713050731626-30816.jpeg"",""event-1713050732002-84418.jpeg""]",0,,17,2024-04-14 06:25:34
+328,Joined WayzAway!,2024-04-16 00:00:00,18:53:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,96,2024-04-18 00:53:06
+329,Joined WayzAway!,2024-04-18 00:00:00,18:37:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,97,2024-04-19 23:37:30
+330,Athena's party,2024-04-21 00:00:00,03:45:00,05:45:00,Cocks Moors Woods,Zoe attended Athenas 6th  birthday party - inflatables,Play Centres,"[""event-1713696817172-67240.jpeg"",""event-1713696817186-38978.jpeg"",""event-1713696817193-83310.jpeg""]",0,,17,2024-04-21 17:53:38
+331,Joined WayzAway!,2024-04-20 00:00:00,22:44:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,98,2024-04-22 03:44:09
+333,Joined WayzAway!,2024-04-24 00:00:00,14:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,100,2024-04-25 19:52:31
+334,Spain,2024-04-07 00:00:00,14:53:00,17:54:00,Andalucia,This was it!,Culture & History,"[""event-1714049705394-45089.jpeg"",""event-1714049705471-48446.jpeg"",""event-1714049705850-56098.jpeg"",""event-1714049706182-14310.jpeg"",""event-1714049706565-85766.jpeg""]",0,,100,2024-04-25 19:55:08
+335,Joined WayzAway!,2024-04-24 00:00:00,15:26:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,101,2024-04-25 21:26:34
+336,Joined WayzAway!,2024-04-27 00:00:00,08:45:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,102,2024-04-28 06:45:15
+337,Palm Springs,2024-05-13 00:00:00,08:46:00,08:46:00,Palm Springs California,Tennis,Adventure Activities,[],0,,102,2024-04-28 06:46:46
+338,Joined WayzAway!,2024-04-27 00:00:00,17:23:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,103,2024-04-28 22:23:52
+340,Joined WayzAway!,2024-04-29 00:00:00,16:40:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,105,2024-04-30 03:40:53
+341,Nora's Birthday,2024-04-21 00:00:00,13:30:00,15:30:00,Humpty Dumpty,Zoe and Isabel attended Nora's birthday party at Humpty Dumpty indoor play centre.,Indoor Activities,"[""event-1714463555665-78953.jpeg"",""event-1714463555985-17381.jpeg"",""event-1714463555998-91341.jpeg""]",0,,17,2024-04-30 14:52:37
+342,Zoe 6th Birthday Party,2024-04-30 00:00:00,13:00:00,15:30:00,Rush,"Zoe birthday party. Jumping around in Rush followed by a food, cake and drinks with her friends. ",Indoor Activities,"[""event-1714463858749-73288.jpeg"",""event-1714463858749-11563.jpeg"",""event-1714463858751-37270.jpeg"",""event-1714463858753-22905.jpeg"",""event-1714463858754-19000.jpeg""]",0,,17,2024-04-30 14:57:38
+343,Joined WayzAway!,2024-04-30 00:00:00,20:17:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,106,2024-05-02 01:17:02
+344,Joined WayzAway!,2024-05-03 00:00:00,16:59:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,107,2024-05-04 20:59:08
+345,KH Park- after school play,2024-05-09 00:00:00,18:00:00,19:00:00,Kings Heath Park,Took Isla and Zo for a bike ride round the park,Parks & Garden,"[""event-1715278147483-96182.jpeg"",""event-1715278161765-68439.jpeg"",""event-1715278169277-59959.jpeg"",""event-1715278186470-20229.jpeg"",""event-1715278306996-33000.jpeg""]",0,,17,2024-05-10 01:07:16
+346,Evening walk with Linz and Nikita,2024-05-10 00:00:00,08:30:00,21:30:00,Rowheath,Parked at Nikitas. Walked round Rowheath and nearby avenues with pretty houses. Minor scare with leaf chasing us. ,Nature Walks,"[""event-1715327525791-9455.jpeg"",""event-1715327555267-71660.jpeg""]",0,,17,2024-05-10 14:52:06
+348,Joined WayzAway!,2024-05-12 00:00:00,13:13:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,108,2024-05-13 10:13:31
+349,Luxury cruise ,2024-05-20 00:00:00,15:30:00,13:15:00,Southern France &Italy,14 day cruise ,Holidays,[],0,,108,2024-05-13 10:15:58
+350,Playland Fun Park,2024-05-11 00:00:00,12:30:00,17:30:00,Stourport,Went to playland with nan. Zoe and Isabel enjoyed the rides including the larger ones in Treasure Island. We finished the day in the grass enjoying a picnic and playing with the ball.,Outdoor Activities,"[""event-1715597656666-88031.jpeg"",""event-1715597658475-84828.jpeg"",""event-1715597661146-99341.jpeg"",""event-1715597663305-76355.jpeg"",""event-1715597665195-50088.jpeg""]",0,,17,2024-05-13 17:54:28
+351,Zoe Ballet and Weatherspoon,2024-05-12 00:00:00,10:30:00,16:30:00,Birmingham,"Zoe went to a ballet dance workshop with mum, nan and Isabel. After, we stopped at Weatherspoon for a meal. Then Zoe got her ears pierced for the first time.",Day Trips,"[""event-1715598249418-87783.jpeg"",""event-1715597992233-50066.jpeg"",""event-1715597995581-47458.jpeg"",""event-1715598251100-43128.jpeg"",""event-1715598305753-97352.jpeg""]",0,,17,2024-05-13 17:59:59
+352,Upton Farm,2024-05-16 00:00:00,10:15:00,16:00:00,Banbury,"Sheep and cattle grazing on the extensive grassland, that covers the many steep banks as well as the historic parkland at Upton.",Animal and Wildlife,"[""event-1715860458922-8870.jpeg"",""event-1715860459598-64028.jpeg""]",1,,77,2024-05-16 18:54:20
+355,Joined WayzAway!,2024-05-18 00:00:00,20:14:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,109,2024-05-19 10:14:04
+358,Joined WayzAway!,2024-05-21 00:00:00,21:33:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,111,2024-05-23 02:33:58
+359,Joined WayzAway!,2024-05-22 00:00:00,13:49:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,112,2024-05-23 18:49:45
+360,Japan 2024,2024-06-02 00:00:00,00:00:00,23:59:00,Japan,Holiday trip to Japan,Holidays,[],0,,112,2024-05-23 18:51:06
+361,Joined WayzAway!,2024-05-23 00:00:00,00:02:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,113,2024-05-24 05:02:05
+369,Isabel's 1st Birthday,2024-05-18 00:00:00,00:00:00,23:59:00,London,Celebrated Anu 1st birthday with family in London. Had food delivered to the house.,General,"[""event-1716852405130-1395.jpeg"",""event-1716852405289-99764.jpeg"",""event-1716852405544-55262.jpeg""]",0,,17,2024-05-28 06:26:45
+370,Rowheath Park,2024-05-19 00:00:00,00:00:00,23:59:00,Birmingham,Went to watch Lekan play football,Outdoor Activities,"[""event-1716852575313-43210.jpeg"",""event-1716852575407-39303.jpeg"",""event-1716852575623-28341.jpeg"",""event-1716852575759-5993.jpeg""]",0,,17,2024-05-28 06:29:36
+372,Wightwick Manor and Gardens,2024-05-25 00:00:00,00:00:00,23:59:00,Wolverhampton,Explored a beautiful Victorian home built in 1887. Then we toured the gardens and walked around the lake after getting ice cream at the cafe. ,Historic Houses & Castles,"[""event-1716853083157-36396.jpeg"",""event-1716853087948-14278.jpeg"",""event-1716853091458-87514.jpeg"",""event-1716853096030-61091.jpeg"",""event-1716853099934-83775.jpeg""]",0,,17,2024-05-28 06:38:23
+373,Circus Vegas,2024-05-24 00:00:00,17:00:00,19:00:00,NEC Birmingham,Visited the circus with nan,Live Shows,"[""event-1716853241262-32420.jpeg"",""event-1716853241347-43374.jpeg"",""event-1716853241526-15235.jpeg"",""event-1716853241750-6255.jpeg""]",0,,17,2024-05-28 06:40:41
+374,Resort World,2024-05-24 00:00:00,17:00:00,20:00:00,NEC Birmigham,Lekan and Anu spent evening at Resort world and nandos,Food & Drinks,"[""event-1716853554887-61220.jpeg"",""event-1716853557596-35215.jpeg"",""event-1716853560396-25041.jpeg"",""event-1716853565256-61534.jpeg""]",0,,17,2024-05-28 06:46:09
+375,Cup Final,2024-05-28 00:00:00,14:30:00,17:30:00,Boldermere,Watched Lekans team in cup final. Harriet joined us.,Outdoor Activities,"[""event-1716853798378-53963.jpeg"",""event-1716853798555-18323.jpeg""]",0,,17,2024-05-28 06:49:58
+377,Conkers,2024-05-28 00:00:00,13:30:00,17:00:00,Swadlincote,"Family day out at Conkers. Adventure centre. Playground, activity trail, 4d cinema, plenty of things for kids and parents to enjoy. ",Adventure Activities,"[""event-1716854729801-72866.jpeg"",""event-1717011885258-14841.jpeg"",""event-1717011901386-20786.jpeg"",""event-1717012004037-5485.jpeg"",""event-1717012004645-96170.jpeg""]",0,,17,2024-05-28 07:05:47
+378,Joined WayzAway!,2024-05-27 00:00:00,15:24:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,119,2024-05-28 16:54:01
+385,Joined WayzAway!,2024-05-29 00:00:00,10:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,124,2024-05-30 16:52:58
+387,Joined WayzAway!,2024-05-31 00:00:00,13:54:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,125,2024-06-01 10:54:15
+388,Joined WayzAway!,2024-05-31 00:00:00,18:33:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,126,2024-06-01 23:33:45
+389,Joined WayzAway!,2024-05-31 00:00:00,18:47:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,127,2024-06-01 23:47:44
+390,Joined WayzAway!,2024-06-01 00:00:00,20:39:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,128,2024-06-02 07:39:23
+391,Joined WayzAway!,2024-06-02 00:00:00,07:54:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,129,2024-06-02 19:54:16
+400,Joined WayzAway!,2024-06-05 00:00:00,17:28:00,05:40:00,Jkt,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,"[""event-1717972865010-46117.jpeg""]",0,0,130,2024-06-06 17:28:31
+402,Kings Heath Park,2024-06-06 00:00:00,00:00:00,23:59:00,Birmingham,Zoe and Isabel play date with Lexi in Kings Heath Park and playground.,Parks & Garden,"[""event-1717678126657-29682.jpeg"",""event-1717678127385-9428.jpeg"",""event-1717678128311-11673.jpeg"",""event-1717678128889-5124.jpeg""]",0,,17,2024-06-06 19:48:49
+403,Malt House,2024-06-06 00:00:00,00:00:00,23:59:00,Birmingham,The family along with nan and grandma went for a meal at Malt House then walk through Birmingham Central and canal.,Food & Drinks,"[""event-1717678771430-92631.jpeg"",""event-1717678772360-82009.jpeg"",""event-1717678791417-86306.jpeg"",""event-1717678804426-51486.jpeg"",""event-1717678821416-41878.jpeg""]",0,,17,2024-06-06 20:00:30
+407,Sundance,2024-06-07 00:00:00,18:29:00,21:45:00,Corvington,A wonderful amazing day out,Culture & History,"[""event-1717769854949-39624.jpeg"",""event-1717769868587-4107.jpeg"",""event-1717769878755-46695.jpeg"",""event-1717769767384-7028.jpeg"",""event-1717769779733-90258.jpeg""]",0,,77,2024-06-07 21:16:30
+408,Cradley Regis,2024-06-10 00:00:00,00:00:00,23:59:00,Heath Park,Walk on Sunday afternoon with mum,Nature Walks,"[""event-1717975340549-28979.jpeg"",""event-1717975340620-46068.jpeg"",""event-1717975340626-40718.jpeg"",""event-1717975340788-57027.jpeg"",""event-1717975340867-25110.jpeg""]",0,,77,2024-06-10 03:22:22
+410,Rowheath Centenary,2024-06-08 00:00:00,14:30:00,18:30:00,Bournville ,"Celebrating 100 years of Rowheath. 
+
+Live music performances, face painting, mini golf, mini care farm and the circus show, workshops, street food, craft stalls and fairground rides.
+
+We also spent an hour playing football and sat on the grass.",Outdoor Activities,"[""event-1717977021453-1169.jpeg"",""event-1717977021517-8261.jpeg"",""event-1717977021519-37809.jpeg"",""event-1717977021520-43614.jpeg"",""event-1717977021581-92689.jpeg""]",0,,17,2024-06-10 03:50:22
+411,Holders Lane,2024-06-10 00:00:00,18:00:00,19:30:00,Birmingham,Family walk through Stirchley and Holders Lane with mum. Stopped at the stream to play.,Nature Walks,"[""event-1717977277141-96000.jpeg"",""event-1717977277150-53508.jpeg"",""event-1717977277154-75190.jpeg"",""event-1717977277159-63522.jpeg"",""event-1717977277166-75758.jpeg""]",0,,17,2024-06-10 03:54:37
+412,Test,2024-06-11 00:00:00,00:00:00,23:59:00,Dh,Dh,Arts & Craft,[],0,,77,2024-06-11 05:54:25
+413,Dydy,2024-06-06 00:00:00,00:00:00,23:59:00,Dyry,Eyr,Christmas,[],0,,77,2024-06-11 05:55:21
+414,Ok,2024-06-12 00:00:00,00:00:00,23:59:00,Ok,Ok,Arts & Craft,[],0,,77,2024-06-11 06:08:53
+415,Testeryy,2021-01-20 00:00:00,00:00:00,23:59:00,Gg,Gg,Arts & Craft,[],0,,77,2024-06-11 14:36:41
+416,Comp,2024-06-01 00:00:00,00:00:00,23:59:00,Hfb,"Wasn't for a walk and a dip in the lake. Then sat on the picnic mat in sunshine. Played football with Zoe, used the playground and had an ice cream or two
+
+Rhebdn",Culture & History,[],0,,77,2024-06-11 14:42:05
+427,Joined WayzAway!,2024-06-12 00:00:00,12:47:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,165,2024-06-13 13:47:52
+431,Joined WayzAway!,2024-06-13 00:00:00,10:51:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,169,2024-06-14 07:51:20
+433,To Hayley's,2024-06-01 00:00:00,00:00:00,23:59:00,Herefordshire,Steph travelled with Lindsay to spend the day with Hayley,Day Trips,"[""event-1718564743727-55631.jpeg"",""event-1718564743750-3580.jpeg"",""event-1718564743752-24961.jpeg"",""event-1718564743754-49226.jpeg"",""event-1718564743756-65814.jpeg""]",0,,17,2024-06-16 18:05:44
+434,Summer Fair - St Lawrence School,2024-06-15 00:00:00,11:30:00,15:00:00,Birmingham,PTA school fair. Lekan ran the football stall. Zoe and Steph went around partaking in various games and activities.,Outdoor Activities,"[""event-1718565316306-58746.jpeg"",""event-1718565316309-10171.jpeg"",""event-1718565316311-90992.jpeg"",""event-1718565316314-94034.jpeg"",""event-1718565316318-70160.jpeg""]",0,,17,2024-06-16 18:15:16
+435,Hickory Dickory,2024-06-14 00:00:00,15:30:00,17:00:00,Birmingham,Zoe and Isabel at the Indoor play centre,Play Centres,"[""event-1718565769517-65469.jpeg"",""event-1718565769518-1638.jpeg"",""event-1718565769520-14979.jpeg""]",0,,17,2024-06-16 18:22:49
+436,805 Nigerian Restaurant,2024-06-16 00:00:00,00:00:00,23:59:00,London,Father's day meal with the family. 805 Nigerian restaurant at Old Kent Road in London,Food & Drinks,"[""event-1718566049778-80431.jpeg"",""event-1718566049783-96437.jpeg"",""event-1718566049802-78862.jpeg"",""event-1718566049803-42184.jpeg"",""event-1718566049804-75933.jpeg""]",0,,17,2024-06-16 18:27:30
+438,Chasewater Country Park,2024-06-22 00:00:00,15:30:00,17:05:00,Brownhills,"Beautiful park with a large lake. Went for a long walk followed by a quick dip. We then had a picnic, enjoyed an ice cream...or two, then played football with the kids.",Parks & Garden,"[""event-1720053125194-1710.jpeg"",""event-1720053125214-97702.jpeg"",""event-1720053301930-60588.jpeg"",""event-1720053301932-10736.jpeg"",""event-1719091168556-64113.jpeg""]",0,,17,2024-06-22 20:19:29
+439,Tudor Grange Swimming & Brueton Park,2024-06-23 00:00:00,16:20:00,18:15:00,Solihull,Open Swimming with Zoe and Isabel. Was Isabel first time swimming. Followed by a quick visit to Brueton Park,Indoor Activities,"[""event-1719167281947-11585.jpeg"",""event-1719167281950-58016.jpeg"",""event-1719167281954-64921.jpeg"",""event-1719167281956-58782.jpeg"",""event-1719167281958-71064.jpeg""]",0,,17,2024-06-23 17:28:02
+440,Wahaca Mexican Restaurant,2024-06-26 00:00:00,18:00:00,20:30:00,London,Mexican restaurant. Meal after work in central London.,Food & Drinks,"[""event-1719358833152-41621.jpeg"",""event-1719358833153-80753.jpeg""]",0,,17,2024-06-25 22:35:43
+441,Joined WayzAway!,2024-06-27 00:00:00,08:43:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,172,2024-06-28 03:43:05
+442,Joined WayzAway!,2024-06-27 00:00:00,13:53:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,173,2024-06-28 10:53:15
+451,Joined WayzAway!,2024-07-02 00:00:00,19:05:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,181,2024-07-03 18:05:51
+455,Joined WayzAway!,2024-07-06 00:00:00,11:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,1,184,2024-07-06 18:53:01
+456,Fayoke 37th Birday BBQ,2024-07-06 00:00:00,15:00:00,22:00:00,Bromley,Had a big family BBQ for fayoke 37th birthday,Family,"[""event-1720312655602-59067.jpeg"",""event-1720312655628-2060.jpeg"",""event-1720312655630-249.jpeg"",""event-1720312655631-41654.jpeg"",""event-1720312655648-44093.jpeg""]",0,,17,2024-07-07 00:37:37
+461,Friend's event 2,2024-07-17 00:00:00,00:00:00,23:59:00,MF,asdf lksjadf lksajdflas lkasdjf,Concerts,"[""event-1720929987357-1508.jpeg"",""event-1758706749780-98027.jpeg"",""event-1758706749783-96736.jpeg"",""event-1758706749786-11432.jpeg"",""event-1758706749790-88165.jpeg""]",1,0,53,2024-07-08 06:50:30
+462,Joined WayzAway!,2024-07-11 00:00:00,17:21:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,187,2024-07-12 16:21:32
+463,Joined WayzAway!,2024-07-12 00:00:00,03:03:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,188,2024-07-13 02:03:49
+464,Joined WayzAway!,2024-07-13 00:00:00,20:00:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,189,2024-07-14 04:00:45
+465,Joined WayzAway!,2024-07-14 00:00:00,17:24:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,190,2024-07-15 16:24:51
+466,Felson & Wetherspoons,2024-07-13 00:00:00,20:00:00,12:30:00,Birmingham,Lekan went on night out with his friends. Played pool at Felsons then food at Whetherspoons (Solomon Cutler),Food & Drinks,"[""event-1721066614619-57164.jpeg"",""event-1721066614630-58741.jpeg"",""event-1721066496846-37977.jpeg"",""event-1721066496877-74903.jpeg"",""event-1721066496893-14693.jpeg""]",0,,17,2024-07-15 18:01:40
+467,Amritsari Tarka,2024-07-14 00:00:00,13:00:00,16:30:00,"Soho Road, Birmingham","Steph went to an Indian restaurant with Ranjit, Bal and Harriet",Food & Drinks,"[""event-1721066769674-31946.jpeg"",""event-1721066769677-10210.jpeg""]",0,,17,2024-07-15 18:06:10
+468,Hickory Dickory,2024-07-15 00:00:00,14:30:00,16:00:00,Kings Heath,Children soft play area. Zoe and Isabel also had dinner.,Play Centres,"[""event-1721070048387-74257.jpeg"",""event-1721070048398-1251.jpeg"",""event-1721070048417-56192.jpeg"",""event-1721070048428-47255.jpeg"",""event-1721070048442-24317.jpeg""]",0,,17,2024-07-15 19:00:49
+469,Mum leaves,2024-07-11 00:00:00,00:00:00,23:59:00,Birmingham,Mum leaves to go back to Canada after spending at month with us,Family,"[""event-1721077120700-70249.jpeg"",""event-1721077120707-29309.jpeg"",""event-1721077120710-38585.jpeg"",""event-1721077120711-57150.jpeg""]",0,,17,2024-07-15 20:58:41
+470,Joined WayzAway!,2024-07-16 00:00:00,21:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,191,2024-07-17 19:52:59
+471,To Isle of Man,2024-07-23 00:00:00,00:00:00,23:59:00,Liverpool - Douglas,We leave the UK to spend 4 weeks in Isle of Man. Drive to Liverpool port and took the boat to Douglas. ,Holidays,"[""event-1722031114059-71723.jpeg"",""event-1722031061104-66194.jpeg"",""event-1722031114061-22495.jpeg"",""event-1722031061109-27938.jpeg""]",0,,17,2024-07-26 21:57:41
+472,Joined WayzAway!,2024-07-28 00:00:00,12:57:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,192,2024-07-29 11:57:22
+473,Port Erin Beach,2024-07-28 00:00:00,13:30:00,17:30:00,Isle of Man,"Went down to Port Erin sandy beach on the south of the Island. Went into the sea, played on the sand and stopped for some ice cream.",Water Activities,"[""event-1722284616522-94853.jpeg"",""event-1722284616529-21680.jpeg"",""event-1722284616531-7598.jpeg"",""event-1722284616532-1098.jpeg"",""event-1722284616534-43059.jpeg""]",0,,17,2024-07-29 20:23:37
+474,Douglas,2024-08-01 00:00:00,10:00:00,14:30:00,Isle of Man,"Steph and Zoe went to meet Beth, Pete, Thank and Toby at Douglas",Day Trips,"[""event-1722773539155-17792.jpeg"",""event-1722773539162-63131.jpeg"",""event-1722773539164-54038.jpeg"",""event-1722773539165-97905.jpeg""]",0,,17,2024-08-04 12:12:20
+475,Snaefell,2024-08-01 00:00:00,14:30:00,17:00:00,Isle of Man,"Steph and Zoe along with Beth, Pete, Ethan and Toby took a cabe car to the highest point of Isle of Man. ",Day Trips,"[""event-1722773697219-49792.jpeg"",""event-1722773697227-33327.jpeg"",""event-1722773697230-68918.jpeg"",""event-1722773697232-41111.jpeg"",""event-1722773697234-7619.jpeg""]",0,,17,2024-08-04 12:14:58
+476,Corrin's Tower,2024-08-01 00:00:00,20:30:00,22:45:00,Peel,"Lekan, Steph and Zoe walked up peel Hill to Corrine Folly. A monument built by Thomas Corrin in honour of his wife and kids. Zoe enjoyed doing cartwheels and playing eye spy on the walk.",Nature Walks,"[""event-1722774294472-36754.jpeg"",""event-1722774294477-63785.jpeg"",""event-1722774294488-53608.jpeg"",""event-1722774294506-48957.jpeg"",""event-1722774294507-61352.jpeg""]",0,,17,2024-08-04 12:24:55
+477,Niarbyl,2024-08-03 00:00:00,12:00:00,12:30:00,Dalby,"Niarbyl is a secluded beauty spot just south of Dalby Village on the Island's west coast.
+
+We stopped at the beach for a short while to enjoy the scenery",Outdoor Activities,"[""event-1722774585470-85056.jpeg"",""event-1722774585471-48828.jpeg"",""event-1722774585472-28819.jpeg""]",0,,17,2024-08-04 12:29:46
+478,The Sound,2024-08-03 00:00:00,14:00:00,16:00:00,Port Erin,"The Sound, at the very southern tip of the Isle of Man, is a beautiful place to appreciate the Island's coastal beauty
+
+We stopped over and were amazed to see the sea lions on the rocks. It was a nice day so we also played a game of catch and had a short walk. Before stopping at the cafe to have a few drinks and ice cream.",Day Trips,"[""event-1722775131981-68728.jpeg"",""event-1722775131988-63988.jpeg"",""event-1722775132004-64399.jpeg"",""event-1722775132004-72950.jpeg"",""event-1722775132006-34423.jpeg""]",0,,17,2024-08-04 12:38:52
+479,The Sound Cafe,2024-08-03 00:00:00,14:00:00,16:00:00,Port Erin,Cafe at the Sound. Had ice cream and Isabel had chips and sausage.,Food & Drinks,"[""event-1722775337034-24234.jpeg"",""event-1722775337060-78750.jpeg"",""event-1722775337062-76518.jpeg""]",0,,17,2024-08-04 12:42:17
+480,Home of Rest for Old Horses,2024-08-03 00:00:00,16:00:00,17:00:00,Douglas,"Set in over 90 acres of land, the Home currently cares for over sixty horses and ponies and eleven donkeys.
+
+Stopped to feed the horses and donkeys.",Animal and Wildlife,"[""event-1722795715203-93551.jpeg"",""event-1722795715209-67413.jpeg"",""event-1722795715227-6309.jpeg"",""event-1722795715270-4459.jpeg"",""event-1722795715272-61776.jpeg""]",0,,17,2024-08-04 18:21:56
+481,Peel Carnival,2024-08-04 00:00:00,13:30:00,16:00:00,Peel,"The annual Peel carnival. Music, food, parade and we saw dolphins in Peel Bay",Culture & History,"[""event-1722795910579-17733.jpeg"",""event-1722795910586-84099.jpeg"",""event-1722795910592-78186.jpeg"",""event-1722795910592-73917.jpeg"",""event-1722795910593-18801.jpeg""]",0,,17,2024-08-04 18:25:11
+482,Joined WayzAway!,2024-08-05 00:00:00,23:26:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,193,2024-08-06 22:26:12
+483,Tynwald National Park & Arboretum,2024-08-06 00:00:00,14:00:00,17:00:00,"St John's, Isle of Man","Perfect place to enjoy a picnic on a hot summer’s day or to get some fresh air and feed the ducks!
+
+Nan took the girls for a walk and to see Grandpa Tony bench.",Parks & Garden,"[""event-1723468631897-59578.jpeg"",""event-1723468631902-41877.jpeg"",""event-1723468631907-77227.jpeg"",""event-1723468631909-31157.jpeg""]",0,,17,2024-08-12 13:17:12
+484,Mooragh Lake Park,2024-08-10 00:00:00,13:00:00,17:30:00,Ramsey,"Has a playground, picnic area, mini golf, splash pad and surrounds a lovely lake.
+
+Took cooper along and the kids enjoyed running around and catching fish with their net",Parks & Garden,"[""event-1723470987700-18458.jpeg"",""event-1723470030751-33941.jpeg"",""event-1723470030752-66040.jpeg"",""event-1723470030755-55021.jpeg"",""event-1723470030776-20436.jpeg""]",0,,17,2024-08-12 13:40:33
+485,The Boathouse Eatery,2024-08-10 00:00:00,15:00:00,15:30:00,"Mooragh Lake Park, Ramsey","Cafe in Mooragh park. Serving coffee, cake, brunch...
+
+We all had ice cream including Isabel.",Food & Drinks,"[""event-1723470370649-62301.jpeg"",""event-1723470370656-16012.jpeg"",""event-1723470370658-82189.jpeg"",""event-1723470370660-45224.jpeg""]",0,,17,2024-08-12 13:46:11
+486,Mooragh Park Lake,2024-08-10 00:00:00,15:30:00,16:00:00,Ramsey,Hired a boat and took Simi and Cooper for a 30 mins ride around the lake.,Water Activities,"[""event-1723470818789-36779.jpeg"",""event-1723470818812-38302.jpeg"",""event-1723470818820-26047.jpeg"",""event-1723470818821-23834.jpeg"",""event-1723470818823-92636.jpeg""]",0,,17,2024-08-12 13:53:39
+487,Groudle Glenn Railway,2024-08-11 00:00:00,14:30:00,18:00:00,"Douglas-Onchan, Isle of Man"," The Groudle Glen Railway is a 2 ft narrow gauge railway near Onchan in the Isle of Man, on the boundary of Onchan and Lonan, which is owned and operated by a small group of enthusiastic volunteers.
+
+We walked through the woods and stopped at the gift shop. The rail journey took about 10 minutes.",Adventure Activities,"[""event-1723471398334-14242.jpeg"",""event-1723471398341-43002.jpeg"",""event-1723471398343-45457.jpeg"",""event-1723471531602-13506.jpeg"",""event-1723471398346-7059.jpeg""]",0,,17,2024-08-12 14:03:19
+488,Sea Lion Rocks,2024-08-11 00:00:00,15:30:00,16:30:00,"Baldrine, Isle of Man","We took Groudle glen railway to the small tea room cafe and listen to band music, enjoyed the scenery and enjoyed the weather.",Outdoor Activities,"[""event-1723471802594-49091.jpeg"",""event-1723471802601-79377.jpeg"",""event-1723471802604-68651.jpeg"",""event-1723471802605-557.jpeg""]",0,,17,2024-08-12 14:10:03
+489,Groudle,2024-08-11 00:00:00,16:30:00,18:00:00,Douglas-Onchan,After leaving the railway we tool a nice walk through Groudle and enjoyed the amazing nature scenery...before getting lost and eventually making our way back to the car,Nature Walks,"[""event-1723472352625-38798.jpeg"",""event-1723472100486-65740.jpeg"",""event-1723472352632-81129.jpeg"",""event-1723472100492-97198.jpeg"",""event-1723472100494-73426.jpeg""]",0,,17,2024-08-12 14:15:01
+490,Aunt Pat and Uncle Kev,2024-08-11 00:00:00,18:00:00,20:30:00,Glen Vine,Stopped at Aunt Pat and Uncle Kev to say hello.,Family,"[""event-1723472297718-96223.jpeg"",""event-1723472297721-8206.jpeg"",""event-1723472297724-50304.jpeg""]",0,,17,2024-08-12 14:18:18
+491,Glen Wyllin,2024-08-12 00:00:00,18:00:00,19:30:00,Isle of Man,"A glen in the Isle of Man. It is one of the officially-listed Manx National Glens. The Glen Wyllin Pleasure Grounds are owned by the Isle of Man Railway whose line crossed the valley by means of a viaduct.
+
+The site is popular amongst campers but we stopped for a couple of hours at the beach located here. It was a warm evening with cool breeze. We also caught a glimpse of a couple of dolphins that swam close to the shore.",Outdoor Activities,"[""event-1723493582942-95499.jpeg"",""event-1723493048588-45010.jpeg"",""event-1723493048591-4576.jpeg"",""event-1723493048601-30566.jpeg"",""event-1723493048602-11526.jpeg""]",0,,17,2024-08-12 20:04:09
+492,Peel Headlands,2024-08-14 00:00:00,13:00:00,16:00:00,Peel,Nan took the girls out to Peel headlands and they also stopped at Peel beach to have an ice cream.,Outdoor Activities,"[""event-1723665065066-38680.jpeg"",""event-1723665065071-66743.jpeg"",""event-1723665065074-84753.jpeg""]",0,,17,2024-08-14 19:51:05
+493,Joined WayzAway!,2024-08-15 00:00:00,16:20:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,194,2024-08-15 21:20:26
+494,Joined WayzAway!,2024-08-18 00:00:00,09:01:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,195,2024-08-19 08:01:38
+495,Joined WayzAway!,2024-08-20 00:00:00,10:36:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,196,2024-08-20 14:36:25
+496,Joined WayzAway!,2024-08-23 00:00:00,16:34:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,197,2024-08-24 14:34:12
+497,Joined WayzAway!,2024-08-26 00:00:00,22:44:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,199,2024-08-27 21:44:40
+498,Milntown Estate and Gardens,2024-08-17 00:00:00,13:00:00,16:00:00,Ramsay,"Explored the gardens of the historic house.
+
+Set in 15 acres of scenic gardens, Milntown estate is one of the Isle of Man's most historic country homes. The estate was founded in the early 16th Century ",Historic Houses & Castles,"[""event-1724823987796-22396.jpeg"",""event-1724823987803-36291.jpeg"",""event-1724823987807-91064.jpeg"",""event-1724823987809-51119.jpeg"",""event-1724823987810-70426.jpeg""]",0,,17,2024-08-28 05:46:28
+499,The Boathouse Eatery,2024-08-17 00:00:00,15:00:00,16:00:00,Ramsay,Stopped for ice cream and cake,Food & Drinks,"[""event-1724824220038-72366.jpeg"",""event-1724824220040-77680.jpeg"",""event-1724824220060-1908.jpeg""]",0,,17,2024-08-28 05:50:20
+500,Sulby Reservoir,2024-08-17 00:00:00,17:00:00,18:30:00,Sulby,"The Island's largest and deepest reservoir.
+
+We went for a nice walk with Simi on her bike.",Nature Walks,"[""event-1724824598004-93053.jpeg"",""event-1724824598009-99438.jpeg"",""event-1724824598021-63951.jpeg"",""event-1724824598065-48972.jpeg"",""event-1724824598110-77889.jpeg""]",0,,17,2024-08-28 05:56:39
+501,Leaving Isle of Man,2024-08-19 00:00:00,13:00:00,23:59:00,Peel-Douglas,The day we left the Island. Had a cabin on the new boat,Family,"[""event-1724824762696-82684.jpeg"",""event-1724824762697-78650.jpeg"",""event-1724824762699-75350.jpeg"",""event-1724825245071-31682.jpeg""]",0,,17,2024-08-28 05:59:23
+502,Rowheath,2024-08-25 00:00:00,10:00:00,14:00:00,Bournville,Dad went yo play football. The family set on the grass and watched. ,Family,"[""event-1724824911705-97169.jpeg"",""event-1724824911706-97023.jpeg"",""event-1724824911707-39911.jpeg"",""event-1724824911708-21985.jpeg"",""event-1724824911709-5550.jpeg""]",0,,17,2024-08-28 06:01:52
+503,Abbey Park,2024-08-26 00:00:00,15:00:00,18:00:00,Evesham,"A day out in the beautiful park. Ice cream, splash pad and finished in the sand pit. Maya came with us.",Parks & Garden,"[""event-1724825074778-80178.jpeg"",""event-1724825074789-34250.jpeg"",""event-1724825074791-57931.jpeg"",""event-1724825074793-1061.jpeg"",""event-1724825074794-79153.jpeg""]",0,,17,2024-08-28 06:04:35
+504,Joined WayzAway!,2024-08-27 00:00:00,18:50:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,200,2024-08-28 08:50:44
+505,Arley Arboretum,2024-08-29 00:00:00,12:30:00,16:00:00,Bewdley,"Arley Arboretum is home to over 300 species of trees, it features Britain's longest Laburnum arch, and is popular with nature lovers, families and walkers.
+
+We enjoyed walking through the gardens and woods.",Nature Walks,"[""event-1724978517323-80456.jpeg"",""event-1724978517328-60993.jpeg"",""event-1724978517332-49550.jpeg"",""event-1724978517334-53588.jpeg"",""event-1724978517335-46754.jpeg""]",0,,17,2024-08-30 00:41:58
+506,Cotswold Country Park & Beach,2024-08-31 00:00:00,12:30:00,16:00:00,Cirencester,"Water Park in the Cotsworld. A beautiful lake with a man made dandy beach. Plenty of water activities, food and sunshine.
+
+We enjoyed splashing in the lake and building sand castles.",Water Activities,"[""event-1725150458291-30610.jpeg"",""event-1725150458298-92651.jpeg"",""event-1725150458301-28434.jpeg"",""event-1725150458302-41459.jpeg"",""event-1725150479446-98895.jpeg""]",0,,17,2024-09-01 00:27:39
+507,Joined WayzAway!,2024-08-31 00:00:00,07:27:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,201,2024-09-01 03:27:36
+508,Joined WayzAway!,2024-09-04 00:00:00,12:06:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,202,2024-09-05 10:06:34
+510,Joined WayzAway!,2024-09-10 00:00:00,08:02:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,204,2024-09-10 22:02:54
+511,Zoe Tennis Tournament,2024-09-07 00:00:00,10:00:00,11:00:00,Beechroft Tennis Club,Zoe took part in children tennis tournament and enjoyed her self.,Outdoor Activities,"[""event-1726015321270-20239.jpeg"",""event-1726015321281-41791.jpeg""]",0,,17,2024-09-11 00:42:02
+512,Hollywood Bowls,2024-09-07 00:00:00,13:00:00,16:00:00,Merry Hill,Took the girls to the arcade where we enjoyed playing some fun games. ,Indoor Activities,"[""event-1726015461480-65273.jpeg"",""event-1726015461481-59939.jpeg""]",0,,17,2024-09-11 00:44:22
+513,Charlecote Park,2024-09-08 00:00:00,11:00:00,02:00:00,Stratford-Upon-Avon,"A large park with an old grand house surrounded by a deers and nature.
+
+Steph and the girls drove down with Harriet for the morning.",Historic Houses & Castles,"[""event-1726015694832-54142.jpeg"",""event-1726015694838-1511.jpeg"",""event-1726015694840-63092.jpeg"",""event-1726015694841-67303.jpeg"",""event-1726015716653-89292.jpeg""]",0,,17,2024-09-11 00:48:15
+514,Joined WayzAway!,2024-09-23 00:00:00,14:50:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,205,2024-09-24 12:50:45
+515,Joined WayzAway!,2024-09-27 00:00:00,23:29:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,206,2024-09-28 21:29:03
+516,Joined WayzAway!,2024-10-12 00:00:00,12:54:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,207,2024-10-12 16:54:57
+518,Joined WayzAway!,2024-10-13 00:00:00,23:58:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,209,2024-10-14 21:58:38
+519,Joined WayzAway!,2024-10-14 00:00:00,12:15:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,210,2024-10-15 01:15:34
+520,Joined WayzAway!,2024-10-20 00:00:00,19:38:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,211,2024-10-20 11:42:22
+521,Daniel 7th Birthday Party,2024-09-21 00:00:00,00:00:00,23:59:00,Rock up - Birmingham,"Zoe attended her classmates 7th Birthday party in Rock up.
+
+They enjoyed wall climbing followed by a birthday meal.",Birthday Party,"[""event-1729517318582-52658.jpeg"",""event-1729517318590-98231.jpeg"",""event-1729517318593-53898.jpeg"",""event-1729517318595-83192.jpeg"",""event-1729517318598-75246.jpeg""]",0,,17,2024-10-21 13:28:39
+522,Habberley Trail,2024-10-05 00:00:00,13:00:00,18:00:00,Kidderminster,We took Zoe and Lexi to Habberley trail. ,Outdoor Activities,"[""event-1729517943128-19452.jpeg"",""event-1729517904973-78606.jpeg"",""event-1729517904976-76216.jpeg"",""event-1729517904981-31324.jpeg"",""event-1729517904983-97097.jpeg""]",0,,17,2024-10-21 13:38:26
+523,Tyker's 7th Birthday,2024-10-12 00:00:00,00:00:00,23:59:00,Treetop gold - Pizza Express in Bullring,"Zoe went to Tyler's 7th Birthday party. She met Tyker along with her friends from Nursery. 
+
+Started with a game at treetop indoor golf followed by pizza express.",Birthday Party,"[""event-1729518463208-76139.jpeg"",""event-1729518463215-79107.jpeg""]",0,,17,2024-10-21 13:47:43
+526,Real Midlands 5 - 1 Camden,2024-09-01 00:00:00,10:30:00,13:30:00,Elmdon Heath,"First game of the 2024 season ended with a disappointing loss.
+
+Team was largely meeting for the first time with so many not available for pre-season.
+
+Real Midlands started off shaky but scored first. Camden equalised after a through ball to Tom from Will. However Real Midlands ended up dominating the whole game scoring 4 more goals to get a comfortable victory.
+
+We shot ourselves in the foot, with three of the goals against us coming from keeper mistakes and one other from failure to clear the ball. Karim had a couple chances which he would have buried on another day, he's rustiness is understood given it was his first league game in a year and had only played 1 pre season game prior to this.
+Other than that we didn't really threaten Real Midlands and the game was comfortable for them.
+
+Camden Squad
+Emad
+Khalid
+David
+Joe
+Jordan
+Will 
+Laye
+Badri
+Tom
+Maz
+Karim
+
+Sub
+Deano
+Luke
+
+Goals: Tom assisted by Will",Sport & Leisure,"[""event-1729540978016-21177.jpeg"",""event-1729540978052-23722.jpeg""]",0,,212,2024-10-21 20:03:00
+527,Blaze 9 - 2 Camden,2024-09-08 00:00:00,10:30:00,13:30:00,George Salter Academy,"Festival Cup
+
+We started strong by scoring  early to go 1 nil up from a converted penalty by Karim. But a defensive mistake from Khalid led to an equaliser. Karim scored another goal from a Maz cross to make it 2-1. Karim took the ball down well from the cross and put it into the bottom corner with a clever finish.
+
+From then on Camden collapse. Mistake after mistake from Camden resulted on easy goals against us.
+
+It didn't help that we started arguing amongst each other and by second half the game plan went out the window. Birmingham Blaze goal keeper was sent off for handballing outside the area. A mistake from the ref as this isn't a red card offence. However, even with 10 men Blaze went on to score 5 more goals against us.
+
+Goals:
+Karim, won a penalty assisted by Tom
+Karim assisted by Maz
+
+Team:
+Deano
+Khalid
+David
+Jordan
+Doyin
+Will
+Sam
+Badri
+Maz
+Karim
+Tom
+
+Sub:
+Joe
+Jerome
+",Sport & Leisure,"[""event-1729543210702-72431.jpeg"",""event-1729543210721-17445.jpeg"",""event-1729543210757-92585.jpeg""]",0,,212,2024-10-21 20:40:13
+528,Project XI 5 - 0 Camden,2024-09-15 00:00:00,13:00:00,15:30:00,Heartlands Academy,"A better performance against the league leaders. But again mistakes cost us at the back. We made 4 individual mistakes that led to 4 goals for them.
+
+With that being said, our attack was non existence. We only created 1 clear chance.
+
+Team:
+Laye
+Joe
+Manny
+Luke
+Jordan
+David
+Sam
+Will
+Badri
+Karim
+Tom
+
+Sub:
+Adrian ",Sport & Leisure,"[""event-1729548896522-45704.jpeg""]",0,,212,2024-10-21 22:14:57
+529,Bizspace 1 - 1 Camden,2024-09-22 00:00:00,10:30:00,13:30:00,Calthorpe Park,"A much better performance. We switched to 3 at the back to deal with Bizspace long balls. The formation worked well.
+
+The game was tight and remained goaless at half time. Will and Sam worked hard as a two in midfield and as the game went on Camden started to take control. We scored first early in the second half after a great ball from Tom to Hansu and he cleverly laid it off to Badri who lobbed the keeper with a shot from outside the area.
+
+Bizspace came back into the game last 15 mins. And again we conceded from a set piece after we failed to follow the second ball.
+
+Goal: Badri assisted by Hansu
+
+Team:
+Adrian
+Joe
+David
+Manny
+Deano
+Doyin
+Hansu
+Will
+Sam
+Tom
+Badri
+
+Sub:
+Jordan",Sport & Leisure,"[""event-1729549633914-74676.jpeg"",""event-1729549633921-47608.jpeg"",""event-1729549633924-91385.jpeg""]",0,,212,2024-10-21 22:27:14
+530,Camden 4 - 3 Villa Tavern,2024-09-29 00:00:00,10:30:00,13:30:00,Rowheath,"Our first win of the season came in dramatic fashion.
+
+Camden scored first but Villa Tavern got a goal back. With both sides getting plenty of chances both teams were 3 all with only a few minutes left.
+
+However, after a great cross from Adrian, Badri slammed home the winner with a great header in the last 2 minutes. We were able to hold out for a great win.
+
+Goals:
+Karim x 2
+Hansu
+Badri
+
+Team:
+Adrian
+Joe
+David
+Deano
+Doyin
+Manny
+Will
+Badri
+Tom
+Karim
+Hansu
+
+Sub:
+Adrian",Sport & Leisure,"[""event-1729550588243-69885.jpeg"",""event-1729550588267-86891.jpeg""]",0,,212,2024-10-21 22:43:09
+531,Wanderers 3 - 3 Camden,2024-10-06 00:00:00,10:30:00,13:30:00,Twickenham,"A decent result against on of the better teams in the league.
+
+We went 2 nil down in the first 15 minutes.
+
+We started with 5 at the back but after a change of formation by putting an extra man in midfield things improved. We also realised that playing more direct to exploit their weak defence.
+
+Karim managed to get us a goal back, then we unfortunately went 3 - 1 down. However after another change of formation in the second half going 442. We dominated the game and put the game back to 3 all after a great finish from Tom.
+
+Wanderers did get a last minute penalty after their player tripped over his own foot. But with the last kick of the game their taker skied the penalty.
+
+Goals:
+Karim x 2
+Tom
+
+Team:
+Adrian
+Tom
+David
+Manny
+Deano
+Doyin
+Badri
+Will
+Adrian
+Karim
+Jerome
+
+Subs:
+Joe
+Sam
+Wes",Sport & Leisure,"[""event-1729551956576-10420.jpeg""]",0,,212,2024-10-21 23:05:57
+532,Joined WayzAway!,2024-10-21 00:00:00,09:25:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,213,2024-10-22 05:25:13
+533,Camden 4 (8) - (9) 4 North Birmingham,2024-10-13 00:00:00,10:30:00,13:30:00,Rowheath,"Festival Cup
+
+A game that Camden really should've have won. We threw away a 2 goal lead on two occasions.
+
+Unfortunately two keeping mistakes from Adrian let them back in the game.  However all their goals came from set pieces, a couple of which was poorly defended by Camden. Likewise Manny mistake as linesman allowed a clearly offside goal to stand.
+
+The game went to pens. Most of us scored and after 11 penalty taken it came down to the keepers to decide the game. 
+
+Goals:
+Karim x 2
+Jerome
+Doyin
+
+Team:
+Adrian
+Joe
+David
+Deano
+Doyin
+Manny
+Will
+Badri
+Jerome
+Karim
+Adrian
+
+Sub:
+Alex
+Wes",Sport & Leisure,"[""event-1729642670183-33477.jpeg"",""event-1729642670214-97997.jpeg"",""event-1729642670230-50831.jpeg"",""event-1729642670249-20948.jpeg"",""event-1729642670308-55704.jpeg""]",0,,212,2024-10-23 00:17:54
+534,Beaufort Arms 2 - 4 Camden,2024-10-20 00:00:00,10:30:00,13:30:00,Cooksey Lane,"Festival and Sutton Inter cup
+
+We started poorly with a goal conceded in first 5 minutes  when keeper misjudged a long ball and it bounced over him into the goal.
+
+But we recovered well and after a shaky start Karim scored from a Badri through ball.
+
+We got lucky with a Jerome goal that was offside to make it 2 - 1.
+
+Then another piece of luck when referee gave a corner to Camden that was a goal kick. Sam scored from the preceding corner to make it 3 - 1.
+
+Camden continued to dominate until Jerome made it 4 - 1 in second half. Beaufort made it interesting by getting one back. But Camden had several chances to score even more and remained in control for the remainder of the game.
+
+Sam in midfield put in a man of the match performance with his energy and closing down.
+
+Goals:
+Karim assisted by Badri
+Jerome assisted by Alex
+Sam assisted by Manny
+Jerome assisted by Alex
+
+Team:
+Adrian
+Joe
+Deano
+David
+Doyin
+Alex
+Manny
+Sam
+Jerome
+Badri
+Karim
+
+Sub:
+Adrian
+Laye",Sport & Leisure,"[""event-1729643240550-66305.jpeg""]",0,,212,2024-10-23 00:27:21
+535,Team Stats 2024/25 Season,2024-08-31 00:00:00,00:00:00,23:59:00,Festival League,"Appearance:
+
+Adrian - 7
+Joe - 8 (3)
+Luke - 1 (1)
+David - 12
+Dean - 7 (2)
+Doyin - 10
+Jordan - 5 (2)
+Curtis - 0
+Alex - 2 (1)
+Manny - 8 (1)
+Wes - 0 (2)
+Will - 10 (1)
+Sam M - 8 (1)
+Jared - 0
+Laye - 2 (1)
+Badri - 11 (1)
+Sam O - 1 (1)
+Adrian - 5 (3)
+Tom - 10
+Karim - 11
+Jerome - 4(1)
+Hansu - 6 (3)
+Khalid - 2
+
+Goals:
+
+Karim - 15
+Tom - 8
+Sam O - 4
+Jerome - 3
+Badri - 2
+Will - 2
+Sam M - 2
+Hansu - 1
+Doyin - 1
+Adrian - 1
+
+Assist:
+
+Karim - 7
+Tom - 5
+Adrian - 4
+Badri - 3
+Jerome - 2
+Alex - 2
+Will - 2
+Manny - 2
+Doyin - 2
+Hansu - 2
+Sam O - 1
+Maz - 1
+Karim - 1
+Wes - 1
+Deano - 1
+Joe - 1
+
+Man of the Match:
+
+Doyin - 6
+Tom - 3
+Sam O - 2
+Adrian Varga - 1
+Sam - 1
+Karim - 1
+David - 1",Sport & Leisure,"[""event-1729700217386-42923.jpeg""]",1,,212,2024-10-23 16:16:57
+536,Joined WayzAway!,2024-10-22 00:00:00,18:45:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,214,2024-10-23 17:45:44
+537,Joined WayzAway!,2024-10-22 00:00:00,18:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,215,2024-10-23 17:52:20
+538,Joined WayzAway!,2024-10-22 00:00:00,19:30:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,216,2024-10-23 18:30:53
+539,Joined WayzAway!,2024-10-22 00:00:00,19:48:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,217,2024-10-23 18:48:28
+540,Joined WayzAway!,2024-10-22 00:00:00,20:08:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,218,2024-10-23 19:08:21
+541,Joined WayzAway!,2024-10-22 00:00:00,21:14:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,219,2024-10-23 20:14:46
+542,Joined WayzAway!,2024-10-22 00:00:00,21:59:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,220,2024-10-23 20:59:08
+544,Joined WayzAway!,2024-10-23 00:00:00,14:37:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,222,2024-10-24 13:37:59
+545,Joined WayzAway!,2024-10-24 00:00:00,10:23:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,223,2024-10-25 09:23:27
+546,Joined WayzAway!,2024-10-24 00:00:00,22:28:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,224,2024-10-25 20:28:39
+547,Joined WayzAway!,2024-10-25 00:00:00,12:19:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,225,2024-10-26 10:19:07
+548,Blaze 1 - 6 Camden,2024-10-27 00:00:00,10:15:00,12:00:00,George Salter Academy,"League Game
+
+From start to finish Camden dominated the game. We wanted revenge after the heavy defeat in the cup and we proved how much better we are than them.
+
+Karim and Tom took turns scoring and assisting between themselves. With Tom scoring probably the goal of the season so far with a first time strike from 20 yards across the keeper into the top corner.
+
+Will finished the scoring off with a tap in after a free kick from Adrian was dropped by the keeper.
+
+Team:
+
+Adrian
+Joe
+David
+Doyin
+Jordan
+Will
+Sam
+Badri
+Karim
+Tom
+Adrian
+
+Sub:
+Hansu
+
+Goals:
+Karim assisted by Tom
+Tom assisted by Karim x 3
+Karim assisted by Adrian
+Will assisted by Adrian
+
+Motm:
+Doyin very solid at the back and not afraid to get the ball and play out. And Tom for an excellent hatrick. Including a contender for goal of the season.",Sport & Leisure,"[""event-1730047408832-75176.jpeg"",""event-1730047408882-9760.jpeg""]",0,,212,2024-10-27 16:43:30
+549,Joined WayzAway!,2024-10-26 00:00:00,20:48:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,226,2024-10-27 20:48:52
+550,Joined WayzAway!,2024-11-02 00:00:00,21:43:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,227,2024-11-03 20:43:02
+552,Heath Ballerz vs Camden,2024-11-03 00:00:00,10:30:00,12:30:00,Moor Lane,"League Game
+
+Camden started off well scoring early with a goal from Tom after a great cross from Karim.
+
+But we got sloppy and let them back into it. We took the lead again before 2nd half after another cross from Karim to Tom.
+
+Second half started off scrappy and once again we conceded from another free kick due to us having a deep line.
+
+Things could've been worse but an amazing point blank save from Adrian kept the score level.
+
+But luckily we got back into the game with a great lob finish from Sam and killed the game off when the leagues top scorer Karim finished it off with his customary goal.
+
+Goals: 
+
+Tom x 2 assisted by Karim x 2
+Sam
+Karim assisted by Joe
+
+Motm: Adrian V and Tom
+
+Team:
+Adrian
+Joe
+David
+Doyin
+Hansu
+Will
+Sam
+Alex
+Adrian
+Karim
+Tom
+
+Subs:
+Manny
+Badri
+Deano",Sport & Leisure,"[""event-1731028674929-74967.jpeg"",""event-1731028675147-28640.jpeg""]",0,,212,2024-11-08 01:17:59
+553,Birmingham Art Gallery,2024-10-26 00:00:00,13:00:00,17:00:00,Birmingham,Trip to Birmingham Art gallery with nan,Museums & Exhibitions,"[""event-1731274946809-63112.jpeg""]",0,,17,2024-11-10 21:42:28
+554,Felsons,2024-10-19 00:00:00,19:00:00,21:00:00,Birmingham,Pool with Ross and Lee,Friends,"[""event-1731275078862-44529.jpeg""]",0,,17,2024-11-10 21:44:39
+555,Rowheath Fireworks,2024-11-01 00:00:00,18:00:00,22:00:00,Rowheath,Went to watch fireworks at Rowheath. Zoe enjoyed some of the rides aswell.,Family Attractions,"[""event-1731275367099-1788.jpeg"",""event-1731275367141-51751.jpeg"",""event-1731275367171-26127.jpeg""]",0,,17,2024-11-10 21:49:29
+556,Twycross Zoo,2024-11-02 00:00:00,12:00:00,17:00:00,Atherstone,"Lovely Zoo. Highlights were the tigers, giraffe and running rhino. Zoe and Isabel finished the day at the indoor play area.",Family Attractions,"[""event-1731275659443-40978.jpeg"",""event-1731275659445-50127.jpeg"",""event-1731275659446-65077.jpeg"",""event-1731275659449-37984.jpeg"",""event-1731275659451-43983.jpeg""]",0,,17,2024-11-10 21:54:20
+557,Hayleys 40th,2024-11-09 00:00:00,00:00:00,23:59:00,Hereford,"Steph went to Hayleys with Nikita, Lindsay and Angela to celebrate Hayleys 40th. The girls enjoyed a weekend at her place and visited a restaurant.",Birthday Party,"[""event-1731275954393-47693.jpeg"",""event-1731275954399-66097.jpeg"",""event-1731275954401-88666.jpeg"",""event-1731275954402-75916.jpeg"",""event-1731275954403-29384.jpeg""]",0,,17,2024-11-10 21:59:15
+558,Zoe Gymnastic Competition ,2024-11-10 00:00:00,08:00:00,11:00:00,Solihull,Zoe first gymnastic competition. She was nervous but was brave and did her best.,Sport & Leisure,"[""event-1731276104974-89504.jpeg"",""event-1731276104981-57393.jpeg""]",0,,17,2024-11-10 22:01:45
+559,Joined WayzAway!,2024-11-12 00:00:00,10:05:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,228,2024-11-13 04:35:10
+560,Joined WayzAway!,2024-11-18 00:00:00,13:57:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,229,2024-11-18 19:57:03
+561,Camden vs North West Spartans,2024-11-17 00:00:00,10:30:00,12:30:00,Rowheath,"Sam Leach Memorial Cup
+
+Probably one of the worst game of the season for Camden. Although we scored first we never really had control of the game.
+
+First goal was an assist from Tom to Jerome. However after a mistake from one of our defenders and failure to deal with their runner they equalised. Spartans took the lead early in 1st half after Deano and David failed to communicate when going for an header which meant the ball dropped for their player to put in the bottom corner.
+
+We managed to equalise from a Doyin header - corner from Tom.
+
+The game went into penalties, although they missed their first after a good save from Adrian. We also missed our first. Unfortunately Deano the 5th taker missed his pen and Spartans go through to next round.
+
+Camden never really had control of the game and in truth deserved to lose.
+
+Goal
+
+Jerome assisted by Tom
+Doyin assisted by Tom
+
+Motm - Hansu",Sport & Leisure,"[""event-1732100182542-76972.jpeg""]",0,,212,2024-11-20 10:56:24
+562,Joined WayzAway!,2024-11-20 00:00:00,10:59:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,230,2024-11-20 10:59:09
+563,Yas and Stu (And Pete),2024-11-16 00:00:00,12:00:00,20:00:00,Chester,We went on a day trip to Chester to meet up with Yas and Stu. We went for a meal at Bella Italia before stopping at the Horror museum. We stopped at Pete's mum shop to watch the Christmas lights come on.,Day Trips,"[""event-1732101302356-52241.jpeg"",""event-1732101302359-79996.jpeg"",""event-1732101302367-9831.jpeg"",""event-1732101302377-14581.jpeg"",""event-1732101302380-39699.jpeg""]",0,,17,2024-11-20 11:15:03
+564,Flight club,2024-11-17 00:00:00,15:00:00,21:00:00,Birmingham,Went out with Lee and Ross to play darts. Followed by a meal.,Friends,"[""event-1732101837832-49794.jpeg"",""event-1732101837839-32780.jpeg"",""event-1732101837859-60180.jpeg""]",0,,17,2024-11-20 11:23:59
+565,Joined WayzAway!,2024-11-23 00:00:00,22:41:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,231,2024-11-24 21:41:11
+566,Joined WayzAway!,2024-11-26 00:00:00,16:48:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,232,2024-11-27 15:48:55
+567,Joined WayzAway!,2024-11-28 00:00:00,12:17:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],1,,233,2024-11-29 11:17:43
+568,Villa Tavern vs Camden,2024-12-01 00:00:00,10:30:00,12:30:00,Heartlands Academy,"League Game
+
+Started slow, went 2 nil down. We made a tactical change in midfield and things changed. Karim scored to get us to 2-1 before tom equalised and Karim scored to make it 3-2 by half time.
+
+We came out and scored early with Karim completing his hatrick. Unfortunately Karim suffered a bad tackle and had to come off.
+
+However, we continued with our momentum to score 2 more.
+
+Camden suffered a temporary glitch which resulted in Villa Tavern pulling the score back to 5-3. But Camden carried on to finish the game strongly by scoring 3 more goals.
+
+Goal scorers and Assist
+
+Karim assisted by Tom
+Karim assisted by Hansu
+Karim assisted by Tom
+Tom assisted by Doyin
+Sam O assisted by Adrian
+Adrian penalty won by Sam O
+Will assisted by Badri
+Sam O",Sport Events,"[""event-1733751630993-40231.jpeg""]",0,0,212,2024-12-09 13:34:23
+569,Gramps Funeral,2024-11-22 00:00:00,00:00:00,23:59:00,Douglas,"Steph travelled to Isle of Man for Gramps funeral on the 22nd.
+
+Due to heavy winds she was delayed for a couple days",Family,"[""event-1733753231183-4555.jpeg""]",0,,17,2024-12-09 13:56:49
+570,Bezerk World,2024-11-22 00:00:00,15:30:00,19:00:00,Birmingham,"Whilst Steph was away, Lekan took the girls to Bezerl world for play time.
+
+Also had some food there.",Play Centres,"[""event-1733753054150-82795.jpeg"",""event-1733753054271-23182.jpeg"",""event-1733753054555-27018.jpeg""]",0,,17,2024-12-09 14:04:19
+571,Resort World - Nandos,2024-11-24 00:00:00,14:30:00,18:00:00,Birmingham International ,"Steph travelled back and we met her at the airport before stopping at Resprt world. 
+
+Also had a meal at Nandos",Food & Drinks,"[""event-1733753657775-53948.jpeg"",""event-1733753657805-5177.jpeg""]",0,,17,2024-12-09 14:14:18
+572,Afrikana  ,2024-11-30 00:00:00,00:00:00,23:59:00,The O2 in London,"Met together as a Faboya family for a meal at Afrikana.
+
+Met leke girlfriend for the first time.",Family,"[""event-1733753962723-76197.jpeg"",""event-1733753962730-93051.jpeg"",""event-1733753962734-22646.jpeg"",""event-1733753962736-85298.jpeg"",""event-1733753962737-79709.jpeg""]",0,,17,2024-12-09 14:19:23
+573,Joined WayzAway!,2024-12-11 00:00:00,11:40:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,234,2024-12-12 05:40:43
+574,Joined WayzAway!,2024-12-24 00:00:00,11:12:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,235,2024-12-25 00:42:13
+575,Camden vs Wanderers,2024-12-15 00:00:00,10:30:00,12:30:00,Rowheath,"Camden 2:0 Wanderers
+
+League Game
+
+A great win against closest rivals for 3rd spot.
+
+After 3 seasons playing each other Camden registered their first win against Wanderers 
+
+The game was tight but we were the slightly better team for the most part.
+
+First goal came from a great cross from Karim to Sam. 
+
+Second goal came from Sam.pressing on the defender to rob him off the ball before slotting into the bottom corner.
+
+The defence was in great form and kept their attackers at bay for the most part.
+
+Goal scorers: Sam 0 x 2
+
+Motm: Sam O and Doyin",Sport Events,"[""event-1735609091923-44646.jpeg""]",0,,212,2024-12-31 01:38:12
+576,Team Xmas social,2024-12-21 00:00:00,18:00:00,20:30:00,Toca Social,"Toca social in bullring.
+
+Bar with football games, had food and drinks.",Indoor Activities,"[""event-1735610171002-89537.jpeg"",""event-1735610171038-6266.jpeg"",""event-1735610171041-54641.jpeg"",""event-1735610171079-21805.jpeg"",""event-1735610171080-77772.jpeg""]",0,0,212,2024-12-31 01:56:14
+577,Shugborough Estate,2024-12-14 00:00:00,13:00:00,17:00:00,Great Haywood,"A blend of landscape, monuments, gardens and Georgian mansion.
+
+We had lunch at the cafe and toured the mansion.
+",Historic Houses & Castles,"[""event-1735778460381-23539.jpeg"",""event-1735778419893-96259.jpeg"",""event-1735778419899-7838.jpeg"",""event-1735778419905-41898.jpeg"",""event-1735778419911-5247.jpeg""]",0,,17,2025-01-02 00:40:20
+578,Xmas at Peel,2024-12-24 00:00:00,00:00:00,23:59:00,Isle of Man,"Travelled to nans for xmas.
+
+Mostly stayed in doors.
+
+Jay, Kelly, Cork, Nikki and Cooper visited on the Saturday",Christmas,"[""event-1735778712007-22776.jpeg"",""event-1735778712014-87882.jpeg"",""event-1735778712017-38155.jpeg"",""event-1735778712019-90124.jpeg"",""event-1735778794296-3557.jpeg""]",0,,17,2025-01-02 00:45:12
+579,Morden Hall Park,2025-01-02 00:00:00,13:00:00,16:00:00,Morden,"Beautiful National Trust park, great for walking. Has a lovely garden centre shop and cafe.
+
+Steph and Lekan went for a nice walk on Stephs birthday.",Parks & Garden,"[""event-1736045666064-99552.jpeg"",""event-1736045297835-61336.jpeg"",""event-1736045297839-344.jpeg"",""event-1736045666070-66001.jpeg""]",0,,17,2025-01-05 02:48:18
+580,Steph's Birthday,2025-01-02 00:00:00,00:00:00,23:59:00,London,The Faboya family got together to celebrate Stephs 39th birthday,Birthday Party,"[""event-1736045755173-99774.jpeg"",""event-1736045755175-21763.jpeg"",""event-1736045495037-16447.jpeg"",""event-1736045556067-86813.jpeg"",""event-1736045755176-96537.jpeg""]",1,,17,2025-01-05 02:51:35
+581,Osterley Park and House,2025-01-03 00:00:00,14:00:00,17:30:00,Isleworth,"We visited a National Trust Georgian estate and park in Middlesex.
+
+The estate had plenty of Roman design, painting and history to enjoy.
+
+We walked around the pond and visited the cafe for a quick snack and drinks.
+
+Someone tried to steal lucy",Historic Houses & Castles,"[""event-1736046206614-76136.jpeg"",""event-1736046206620-62448.jpeg"",""event-1736046206622-52209.jpeg"",""event-1736046206623-63193.jpeg"",""event-1736046206625-49713.jpeg""]",0,,17,2025-01-05 03:03:27
+582,Priory Park,2025-01-04 00:00:00,14:30:00,17:00:00,Reigate,"Another visit with Maya to Priory Park.
+
+Was a cold day but the kids got to play in the playground, had pizza and choc drinks at the cafe and saw some friendly squirrels.
+
+",Parks & Garden,"[""event-1736046524892-88338.jpeg"",""event-1736046524900-83038.jpeg"",""event-1736046524903-13311.jpeg"",""event-1736046524904-18144.jpeg"",""event-1736046524907-71390.jpeg""]",0,0,17,2025-01-05 03:08:45
+583,Joined WayzAway!,2025-01-04 00:00:00,21:00:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,236,2025-01-05 13:00:30
+584,Joined WayzAway!,2025-01-06 00:00:00,10:44:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,237,2025-01-07 09:44:46
+585,Joined WayzAway!,2025-01-06 00:00:00,20:27:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,238,2025-01-07 19:27:51
+588,Joined WayzAway!,2025-01-30 00:00:00,12:24:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,241,2025-01-31 11:24:12
+589,Joined WayzAway!,2025-02-17 00:00:00,15:07:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,242,2025-02-17 15:07:27
+590,First walk in Stourport! ,2025-03-02 00:00:00,16:00:00,17:00:00,Stourport on Severn - River Stour,Took a stroll along the river to explore our new area. Saw a children's play park in the distance. ,Nature Walks,"[""event-1740946114108-51973.jpeg"",""event-1740946114128-62326.jpeg"",""event-1740946114154-47718.jpeg"",""event-1740946114185-33915.jpeg""]",0,,17,2025-03-02 20:08:38
+591,Joined WayzAway!,2025-03-03 00:00:00,13:57:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,243,2025-03-04 12:57:39
+592,Joined WayzAway!,2025-03-08 00:00:00,13:46:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,244,2025-03-09 03:46:04
+593,Joined WayzAway!,2025-03-08 00:00:00,18:02:00,21:04:00,breendonk,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Day Trips,"[""event-1741539899584-42474.jpeg""]",0,,245,2025-03-09 17:02:40
+595,Joined WayzAway!,2025-03-14 00:00:00,21:56:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,247,2025-03-15 20:56:06
+596,Joined WayzAway!,2025-03-20 00:00:00,09:21:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,248,2025-03-21 08:21:42
+597,Joined WayzAway!,2025-04-11 00:00:00,10:38:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,249,2025-04-12 08:38:11
+599,Joined WayzAway!,2025-04-13 00:00:00,13:04:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,251,2025-04-13 17:04:52
+600,Joined WayzAway!,2025-04-26 00:00:00,12:46:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,252,2025-04-27 10:46:54
+601,Joined WayzAway!,2025-05-16 00:00:00,16:26:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,253,2025-05-17 14:26:11
+602,Joined WayzAway!,2025-05-20 00:00:00,14:40:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,254,2025-05-21 12:40:45
+604,Umberslade farm,2025-02-01 00:00:00,00:00:00,23:59:00,Solihull,Took Zoe and Isabel to the free farm. Not too many animals out at this time of the year but we stopped at the cafe for a drink and enjoyed the playground,Animal and Wildlife,"[""event-1748645508486-58135.jpeg"",""event-1748645508521-59315.jpeg"",""event-1748645508574-70113.jpeg"",""event-1748645508628-31451.jpeg"",""event-1748645508695-187.jpeg""]",0,,17,2025-05-30 22:51:53
+605,Train to Derby,2025-03-15 00:00:00,12:00:00,18:30:00,Derby,Zoe and Daddy took train to Derby to pick up new car,Family,"[""event-1748646156235-52644.jpeg"",""event-1748646156264-11456.jpeg""]",0,,17,2025-05-30 23:02:37
+606,Hartlebury Common,2025-03-25 00:00:00,16:00:00,17:30:00,Hartlebury,Lilt first walk 🥰 The whole family went for a short walk in Harltebury Common,Nature Walks,"[""event-1748646919716-77251.jpeg"",""event-1748646919744-75548.jpeg"",""event-1748646919788-45054.jpeg"",""event-1748646919806-47478.jpeg"",""event-1748646919814-20280.jpeg""]",0,,17,2025-05-30 23:15:21
+607,Twycross Zoo,2025-03-29 00:00:00,00:00:00,23:59:00,Atherstone,Family day out to Twycross Zoo,Animal and Wildlife,"[""event-1748732078380-68301.jpeg""]",0,,17,2025-05-31 22:54:39
+608,Joined WayzAway!,2025-06-15 00:00:00,22:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,256,2025-06-16 20:52:12
+610,Joined WayzAway!,2025-06-20 00:00:00,15:10:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,258,2025-06-21 13:10:44
+612,Joined WayzAway!,2025-06-25 00:00:00,20:35:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,260,2025-06-26 18:35:17
+614,Burlish Meadows,2025-05-09 00:00:00,16:00:00,18:00:00,Stourport ,Family walk ina peaceful quiet park,Parks & Garden,"[""event-1751415988748-64809.jpeg""]",0,,17,2025-07-02 00:25:46
+615,Little Owl Farm,2025-05-31 00:00:00,12:00:00,03:00:00,Dunhampton,Family day out to little owl farm with nanny and grandad,Animal and Wildlife,"[""event-1751417099944-5723.jpeg"",""event-1751417099951-53961.jpeg"",""event-1751416361594-11514.jpeg"",""event-1751416361635-98117.jpeg"",""event-1751417099953-83631.jpeg""]",0,,17,2025-07-02 00:32:45
+616,Golf,2025-06-14 00:00:00,12:00:00,17:00:00,Ravenmeadow,"18 holes with Dan, Kudz and Ben",Outdoor Activities,"[""event-1751416554673-3545.jpeg""]",0,,17,2025-07-02 00:35:55
+617,Atwell Farm,2025-05-17 00:00:00,00:00:00,23:59:00,Redditch,Day out at Atwell Farm,Animal and Wildlife,"[""event-1751416926501-11040.jpeg"",""event-1751416926541-11840.jpeg"",""event-1751416926544-57082.jpeg"",""event-1751416926553-26858.jpeg"",""event-1751416926555-11431.jpeg""]",0,,17,2025-07-02 00:42:07
+618,Joined WayzAway!,2025-07-04 00:00:00,15:52:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,262,2025-07-05 13:52:24
+619,Joined WayzAway!,2025-07-05 00:00:00,07:06:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,263,2025-07-06 07:06:32
+620,Joined WayzAway!,2025-07-15 00:00:00,12:33:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,264,2025-07-16 10:33:00
+621,Joined WayzAway!,2025-07-19 00:00:00,20:55:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,265,2025-07-20 18:55:31
+622,Sixways Summer Bash,2025-07-19 00:00:00,13:00:00,18:30:00,Worcester,"Summer event held by Worcester Rugby club at the six ways stadium. Music, drinks, foods and Summer games. Was a nice day out, nice weather and got chased by the wasps which Isabel found funny",Outdoor Activities,"[""event-1753303383411-28002.jpeg"",""event-1753303383492-73068.jpeg"",""event-1753303383498-66333.jpeg"",""event-1753303383501-51013.jpeg"",""event-1753303383505-35967.jpeg""]",0,,17,2025-07-23 20:43:04
+623,Imagination Street,2025-08-04 00:00:00,13:00:00,16:00:00,Redditch ,Play centre. Isabel and Zoe had a great time going through the play course. ,Indoor Activities,"[""event-1754518738374-14650.jpeg"",""event-1754518738380-42282.jpeg"",""event-1754518774731-78621.jpeg""]",0,,17,2025-08-06 22:19:00
+624,Abbey Park,2025-08-02 00:00:00,15:00:00,18:00:00,Evesham,Evesham battle reenactment and paddle park ,Parks & Garden,"[""event-1754519100120-61152.jpeg""]",0,,17,2025-08-06 22:25:01
+625,Fruit Picking,2025-08-05 00:00:00,14:30:00,17:00:00,Stourport on Severn,Fruit and vegetable picking at Bells Farm,Outdoor Activities,"[""event-1754519245292-84962.jpeg"",""event-1754519245292-27737.jpeg"",""event-1754519245294-72970.jpeg"",""event-1754519245297-85412.jpeg"",""event-1754519245298-11130.jpeg""]",0,,17,2025-08-06 22:27:26
+626,Conkers,2025-08-06 00:00:00,14:30:00,18:00:00,Swadlincote ,Outdoor activities and walks for the family. Zoe and Isabel enjoyed the activity trail,Outdoor Activities,"[""event-1754522087903-27252.jpeg"",""event-1754522087910-42947.jpeg"",""event-1754519591874-8798.jpeg"",""event-1754519591880-87227.jpeg""]",0,,17,2025-08-06 22:32:22
+627,Coombe Abbey Park,2025-06-28 00:00:00,13:00:00,16:00:00,Coventry,Had a nice walk and sat on blanket under tree. The girls enjoyed running around and playing football.,Parks & Garden,"[""event-1754519965473-13375.jpeg"",""event-1754519965476-53052.jpeg"",""event-1754519965477-14895.jpeg"",""event-1754519965480-29809.jpeg"",""event-1754520018022-79663.jpeg""]",0,,17,2025-08-06 22:39:26
+628,A Walk Through History,2025-05-11 00:00:00,14:00:00,17:00:00,Worcester Woods County Park,A walk through military history. Bouncy castle and play park,Parks & Garden,"[""event-1754520626379-66933.jpeg""]",0,,17,2025-08-06 22:49:33
+629,Hockerhill,2025-05-10 00:00:00,13:00:00,17:00:00,Brewood,Indoor and outdoor play centre for kids,Play Centres,"[""event-1754521967400-76614.jpeg"",""event-1754521967413-28895.jpeg""]",0,,17,2025-08-06 23:12:48
+630,Play360,2025-04-14 00:00:00,12:00:00,16:00:00,Redditch ,Indoor play centre,Play Centres,"[""event-1754522051321-16089.jpeg""]",0,,17,2025-08-06 23:14:11
+631,Hicks Lodge,2025-05-05 00:00:00,13:00:00,16:00:00,Swadlincote ,"Bike riding park part of Forestry England.
+
+Zoe bought her bike",Parks & Garden,"[""event-1754522558194-93798.jpeg"",""event-1754522558208-76664.jpeg""]",0,,17,2025-08-06 23:22:38
+632,Burlish Park,2025-04-20 00:00:00,16:00:00,18:00:00,Stourport on Severn,Went for a family walk,Parks & Garden,"[""event-1754522678541-48575.jpeg"",""event-1754522678554-91926.jpeg""]",0,,17,2025-08-06 23:24:39
+633,Clent Hills,2025-04-26 00:00:00,16:00:00,17:00:00,Clent,Quick walk with nanny,Nature Walks,"[""event-1754522792580-77142.jpeg"",""event-1754522792593-65209.jpeg""]",0,,17,2025-08-06 23:26:33
+635,Wyre Forest,2025-04-18 00:00:00,12:00:00,14:00:00,Bewdley,Dad went on a walk with Zoe and Isabel,Nature Walks,"[""event-1754522893925-68585.jpeg"",""event-1754522893931-71549.jpeg""]",0,,17,2025-08-06 23:28:14
+636,Cannon Hill,2025-04-10 00:00:00,14:00:00,17:00:00,Birmingham,Walk in the park and fun on the rides,Parks & Garden,"[""event-1754523063610-11902.jpeg"",""event-1754523063638-14616.jpeg""]",0,,17,2025-08-06 23:31:04
+637,Play 360,2025-08-07 00:00:00,14:00:00,17:00:00,Redditch,"Took the girls out for a run about in play 360.
+
+Had a pizza and burger for lunch",Play Centres,"[""event-1754698058054-89944.jpeg"",""event-1754698058497-64477.jpeg"",""event-1754698171816-62692.jpeg"",""event-1754698131983-77073.jpeg"",""event-1754698131984-96384.jpeg""]",0,,17,2025-08-09 00:07:41
+638,War Memorial Park,2025-08-09 00:00:00,18:00:00,19:15:00,Stourport-on-Severn,Saturday evening. Went to the park so the kids could play. Isabel enjoyed the slides,Parks & Garden,"[""event-1754819324283-83603.jpeg"",""event-1754819324326-78591.jpeg""]",0,,17,2025-08-10 09:48:47
+639,Playland & Treasure Island,2025-08-12 00:00:00,14:00:00,18:00:00,Stourport on Severn,"Went out with Yas, Stuart and Nala.
+
+Enjoyed mimi golf and some children's ride at playland. Then went to Treasure  Island for a few more of the bigger rides.",Theme & Amusement Parks,"[""event-1755048774478-21109.jpeg"",""event-1755048774485-27449.jpeg"",""event-1755048857024-67526.jpeg"",""event-1755048857025-11765.jpeg"",""event-1755048880790-24487.jpeg""]",0,,17,2025-08-13 01:32:55
+640,Joined WayzAway!,2025-08-12 00:00:00,20:56:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,266,2025-08-13 19:56:21
+641,Legoland,2025-08-17 00:00:00,08:00:00,18:00:00,Windsor,"Steph organised a trip to  legoland amusement for the family including Fayoke, Gbenga, the boys, Maya, Seun and Temi.
+
+Nice stayed home with Nanny",Theme & Amusement Parks,"[""event-1755556637398-61156.jpeg"",""event-1755556637404-58523.jpeg"",""event-1755556637407-74038.jpeg"",""event-1755556637408-84608.jpeg"",""event-1755556637409-90982.jpeg""]",0,,17,2025-08-18 22:37:19
+642,Manor Park,2025-08-18 00:00:00,17:00:00,18:00:00,Stourport-on-Severn ,Went out with the girls and Maya to Manor park for an evening run around. The girls enjoyed the playground and the nice walk,Parks & Garden,"[""event-1755557496533-13141.jpeg"",""event-1755557496572-32599.jpeg"",""event-1755557496596-27902.jpeg""]",0,,17,2025-08-18 22:51:41
+643,Swimming at Malvern Leisure Centre,2025-08-19 00:00:00,12:00:00,13:15:00,Malvern,Took the girls and Maya to swim at Malvern. The pool had waves and slides. Isabel was moody at first but soon Perked up. She enjoyed the small slide in the pool,Water Activities,"[""event-1755650983540-5452.jpeg"",""event-1755650983547-15403.jpeg"",""event-1755650983550-98955.jpeg""]",0,,17,2025-08-20 00:49:44
+644,War Memorial Park,2025-08-21 00:00:00,17:30:00,18:40:00,Stourport-on-Severn ,"Isabel, Zoe and Maya to the park.",Parks & Garden,"[""event-1755827095209-71185.jpeg"",""event-1755827095217-18330.jpeg"",""event-1755827095275-13856.jpeg"",""event-1755827095279-64811.jpeg"",""event-1755827095282-50571.jpeg""]",0,,17,2025-08-22 01:44:57
+645,Joined WayzAway!,2025-08-24 00:00:00,00:40:00,,,Welcome to WayzAway! Why not start by inviting friends and family members so you can start to share your experiences and get ideas on places to go.,Registration,[],0,,267,2025-08-24 22:40:25
+646,Arrow Valley Park,2025-08-20 00:00:00,14:00:00,17:00:00,Redditch,Nice park with decent playground. Had pizza and ice cream at outside cafe. Isabel cried a lot because she couldn't have another ice lolly. Maya came with us.,Parks & Garden,"[""event-1756171195418-62110.jpeg"",""event-1756171195422-5939.jpeg"",""event-1756171195426-86028.jpeg"",""event-1756171195430-31381.jpeg"",""event-1756171195434-48081.jpeg""]",0,,17,2025-08-26 01:19:56
+647,Brinton Park,2025-08-24 00:00:00,14:00:00,17:00:00,Kidderminster ,Splash pad and park ,Water Activities,"[""event-1756171503524-94379.jpeg"",""event-1756171503531-1964.jpeg"",""event-1756171503537-99243.jpeg"",""event-1756171503548-69570.jpeg"",""event-1756171503555-27434.jpeg""]",0,,17,2025-08-26 01:25:05
+648,Family Fun Day,2025-08-25 00:00:00,15:00:00,16:30:00,Tenbury Wells,Family fun day for charity. The girls played in the ball pit and sand pit. Was a nice day so was good to get out,Outdoor Activities,"[""event-1756171676686-11149.jpeg"",""event-1756171676694-52040.jpeg"",""event-1756171676697-38882.jpeg"",""event-1756171676702-61809.jpeg"",""event-1756171676705-55031.jpeg""]",0,,17,2025-08-26 01:27:57
+649,Geoff and Hayleys Wedding Party,2025-08-30 00:00:00,16:30:00,20:30:00,Norton Canon Village Hall,Geoff and Hayley got married in May but had a small party for friends and family in their village hall. They had a small bouncy castle for kids and a hog roast. ,Special Occasions,"[""event-1756598042340-71280.jpeg"",""event-1756598042575-68215.jpeg"",""event-1756598042597-24518.jpeg"",""event-1756598042604-94396.jpeg"",""event-1756598042606-69361.jpeg""]",0,,17,2025-08-30 23:54:04
+650,Stourport Festival,2025-09-06 00:00:00,18:00:00,21:00:00,Stourport-on-Severn ,"2025 festival.
+
+Walked into town via the canal to enjoy the live music, rides and the Nutella treats.
+
+",Family,"[""event-1757413228112-99306.jpeg"",""event-1757413228154-55881.jpeg"",""event-1757413228158-56320.jpeg"",""event-1757413228173-90531.jpeg"",""event-1757413228206-48972.jpeg""]",0,,17,2025-09-09 10:20:33
+651,Berzerk Active Play  ,2025-09-08 00:00:00,14:00:00,15:00:00,King Heath,"Formerly Hickory Dickory.
+
+We took Isabel and lily.
+
+It was Lily first time visiting.",Play Centres,"[""event-1757413631000-54517.jpeg"",""event-1757413688335-92993.jpeg"",""event-1757413688343-67885.jpeg"",""event-1757413688346-31255.jpeg"",""event-1757413710416-13804.jpeg""]",0,,17,2025-09-09 10:27:11
+652,Hartlebury Castle,2025-09-13 00:00:00,15:30:00,18:00:00,Hartlebury,Tour around Hartlebury castle and museum,Historic Houses & Castles,"[""event-1758152209433-65978.jpeg"",""event-1758152209449-24599.jpeg"",""event-1758152209456-11015.jpeg"",""event-1758152209460-71065.jpeg"",""event-1758152209461-98866.jpeg""]",0,,17,2025-09-17 23:36:50
+654,Zoe Harvest Festival,2025-10-03 00:00:00,14:30:00,15:15:00,Wilden Church,Went to seee Zoe sing at Wilden church for the Harvest festival.,Special Occasions,"[""event-1760224842806-43194.jpeg""]",0,,17,2025-10-11 23:20:43
+655,Canon Hill Park,2025-10-11 00:00:00,16:00:00,17:00:00,Birmingham ,Quick walk and Ice cream with Isabel,Parks & Garden,"[""event-1760224985683-30049.jpeg"",""event-1760224985714-67369.jpeg"",""event-1760224985752-18671.jpeg"",""event-1760224985792-83982.jpeg""]",0,,17,2025-10-11 23:23:10
+656,Taiwa 8th Birthday Party,2025-10-11 00:00:00,15:15:00,17:30:00,Birmingham,"Taika invited Zoe to his birthday at Brandwood centre.
+
+Isabel and Dad joined later",Birthday Party,"[""event-1760225152730-92825.jpeg"",""event-1760225152732-95853.jpeg"",""event-1760225152738-33047.jpeg"",""event-1760225152739-39462.jpeg""]",0,,17,2025-10-11 23:25:53
+657,Twycross Zoo,2025-10-18 00:00:00,14:30:00,18:00:00,Atherstone ,Family day out at the Zoo,Family Attractions,"[""event-1761181299610-49975.jpeg"",""event-1761181299619-69236.jpeg"",""event-1761181299621-54119.jpeg"",""event-1761181299623-48338.jpeg"",""event-1761181299626-33737.jpeg""]",0,,17,2025-10-23 01:01:40
+658,Sea Life,2025-10-25 00:00:00,12:30:00,13:30:00,Birmingham,While family including Nan went to sea life. It was Lily first visit. We stopped at Costa after.,Family Attractions,"[""event-1761848220741-79061.jpeg"",""event-1761848220842-76809.jpeg"",""event-1761848220935-70710.jpeg"",""event-1761848221036-50510.jpeg""]",0,,17,2025-10-30 18:17:09

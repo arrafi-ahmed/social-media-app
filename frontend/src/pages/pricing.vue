@@ -41,7 +41,7 @@
       title: 'Create Posts',
       ultimate: 'Unlimited',
       standard: 'Unlimited',
-      basic: '5 per month',
+      basic: '5/month',
     },
     {
       title: 'Create a Wishlist',
@@ -127,139 +127,139 @@
     <div class="page-content">
       <!-- Pricing Content -->
       <v-row justify="center">
-      <v-col cols="12" md="10">
-        <v-table v-if="subscriptionPlans.length > 0" class="mt-5 pa-4">
-          <thead>
-            <tr>
-              <th class="text-left"><h2>Benefits</h2></th>
-              <template v-for="(item, index) in subscriptionPlans" :key="index">
-                <th class="text-center vertical-baseline">
-                  <div>
-                    <div
-                      class="pa-2"
-                      :class="
-                        item.title.toLowerCase() === 'basic'
-                          ? 'bg-secondary'
-                          : 'bg-primary'
-                      "
-                    >
-                      <h2>{{ item.title }}</h2>
-                    </div>
-                    <div class="my-3 mt-2">
-                      <h3>
-                        {{ formatPrice(item.price, item.currency) }}{{
-                          (item.lookupKey === "ultimate_yearly" && "/year") ||
-                            (item.lookupKey === "standard_monthly" &&
-                              "/month") ||
-                            (item.lookupKey === "basic_free" && "")
-                        }}
-                      </h3>
-                      <small>{{ item.tagline }}</small>
-                    </div>
-                  </div>
-                </th>
-              </template>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in benefits" :key="item.title">
-              <td class="text-start">{{ item.title }}</td>
-              <td class="text-center">
-                <template v-if="typeof item.ultimate === 'string'">
-                  <span class="text-success font-weight-bold">{{ item.ultimate }}</span>
-                </template>
-                <template v-else>
-                  <v-icon v-if="item.ultimate" color="success" icon="mdi-check" />
-                  <v-icon v-else color="danger" icon="mdi-close" />
-                </template>
-              </td>
-              <td class="text-center">
-                <template v-if="typeof item.standard === 'string'">
-                  <span class="text-success font-weight-bold">{{ item.standard }}</span>
-                </template>
-                <template v-else>
-                  <v-icon v-if="item.standard" color="success" icon="mdi-check" />
-                  <v-icon v-else color="error" icon="mdi-close" />
-                </template>
-              </td>
-              <td class="text-center">
-                <template v-if="typeof item.basic === 'string'">
-                  <span class="text-success font-weight-bold">{{ item.basic }}</span>
-                </template>
-                <template v-else>
-                  <v-icon v-if="item.basic" color="success" icon="mdi-check" />
-                  <v-icon v-else color="error" icon="mdi-close" />
-                </template>
-              </td>
-            </tr>
-            <tr>
-              <td />
-              <template v-for="(item, index) in subscriptionPlans" :key="index">
-                <td class="text-center">
-                  <template v-if="isPlanSelected(item.id)">
-                    <div class="bg-primary mx-1 my-2 pa-2 rounded">
-                      <div class="text-button text-white">Active</div>
-                      <confirmation-dialog
-                        popup-content="Are you sure you want to cancel your subscription?"
-                        popup-title="Cancel subscription"
-                        @confirm="handleClickSubscriptionCancel(subscription.stripeSubscriptionId)"
+        <v-col cols="12" md="10">
+          <v-table v-if="subscriptionPlans.length > 0" class="mt-5 pa-4">
+            <thead>
+              <tr>
+                <th class="text-left"><h2>Benefits</h2></th>
+                <template v-for="(item, index) in subscriptionPlans" :key="index">
+                  <th class="text-center vertical-baseline">
+                    <div>
+                      <div
+                        class="pa-2"
+                        :class="
+                          item.title.toLowerCase() === 'basic'
+                            ? 'bg-secondary'
+                            : 'bg-primary'
+                        "
                       >
-                        <template #activator="{ onClick }">
-                          <v-btn
-                            class="mt-2 text-white"
-                            :disabled="pendingCancel"
-                            rounded-sm
-                            variant="outlined"
-                            @click="onClick"
-                          >{{ (pendingCancel && 'Cancelled') || 'Cancel' }}
-                          </v-btn>
-                        </template>
-                      </confirmation-dialog>
-                      <div v-if="pendingCancel && item.title !== 'basic'">
-                        Expiring @
-                        {{ subscription.expireDate.slice(0, 10) }}
+                        <h2>{{ item.title }}</h2>
+                      </div>
+                      <div class="my-3 mt-2">
+                        <h3>
+                          {{ formatPrice(item.price, item.currency) }}{{
+                            (item.lookupKey === "ultimate_yearly" && "/year") ||
+                              (item.lookupKey === "standard_monthly" &&
+                                "/month") ||
+                              (item.lookupKey === "basic_free" && "")
+                          }}
+                        </h3>
+                        <small>{{ item.tagline }}</small>
                       </div>
                     </div>
+                  </th>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in benefits" :key="item.title">
+                <td class="text-start">{{ item.title }}</td>
+                <td class="text-center">
+                  <template v-if="typeof item.ultimate === 'string'">
+                    <span class="text-success font-weight-bold">{{ item.ultimate }}</span>
                   </template>
-                  <v-btn
-                    v-else
-                    color="primary"
-                    rounded-sm
-                    variant="outlined"
-                    @click="handleClickSubscription(item)"
-                  >Select
-                  </v-btn>
+                  <template v-else>
+                    <v-icon v-if="item.ultimate" color="success" icon="mdi-check" />
+                    <v-icon v-else color="danger" icon="mdi-close" />
+                  </template>
                 </td>
-              </template>
-            </tr>
-          </tbody>
-        </v-table>
-        <no-items
-          v-if="subscriptionPlans.length === 0"
-          action-icon="mdi-calendar-search"
-          action-text="Explore Events"
-          :closable="false"
-          description="Please check back later for available subscription plans."
-          :full-page="true"
-          icon="mdi-credit-card-outline"
-          :show-action="true"
-          title="No subscription plans available"
-          @action="$router.push({ name: 'browse' })"
-        />
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="auto">
-        <v-btn
-          v-if="showContinue"
-          class="text-center"
-          color="primary"
-          :density="mobile ? 'comfortable' : 'default'"
-          :to="{ name: 'wall', params: { id: currentUser.slug || currentUser.id } }"
-        >Continue
-        </v-btn>
-      </v-col>
-    </v-row>
+                <td class="text-center">
+                  <template v-if="typeof item.standard === 'string'">
+                    <span class="text-success font-weight-bold">{{ item.standard }}</span>
+                  </template>
+                  <template v-else>
+                    <v-icon v-if="item.standard" color="success" icon="mdi-check" />
+                    <v-icon v-else color="error" icon="mdi-close" />
+                  </template>
+                </td>
+                <td class="text-center">
+                  <template v-if="typeof item.basic === 'string'">
+                    <span class="text-success font-weight-bold">{{ item.basic }}</span>
+                  </template>
+                  <template v-else>
+                    <v-icon v-if="item.basic" color="success" icon="mdi-check" />
+                    <v-icon v-else color="error" icon="mdi-close" />
+                  </template>
+                </td>
+              </tr>
+              <tr>
+                <td />
+                <template v-for="(item, index) in subscriptionPlans" :key="index">
+                  <td class="text-center">
+                    <template v-if="isPlanSelected(item.id)">
+                      <div class="bg-primary mx-1 my-2 pa-2 rounded">
+                        <div class="text-button text-white">Active</div>
+                        <confirmation-dialog
+                          popup-content="Are you sure you want to cancel your subscription?"
+                          popup-title="Cancel subscription"
+                          @confirm="handleClickSubscriptionCancel(subscription.stripeSubscriptionId)"
+                        >
+                          <template #activator="{ onClick }">
+                            <v-btn
+                              class="mt-2 text-white"
+                              :disabled="pendingCancel"
+                              rounded-sm
+                              variant="outlined"
+                              @click="onClick"
+                            >{{ (pendingCancel && 'Cancelled') || 'Cancel' }}
+                            </v-btn>
+                          </template>
+                        </confirmation-dialog>
+                        <div v-if="pendingCancel && item.title !== 'basic'">
+                          Expiring @
+                          {{ subscription.expireDate.slice(0, 10) }}
+                        </div>
+                      </div>
+                    </template>
+                    <v-btn
+                      v-else
+                      color="primary"
+                      rounded-sm
+                      variant="outlined"
+                      @click="handleClickSubscription(item)"
+                    >Select
+                    </v-btn>
+                  </td>
+                </template>
+              </tr>
+            </tbody>
+          </v-table>
+          <no-items
+            v-if="subscriptionPlans.length === 0"
+            action-icon="mdi-calendar-search"
+            action-text="Explore Events"
+            :closable="false"
+            description="Please check back later for available subscription plans."
+            :full-page="true"
+            icon="mdi-credit-card-outline"
+            :show-action="true"
+            title="No subscription plans available"
+            @action="$router.push({ name: 'browse' })"
+          />
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="auto">
+          <v-btn
+            v-if="showContinue"
+            class="text-center"
+            color="primary"
+            :density="mobile ? 'comfortable' : 'default'"
+            :to="{ name: 'wall', params: { id: currentUser.slug || currentUser.id } }"
+          >Continue
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 </template>

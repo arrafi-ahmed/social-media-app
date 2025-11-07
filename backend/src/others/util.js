@@ -81,7 +81,7 @@ const applink = `
   </a>
 `;
 
-const appInfo = { name: "WayzAway", version: 1.6 };
+const appInfo = { name: "WayzAway", version: 2.0 };
 
 /**
  * Generate a URL-friendly slug from a string

@@ -40,9 +40,9 @@
   const benefits = ref([
     {
       title: 'Create Posts',
-      ultimate: true,
-      standard: true,
-      basic: false,
+      ultimate: 'Unlimited',
+      standard: 'Unlimited',
+      basic: '5/month',
     },
     {
       title: 'Create a Wishlist',
@@ -206,7 +206,7 @@
         <!-- Pricing Content -->
         <v-row class="mt-5" justify="center">
           <v-col cols="12" md="10">
-            <v-table v-if="subscriptionPlans.length > 0">
+            <v-table v-if="subscriptionPlans.length > 0" class="pa-2">
               <thead>
                 <tr>
                   <th class="text-left"><h2>Benefits</h2></th>
@@ -247,28 +247,31 @@
                 <tr v-for="item in benefits" :key="item.title">
                   <td class="text-start">{{ item.title }}</td>
                   <td class="text-center">
-                    <v-icon
-                      v-if="item.ultimate"
-                      color="success"
-                      icon="mdi-check"
-                    />
-                    <v-icon v-else color="danger" icon="mdi-close" />
+                    <template v-if="typeof item.ultimate === 'string'">
+                      <span class="text-success font-weight-bold">{{ item.ultimate }}</span>
+                    </template>
+                    <template v-else>
+                      <v-icon v-if="item.ultimate" color="success" icon="mdi-check" />
+                      <v-icon v-else color="danger" icon="mdi-close" />
+                    </template>
                   </td>
                   <td class="text-center">
-                    <v-icon
-                      v-if="item.standard"
-                      color="success"
-                      icon="mdi-check"
-                    />
-                    <v-icon v-else color="error" icon="mdi-close" />
+                    <template v-if="typeof item.standard === 'string'">
+                      <span class="text-success font-weight-bold">{{ item.standard }}</span>
+                    </template>
+                    <template v-else>
+                      <v-icon v-if="item.standard" color="success" icon="mdi-check" />
+                      <v-icon v-else color="error" icon="mdi-close" />
+                    </template>
                   </td>
                   <td class="text-center">
-                    <v-icon
-                      v-if="item.basic"
-                      color="success"
-                      icon="mdi-check"
-                    />
-                    <v-icon v-else color="error" icon="mdi-close" />
+                    <template v-if="typeof item.basic === 'string'">
+                      <span class="text-success font-weight-bold">{{ item.basic }}</span>
+                    </template>
+                    <template v-else>
+                      <v-icon v-if="item.basic" color="success" icon="mdi-check" />
+                      <v-icon v-else color="error" icon="mdi-close" />
+                    </template>
                   </td>
                 </tr>
                 <tr>

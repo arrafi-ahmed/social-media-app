@@ -462,7 +462,7 @@
         </v-row>
 
         <!-- Comments List -->
-        <v-list v-if="event?.comments?.length > 0" class="mt-2 mt-md-4" variant="text">
+        <v-list v-if="event?.comments?.length > 0" class="mt-2 mt-md-4 pa-2" variant="text">
           <v-list-item
             v-for="(comment, index) in event?.comments"
             :key="index"

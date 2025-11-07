@@ -56,6 +56,18 @@ CREATE TABLE friendship
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE event_collection
+(
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT,
+    color       VARCHAR(7),  -- Hex color code (e.g., #FF5733)
+    icon        VARCHAR(50), -- Icon name (e.g., mdi-folder, mdi-music)
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE event_collection_item
 (
     id            SERIAL PRIMARY KEY,
@@ -128,7 +140,7 @@ CREATE TABLE user_settings
     email_new_comment_notification  BOOLEAN,
     sort                            VARCHAR(50),
     theme                           VARCHAR(20), -- added
-    user_id                         INTEGER NOT NULL users (id) ON DELETE CASCADE
+    user_id                         INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE subscription_plan
@@ -161,49 +173,18 @@ CREATE TABLE subscription
     created_at             TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---added
 CREATE TABLE event_reaction
 (
     id            SERIAL PRIMARY KEY,
     user_id       INTEGER REFERENCES users (id) ON DELETE CASCADE,
     event_id      INTEGER REFERENCES event_post (id) ON DELETE CASCADE,
-    reaction_type VARCHAR(20) NOT NULL, -- 'like', 'heart', 'laugh', 'wow', 'sad', 'angry'
+    reaction_type VARCHAR(20) NOT NULL, -- 'like', 'heart', 'laugh', 'wow', 'sad', 'angry', 'unlike'
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, event_id)
 );
--- added
-CREATE TABLE event_collection
+
+CREATE TABLE user_group
 (
-    id          SERIAL PRIMARY KEY,
-    user_id     INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    name        VARCHAR(255) NOT NULL,
-    description TEXT,
-    color       VARCHAR(7),  -- Hex color code (e.g., #FF5733)
-    icon        VARCHAR(50), -- Icon name (e.g., mdi-folder, mdi-music)
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
--- added
-CREATE TABLE event_collection_item
-(
-    id            SERIAL PRIMARY KEY,
-    user_id       INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    event_id      INTEGER NOT NULL REFERENCES event_post (id) ON DELETE CASCADE,
-    collection_id INTEGER REFERENCES event_collection (id) ON DELETE CASCADE,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (user_id, event_id)
-);
---added
-CREATE TABLE comment_mention
-(
-    id               SERIAL PRIMARY KEY,
-    comment_id       INTEGER NOT NULL REFERENCES event_comment (id) ON DELETE CASCADE,
-    mentioned_user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (comment_id, mentioned_user_id)
-);
---added
-CREATE TABLE user_group (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE,
     name        VARCHAR(255) NOT NULL,
@@ -212,8 +193,9 @@ CREATE TABLE user_group (
     icon        VARCHAR(50), -- MDI icon name (e.g., 'mdi-account-group')
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
---added
-CREATE TABLE group_member (
+
+CREATE TABLE group_member
+(
     id         SERIAL PRIMARY KEY,
     group_id   INTEGER REFERENCES user_group(id) ON DELETE CASCADE,
     user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -221,8 +203,9 @@ CREATE TABLE group_member (
     joined_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (group_id, user_id)
 );
---added
-CREATE TABLE event_group (
+
+CREATE TABLE event_group
+(
     id         SERIAL PRIMARY KEY,
     event_id   INTEGER REFERENCES event_post(id) ON DELETE CASCADE,
     group_id   INTEGER REFERENCES user_group(id) ON DELETE CASCADE,
@@ -240,8 +223,7 @@ DATABASE wayzaway
 
 ALTER TABLE event_comment
 ALTER
-COLUMN comment_text TYPE text COLLATE "en_US.utf8";
-
+COLUMN text TYPE text COLLATE "en_US.utf8";
 
 -- Create indexes
 CREATE INDEX idx_users_id ON users (id);

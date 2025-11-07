@@ -2,7 +2,7 @@ import { ROLES } from '@/others/constants.js'
 import { countries } from '@/others/country-list.js'
 import router from '@/router/index.js'
 
-export const appInfo = { name: 'WayzAway', version: 1.6 }
+export const appInfo = { name: 'WayzAway', version: 2.0 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 export const baseUrl = import.meta.env.VITE_BASE_URL

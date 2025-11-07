@@ -124,6 +124,7 @@
           class="mb-3"
           density="comfortable"
           label="Collection Name"
+          hide-details="auto"
           required
           variant="solo"
         />
@@ -133,6 +134,7 @@
           class="mb-3"
           density="comfortable"
           label="Description (optional)"
+          hide-details="auto"
           rows="2"
           variant="solo"
         />
@@ -145,6 +147,7 @@
             item-title="label"
             item-value="value"
             :items="iconOptions"
+            hide-details="auto"
             variant="solo"
           >
             <template #item="{ props, item }">
