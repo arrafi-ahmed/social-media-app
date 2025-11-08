@@ -279,10 +279,9 @@
       <v-btn
         v-if="xs && isOwnProfile"
         color="primary"
-        icon="mdi-plus-circle-outline"
-        rounded
-        tile
-        variant="text"
+        icon="mdi-plus"
+        rounded        
+        variant="flat"
         @click="openAddEvent"
       />
       <v-menu v-else-if="!xs && isOwnProfile">

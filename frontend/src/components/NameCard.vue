@@ -24,7 +24,7 @@
 
 <template>
   <div :class="`d-flex align-center ${containerClass}`">
-    <v-avatar color="secondary" :rounded="rounded" :size="imgSize" tile>
+    <v-avatar color="secondary" :rounded="rounded" :size="imgSize">
       <div v-if="showFallback">
         <v-icon color="white" icon="mdi-account" :size="imgSize-15" />
       </div>

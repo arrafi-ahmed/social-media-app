@@ -142,12 +142,9 @@
           </template>
         </page-title>
 
-        <div class="page-content">
-          <div style="height: 40px;" />
-
-          <!-- Collections List -->
-          <div class="mb-4">
-            <div class="d-flex align-center mb-3" style="gap: 8px; flex-wrap: wrap;">
+        <div class="page-content">          
+          <!-- Collections List -->          
+            <div class="d-flex align-center" style="gap: 8px; flex-wrap: wrap;">
               <!-- All Chip -->
               <v-chip
                 class="clickable"
@@ -198,8 +195,7 @@
                   </v-list>
                 </v-menu>
               </v-chip>
-            </div>
-          </div>
+            </div>          
 
           <!-- Event Card Feed -->
           <event-infinite

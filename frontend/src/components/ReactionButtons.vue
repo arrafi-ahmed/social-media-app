@@ -1,5 +1,8 @@
 <template>
-  <div class="reaction-buttons" :class="{ 'compact': compact }">
+  <div 
+    class="d-flex align-center flex-wrap"
+    :class="isCompact ? 'gap-1 justify-space-between ' : 'gap-2'"
+  >
     <v-tooltip
       v-for="reaction in reactionTypes"
       :key="reaction.type"
@@ -8,15 +11,12 @@
     >
       <template #activator="{ props: tooltipProps }">
         <v-btn
-          class="reaction-button"
           :class="{ 
-            'reaction-active': userReaction === reaction.type,
-            'reaction-mobile': isCompact
-          }"
+            'reaction-active': userReaction === reaction.type
+          }"          
           :color="userReaction === reaction.type ? reaction.color : 'default'"
-          :density="isCompact ? 'compact' : 'default'"
-          :disabled="loading"
-          :size="isCompact ? 'small' : 'default'"
+          :density="isCompact ? 'comfortable' : 'default'"
+          :disabled="loading"        
           v-bind="tooltipProps"
           variant="text"
           icon=""
@@ -146,40 +146,15 @@
 </script>
 
 <style scoped>
-.reaction-buttons {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.reaction-buttons.compact {
-  gap: 2px;
-}
-
-.reaction-button {
-  flex: 1;
-  min-width: 0;
-  /* padding: 8px 16px; */
-  height: auto;
-  justify-content: center;
-}
-
-.reaction-button.reaction-mobile {
-  /* padding: 6px 8px; */
-  min-width: 0;
-}
-
-.reaction-button.reaction-active {
+.reaction-active {
   opacity: 1;
 }
 
-.reaction-button:not(.reaction-active) {
+.v-btn:not(.reaction-active) {
   opacity: 0.7;
 }
 
-.reaction-button:hover:not(:disabled) {
+.v-btn:hover:not(:disabled) {
   opacity: 1;
   transform: scale(1.05);
   transition: transform 0.2s;
@@ -187,16 +162,7 @@
 
 /* Mobile optimizations */
 @media (max-width: 600px) {
-  .reaction-buttons {
-    gap: 2px;
-  }
-  
-  .reaction-button {
-    /* padding: 6px 4px; */
-    min-width: 0;
-  }
-  
-  .reaction-button:hover:not(:disabled) {
+  .v-btn:hover:not(:disabled) {
     transform: scale(1.02);
   }
 }

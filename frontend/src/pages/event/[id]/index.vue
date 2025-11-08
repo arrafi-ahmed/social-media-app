@@ -328,8 +328,8 @@
               <div v-if="event?.date" class="d-flex align-center">
                 <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="primary" :size="xs ? 'x-small' : 'small'">mdi-calendar</v-icon>
                 <div>
-                  <div :class="xs ? 'text-caption font-weight-medium' : 'text-body-2 font-weight-medium'">{{ formatDateFromTimestamp(event?.date) }}</div>
-                  <div v-if="event?.startTime" :class="xs ? 'text-caption text-medium-emphasis mt-0' : 'text-caption text-medium-emphasis mt-1'">
+                  <div :class="xs ? 'font-weight-medium' : 'text-body-2 font-weight-medium'">{{ formatDateFromTimestamp(event?.date) }}</div>
+                  <div v-if="event?.startTime" :class="xs ? 'text-medium-emphasis mt-0' : 'text-medium-emphasis mt-1'">
                     {{ formatTimeFromTime(event?.startTime) }}
                     <span v-if="event?.endTime"> - {{ formatTimeFromTime(event?.endTime) }}</span>
                   </div>
@@ -340,7 +340,7 @@
 
               <div v-if="event?.location" class="d-flex align-center">
                 <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="primary" :size="xs ? 'x-small' : 'small'">mdi-map-marker</v-icon>
-                <div :class="xs ? 'text-caption' : 'text-body-2'">{{ event?.location }}</div>
+                <div :class="xs ? 'font-weight-medium' : 'text-body-2'">{{ event?.location }}</div>
               </div>
 
               <v-divider v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" />
@@ -351,10 +351,10 @@
               >
                 <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="warning" :size="xs ? 'x-small' : 'small'">mdi-clock-alert</v-icon>
                 <div>
-                  <div :class="xs ? 'text-caption text-warning font-weight-medium' : 'text-body-2 text-warning font-weight-medium'">
+                  <div :class="xs ? 'text-warning font-weight-medium' : 'text-body-2 text-warning font-weight-medium'">
                     Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? "day" : "days" }}
                   </div>
-                  <div :class="xs ? 'text-caption text-medium-emphasis mt-0' : 'text-caption text-medium-emphasis mt-1'">
+                  <div :class="xs ? 'text-medium-emphasis mt-0' : 'text-medium-emphasis mt-1'">
                     {{ expirationDateFormatted }}
                   </div>
                 </div>
@@ -393,16 +393,26 @@
                     <span :class="xs ? 'text-caption' : 'text-caption'">{{ group.name }}</span>
                   </v-chip>
                 </div>
+                <!-- Mobile Button -->
                 <v-btn
+                  v-if="xs"
                   color="primary"
-                  :prepend-icon="xs ? 'mdi-share-variant' : undefined"
-                  :icon="xs ? undefined : 'mdi-share-variant'"
-                  :size="xs ? 'small' : 'small'"
+                  prepend-icon="mdi-share-variant"
+                  size="small"
                   variant="text"
                   @click="openGroupSelector"
                 >
-                  <span v-if="xs" class="ml-1">Share</span>
+                  <span class="ml-1">Share</span>
                 </v-btn>
+                <!-- Desktop Button -->
+                <v-btn
+                  v-if="!xs"
+                  color="primary"
+                  icon="mdi-share-variant"
+                  size="small"
+                  variant="text"
+                  @click="openGroupSelector"
+                />
               </div>
             </div>
           </v-card-text>
