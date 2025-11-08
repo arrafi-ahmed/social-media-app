@@ -310,6 +310,7 @@ exports.findWallEvents = async ({
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
   const values = [];
+
   let sql = `
     SELECT e.*, c.full_name, c.image, c.slug
     FROM event_post e

@@ -51,14 +51,12 @@
           <div class="d-flex overflow-hidden" style="border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
             <div
               class="text-overline pa-1 text-white font-weight-bold"
-              style="border-radius: 4px 0 0 4px; font-size: 0.7em;"
               :style="{ backgroundColor: dateChipStyles.dateBg }"
             >
               {{ getDate(event.date) }}
             </div>
             <div
               class="text-overline pa-1 font-weight-medium"
-              style="border-radius: 0 4px 4px 0; font-size: 0.7em;"
               :style="{
                 backgroundColor: dateChipStyles.monthBg,
                 color: dateChipStyles.monthText
@@ -131,6 +129,6 @@
 
 <style scoped>
 .text-overline {
-  font-size: 0.8em;
+  font-size: 0.75em;
 }
 </style>

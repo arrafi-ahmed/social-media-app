@@ -39,17 +39,57 @@
     let startDate = null
     let endDate = null
     if (Array.isArray(findForm.dates) && findForm.dates.length > 0) {
-      const sorted = [...findForm.dates].sort()
+      // Debug: log what Vuetify is returning
+      console.log('findForm.dates (raw):', findForm.dates)
+      console.log('findForm.dates types:', findForm.dates.map(d => ({ value: d, type: typeof d, isDate: d instanceof Date })))
+      
+      // Sort dates properly - convert to comparable format first
+      const sorted = [...findForm.dates].sort((a, b) => {
+        const dateA = a instanceof Date ? a.getTime() : (typeof a === 'string' ? new Date(a).getTime() : 0)
+        const dateB = b instanceof Date ? b.getTime() : (typeof b === 'string' ? new Date(b).getTime() : 0)
+        return dateA - dateB
+      })
+      
+      console.log('sorted dates:', sorted)
+      
       // Format dates to YYYY-MM-DD for backend
       const formatDate = (date) => {
         if (!date) return null
+        
         // If already in YYYY-MM-DD format, return as is
         if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
           return date
         }
-        // Convert Date object or other formats to YYYY-MM-DD
+        
+        // If it's a string, try to extract date components directly
+        if (typeof date === 'string') {
+          // Try to match YYYY-MM-DD format (with or without time)
+          const ymdMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})/)
+          if (ymdMatch) {
+            return `${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`
+          }
+          // Try to match ISO format with time (YYYY-MM-DDTHH:mm:ss)
+          const isoMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})T/)
+          if (isoMatch) {
+            return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`
+          }
+          // Try to match other common formats
+          const dateMatch = date.match(/(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/)
+          if (dateMatch) {
+            const year = dateMatch[1]
+            const month = String(dateMatch[2]).padStart(2, '0')
+            const day = String(dateMatch[3]).padStart(2, '0')
+            return `${year}-${month}-${day}`
+          }
+        }
+        
+        // Convert Date object to YYYY-MM-DD
+        // For Date objects, we need to handle timezone carefully
         const d = date instanceof Date ? date : new Date(date)
         if (isNaN(d.getTime())) return null // Invalid date
+        
+        // For Date objects, use local time methods since date pickers typically work in local time
+        // This ensures the date shown in the picker matches the date sent to the backend
         const year = d.getFullYear()
         const month = String(d.getMonth() + 1).padStart(2, '0')
         const day = String(d.getDate()).padStart(2, '0')
@@ -57,6 +97,9 @@
       }
       startDate = formatDate(sorted[0])
       endDate = formatDate(sorted.at(-1))
+      
+      console.log('Formatted startDate:', startDate)
+      console.log('Formatted endDate:', endDate)
     }
 
     const payload = {
