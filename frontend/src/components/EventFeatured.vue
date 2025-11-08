@@ -1,11 +1,23 @@
 <!--source = [browse, wall, collection, wishlist]-->
 <script setup>
   import { computed } from 'vue'
+  import { useTheme } from 'vuetify'
   import { useStore } from 'vuex'
   import { formatMonthYear, getDate, loadEventThumb, to12hTime } from '@/others/util.js'
 
   const store = useStore()
+  const theme = useTheme()
   const { event, type } = defineProps(['event', 'type'])
+
+  // Computed styles for date chip based on theme
+  const dateChipStyles = computed(() => {
+    const isDark = theme.current.value.dark
+    return {
+      dateBg: '#e40046', // Primary color for date (consistent across themes)
+      monthBg: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.9)', // Semi-transparent overlay
+      monthText: isDark ? '#ffffff' : '#e40046', // White text in dark, primary text in light
+    }
+  })
 
   const currentUser = computed(() => store.getters['auth/getCurrentUser'])
   const isOwner = computed(() => event.userId == currentUser.value.id)
@@ -19,7 +31,7 @@
 </script>
 
 <template>
-  <v-sheet
+  <v-card
     :class="{ 'pa-2 mb-2 rounded': type === 'has-header' }"
   >
     <h4 v-if="type === 'has-header'" class="px-2 pb-1">Featured Event</h4>
@@ -32,16 +44,26 @@
       >
         <v-chip
           v-if="event.date"
-          class="mt-2 absolute high-z-index v-chip-0-padding rounded-0"
-          density="compact"
+          class="mt-2 absolute high-z-index v-chip-0-padding"
           label
           variant="text"
         >
-          <div class="d-flex justify-center align-center">
-            <div class="text-overline bg-primary pa-2">
+          <div class="d-flex overflow-hidden" style="border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+            <div
+              class="text-overline pa-1 text-white font-weight-bold"
+              style="border-radius: 4px 0 0 4px; font-size: 0.7em;"
+              :style="{ backgroundColor: dateChipStyles.dateBg }"
+            >
               {{ getDate(event.date) }}
             </div>
-            <div class="text-overline text-primary pa-2">
+            <div
+              class="text-overline pa-1 font-weight-medium"
+              style="border-radius: 0 4px 4px 0; font-size: 0.7em;"
+              :style="{
+                backgroundColor: dateChipStyles.monthBg,
+                color: dateChipStyles.monthText
+              }"
+            >
               {{ formatMonthYear(event.date) }}
             </div>
           </div>
@@ -104,7 +126,7 @@
         </div>
       </div>
     </v-sheet>
-  </v-sheet>
+  </v-card>
 </template>
 
 <style scoped>

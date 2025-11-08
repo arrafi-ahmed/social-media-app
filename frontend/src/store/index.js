@@ -37,7 +37,8 @@ const store = createStore({
       state.progress = payload
     },
     setRouteInfo (state, payload) {
-      state.routeInfo = payload
+      // Merge with existing routeInfo to preserve actionSource and lastScrollY
+      state.routeInfo = { ...state.routeInfo, ...payload }
     },
     addSnackbar (state, payload) {
       state.snackbars.push(payload)

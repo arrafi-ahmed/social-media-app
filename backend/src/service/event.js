@@ -325,11 +325,11 @@ exports.findWallEvents = async ({
     values.push("%" + searchKeyword + "%");
   }
   if (startDate) {
-    sql += ` and e.date >= $${paramIndex++}`;
+    sql += ` and DATE(e.date) >= $${paramIndex++}::date`;
     values.push(startDate);
   }
   if (endDate) {
-    sql += ` and e.date <= $${paramIndex++}`;
+    sql += ` and DATE(e.date) <= $${paramIndex++}::date`;
     values.push(endDate);
   }
   if (category) {
@@ -399,11 +399,11 @@ exports.findBrowseEvents = async ({
     values.push("%" + searchKeyword + "%");
   }
   if (startDate) {
-    sql += ` and e.date >= $${paramIndex2++}`;
+    sql += ` and DATE(e.date) >= $${paramIndex2++}::date`;
     values.push(startDate);
   }
   if (endDate) {
-    sql += ` and e.date <= $${paramIndex2++}`;
+    sql += ` and DATE(e.date) <= $${paramIndex2++}::date`;
     values.push(endDate);
   }
   if (category) {

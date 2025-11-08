@@ -40,8 +40,23 @@
     let endDate = null
     if (Array.isArray(findForm.dates) && findForm.dates.length > 0) {
       const sorted = [...findForm.dates].sort()
-      startDate = sorted[0]
-      endDate = sorted.at(-1)
+      // Format dates to YYYY-MM-DD for backend
+      const formatDate = (date) => {
+        if (!date) return null
+        // If already in YYYY-MM-DD format, return as is
+        if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+          return date
+        }
+        // Convert Date object or other formats to YYYY-MM-DD
+        const d = date instanceof Date ? date : new Date(date)
+        if (isNaN(d.getTime())) return null // Invalid date
+        const year = d.getFullYear()
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+      startDate = formatDate(sorted[0])
+      endDate = formatDate(sorted.at(-1))
     }
 
     const payload = {

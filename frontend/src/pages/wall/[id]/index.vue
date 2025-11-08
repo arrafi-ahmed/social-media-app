@@ -66,6 +66,20 @@
 
   async function loadEvents ({ done }) {
     if (isLoading) return
+    
+    // Prevent refetching page 1 if events already exist when returning from eventSingle
+    // This keeps the events in store and maintains scroll position
+    const isReturningFromEventSingle = 
+      ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name) &&
+      routeInfo.value.actionSource === 'back'
+    
+    // Only skip if we're returning from eventSingle AND events already exist
+    // If events.length is 0, we still need to load them
+    if (isReturningFromEventSingle && events.value.length > 0 && page.value === 1 && filterActive.value !== 'findForm') {
+      done('ok')
+      return
+    }
+    
     isLoading = true
     try {
       const action
@@ -222,15 +236,19 @@
 
   onMounted(() => {
     // fix: going other profile from event single - comment namecard, then return to event single - back btn. dont update new profile info
-    // if (user.value?.id && user.value?.id != route.params.id) {
-    //   fetchData()
-    // }
+    if (user.value?.id && user.value?.id != route.params.id) {
+      fetchData()
+    }
     if (
-      ['eventSingle', 'eventEdit'].includes(routeInfo.value.from?.name)
+      ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name)
       && routeInfo.value.actionSource === 'back'
     ) {
-      if (routeInfo.value.lastScrollY)
-        window.scrollTo(0, routeInfo.value.lastScrollY)
+      // Restore scroll position after a brief delay to ensure DOM is ready
+      if (routeInfo.value.lastScrollY) {
+        setTimeout(() => {
+          window.scrollTo(0, routeInfo.value.lastScrollY)
+        }, 100)
+      }
       return
     }
     fetchData()
