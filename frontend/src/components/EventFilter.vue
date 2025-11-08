@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, reactive, ref } from 'vue'
+  import { computed, reactive, ref, watch } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
   import { useStore } from 'vuex'
 
@@ -16,10 +16,18 @@
   const settings = computed(() => store.state.user.settings)
   const findForm = reactive({
     searchKeyword: null,
-    dates: [],
     category: null,
     sort: settings.value?.sort,
   })
+
+  // Date mode controls
+  const isRangeMode = ref(true) // true = range mode, false = single date mode
+  const singleDateType = ref('start') // 'start' or 'end' when in single mode
+  const startDateValue = ref(null)
+  const endDateValue = ref(null)
+  
+  // v-model for date input - must be array when multiple="range", single value when multiple=false
+  const dateInputValue = ref([])
 
   const sortIcon = computed(() =>
     findForm.sort === 'ASC'
@@ -31,81 +39,83 @@
           : null,
   )
 
+  // Format date to YYYY-MM-DD for backend
+  const formatDate = (date) => {
+    if (!date) return null
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) return date
+    if (typeof date === 'string') {
+      const ymdMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})/)
+      if (ymdMatch) return `${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`
+      const isoMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})T/)
+      if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`
+    }
+    const d = date instanceof Date ? date : new Date(date)
+    if (isNaN(d.getTime())) return null
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  // Watch for date input changes
+  watch(dateInputValue, (newValue) => {
+    if (isRangeMode.value) {
+      // Range mode: newValue is an array
+      if (Array.isArray(newValue)) {
+        if (newValue.length === 0) {
+          startDateValue.value = null
+          endDateValue.value = null
+        } else if (newValue.length === 1) {
+          startDateValue.value = newValue[0]
+          endDateValue.value = null
+        } else if (newValue.length === 2) {
+          const sorted = [...newValue].sort((a, b) => {
+            const dateA = a instanceof Date ? a.getTime() : new Date(a).getTime()
+            const dateB = b instanceof Date ? b.getTime() : new Date(b).getTime()
+            return dateA - dateB
+          })
+          startDateValue.value = sorted[0]
+          endDateValue.value = sorted[1]
+        }
+      }
+    } else {
+      // Single date mode: newValue is a single value
+      const date = newValue || null
+      if (singleDateType.value === 'start') {
+        startDateValue.value = date
+      } else {
+        endDateValue.value = date
+      }
+    }
+  })
+
+  // Watch for mode changes and update dateInputValue accordingly
+  watch([isRangeMode, singleDateType], () => {
+    if (isRangeMode.value) {
+      // Switch to range mode: ensure dateInputValue is an array
+      if (startDateValue.value && endDateValue.value) {
+        const start = startDateValue.value instanceof Date ? startDateValue.value : new Date(startDateValue.value)
+        const end = endDateValue.value instanceof Date ? endDateValue.value : new Date(endDateValue.value)
+        dateInputValue.value = start.getTime() <= end.getTime() ? [start, end] : [end, start]
+      } else if (startDateValue.value) {
+        dateInputValue.value = [startDateValue.value instanceof Date ? startDateValue.value : new Date(startDateValue.value)]
+      } else {
+        dateInputValue.value = []
+      }
+    } else {
+      // Switch to single mode: ensure dateInputValue is a single value
+      dateInputValue.value = singleDateType.value === 'start' ? startDateValue.value : endDateValue.value
+    }
+  }, { immediate: true })
+
   async function handleFindEvents () {
     await form.value.validate()
     if (!isFormValid.value) return
 
-    // Derive range boundaries from dates array (handles single or range)
-    let startDate = null
-    let endDate = null
-    if (Array.isArray(findForm.dates) && findForm.dates.length > 0) {
-      // Debug: log what Vuetify is returning
-      console.log('findForm.dates (raw):', findForm.dates)
-      console.log('findForm.dates types:', findForm.dates.map(d => ({ value: d, type: typeof d, isDate: d instanceof Date })))
-      
-      // Sort dates properly - convert to comparable format first
-      const sorted = [...findForm.dates].sort((a, b) => {
-        const dateA = a instanceof Date ? a.getTime() : (typeof a === 'string' ? new Date(a).getTime() : 0)
-        const dateB = b instanceof Date ? b.getTime() : (typeof b === 'string' ? new Date(b).getTime() : 0)
-        return dateA - dateB
-      })
-      
-      console.log('sorted dates:', sorted)
-      
-      // Format dates to YYYY-MM-DD for backend
-      const formatDate = (date) => {
-        if (!date) return null
-        
-        // If already in YYYY-MM-DD format, return as is
-        if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-          return date
-        }
-        
-        // If it's a string, try to extract date components directly
-        if (typeof date === 'string') {
-          // Try to match YYYY-MM-DD format (with or without time)
-          const ymdMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})/)
-          if (ymdMatch) {
-            return `${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`
-          }
-          // Try to match ISO format with time (YYYY-MM-DDTHH:mm:ss)
-          const isoMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})T/)
-          if (isoMatch) {
-            return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`
-          }
-          // Try to match other common formats
-          const dateMatch = date.match(/(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/)
-          if (dateMatch) {
-            const year = dateMatch[1]
-            const month = String(dateMatch[2]).padStart(2, '0')
-            const day = String(dateMatch[3]).padStart(2, '0')
-            return `${year}-${month}-${day}`
-          }
-        }
-        
-        // Convert Date object to YYYY-MM-DD
-        // For Date objects, we need to handle timezone carefully
-        const d = date instanceof Date ? date : new Date(date)
-        if (isNaN(d.getTime())) return null // Invalid date
-        
-        // For Date objects, use local time methods since date pickers typically work in local time
-        // This ensures the date shown in the picker matches the date sent to the backend
-        const year = d.getFullYear()
-        const month = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
-      }
-      startDate = formatDate(sorted[0])
-      endDate = formatDate(sorted.at(-1))
-      
-      console.log('Formatted startDate:', startDate)
-      console.log('Formatted endDate:', endDate)
-    }
-
     const payload = {
       searchKeyword: findForm.searchKeyword,
-      startDate,
-      endDate,
+      startDate: formatDate(startDateValue.value),
+      endDate: formatDate(endDateValue.value),
       category: findForm.category,
       sort: findForm.sort,
     }
@@ -115,6 +125,9 @@
 
   function resetForm () {
     form.value.reset()
+    startDateValue.value = null
+    endDateValue.value = null
+    dateInputValue.value = isRangeMode.value ? [] : null
     emit('resetFindEvents')
   }
 
@@ -152,17 +165,55 @@
               </v-col>
               <v-col cols="12" md="4">
                 <v-date-input
-                  v-model="findForm.dates"
+                  v-model="dateInputValue"
                   class="mb-3 mb-md-0 mr-0 mr-md-2"
                   clearable
                   color="primary"
                   density="comfortable"
                   hide-details
-                  label="Start & End Date"
-                  multiple="range"
+                  :label="isRangeMode ? 'Start & End Date' : (singleDateType === 'start' ? 'Start Date' : 'End Date')"
+                  :multiple="isRangeMode ? 'range' : false"
+                  :hide-header="false"
                   prepend-icon=""
-                  @click-clear="findForm.dates = []"
-                />
+                  @click-clear="startDateValue = null; endDateValue = null"
+                  >
+                  <template #header="{ header, transition }">
+                    <div class="d-flex align-center justify-space-between pa-2 px-6">
+                      <div class="d-flex align-center" style="gap: 8px; flex: 1;">
+                        <span class="text-caption text-medium-emphasis">Range</span>
+                        <v-switch
+                          v-model="isRangeMode"
+                          color="primary"
+                          density="compact"
+                          hide-details
+                          size="x-small"
+                      />
+                      </div>
+                      <div
+                        v-if="!isRangeMode"
+                        class="d-flex align-center"
+                        style="gap: 8px; flex: 1;"
+                      >
+                        <span class="text-caption text-medium-emphasis">Type</span>
+                        <v-btn-toggle
+                          v-model="singleDateType"
+                          color="primary"
+                          density="compact"
+                          mandatory
+                          size="x-small"
+                          variant="outlined"
+                        >
+                          <v-btn value="start" size="x-small">
+                            Start
+                          </v-btn>
+                          <v-btn value="end" size="x-small">
+                            End
+                          </v-btn>
+                        </v-btn-toggle>
+                      </div>
+                    </div>
+                  </template>
+                </v-date-input>
               </v-col>
               <v-col cols="12" md="4">
                 <v-select
