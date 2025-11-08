@@ -1,38 +1,42 @@
 <template>
   <div 
     class="d-flex align-center flex-wrap"
-    :class="isCompact ? 'gap-1 justify-space-between ' : 'gap-2'"
+    :class="isCompact ? 'justify-space-between' : ''"
   >
-    <v-tooltip
+    <div
       v-for="reaction in reactionTypes"
       :key="reaction.type"
-      location="top"
-      :text="reaction.label"
+      :class="isCompact ? 'mr-1' : 'mr-4'"
     >
-      <template #activator="{ props: tooltipProps }">
-        <v-btn
-          :class="{ 
-            'reaction-active': userReaction === reaction.type
-          }"          
-          :color="userReaction === reaction.type ? reaction.color : 'default'"
-          :density="isCompact ? 'comfortable' : 'default'"
-          :disabled="loading"        
-          v-bind="tooltipProps"
-          variant="text"
-          icon=""
-          @click="handleReaction(reaction.type)"
-        >
-          <v-icon
-            :icon="userReaction === reaction.type ? reaction.iconActive : reaction.icon"
-            :size="isCompact ? 'small' : 'default'"
-          />
-          <span
-            v-if="shouldShowCounts"
-            :class="isCompact ? 'ml-1 text-caption' : 'ml-1'"
-          >{{ (reactions && reactions[reaction.type]) ? reactions[reaction.type] : 0 }}</span>
-        </v-btn>
-      </template>
-    </v-tooltip>
+      <v-tooltip
+        location="top"
+        :text="reaction.label"
+      >
+        <template #activator="{ props: tooltipProps }">
+          <v-btn
+            :class="{ 
+              'reaction-active': userReaction === reaction.type            
+            }"          
+            :color="userReaction === reaction.type ? reaction.color : 'default'"
+            :density="isCompact ? 'comfortable' : 'default'"
+            :disabled="loading"        
+            v-bind="tooltipProps"
+            variant="text"
+            icon=""
+            @click="handleReaction(reaction.type)"
+          >
+            <v-icon
+              :icon="userReaction === reaction.type ? reaction.iconActive : reaction.icon"
+              :size="isCompact ? 'small' : 'default'"
+            />
+            <span
+              v-if="shouldShowCounts"
+              :class="isCompact ? 'ml-1 text-caption' : 'ml-1'"
+            >{{ (reactions && reactions[reaction.type]) ? reactions[reaction.type] : 0 }}</span>
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </div>
   </div>
 </template>
 
