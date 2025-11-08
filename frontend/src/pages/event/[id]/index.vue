@@ -267,24 +267,26 @@
   <v-container v-if="event?.id">
     <v-row align="center" class="pb-1" justify="space-between">
       <v-col class="d-flex align-center" cols="auto">
-        <v-btn icon="mdi-arrow-left" variant="text" @click="goBack" />
+        <v-btn :size="xs ? 'small' : 'default'" icon="mdi-arrow-left" variant="text" @click="goBack" />
         <user-avatar
-          class="ml-2"
+          :class="xs ? 'ml-1' : 'ml-2'"
           :img-src="event?.image"
+          :img-size="xs ? 40 : undefined"
           @click-avatar="goUserProfile(getUserIdentifier)"
         />
 
-        <div class="pl-3">
-          <h4 class="clickable" @click="goUserProfile(getUserIdentifier)">
+        <div :class="xs ? 'pl-2' : 'pl-3'">
+          <h4 :class="xs ? 'text-body-1 mb-0 clickable' : 'clickable'" @click="goUserProfile(getUserIdentifier)">
             {{ event?.fullName }}
           </h4>
-          <small>Posted on {{ formatDateFromTimestamp(event?.createdAt) }}</small>
+          <small :class="xs ? 'text-caption' : ''">Posted on {{ formatDateFromTimestamp(event?.createdAt) }}</small>
         </div>
       </v-col>
       <v-col class="d-flex align-center justify-end" cols="auto">
         <v-btn
           color="primary"
           :icon="event.isFavorite ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
+          :size="xs ? 'small' : 'default'"
           variant="text"
           @click="handleFavoriteEvent"
         />
@@ -292,6 +294,7 @@
           v-if="isEventOwner || isAdmin"
           color="primary"
           icon="mdi-pencil"
+          :size="xs ? 'small' : 'default'"
           variant="text"
           @click="goEditEvent"
         />
@@ -306,27 +309,27 @@
           :img-src="getEventImageUrl(event?.images?.[0])"
         />
 
-        <div class="mt-6 mb-4">
+        <div :class="xs ? 'mt-4 mb-3' : 'mt-6 mb-4'">
           <v-chip
             v-if="event?.category"
-            class="mb-3"
+            :class="xs ? 'mb-2' : 'mb-3'"
             color="primary"
-            size="small"
+            :size="xs ? 'x-small' : 'small'"
             variant="tonal"
           >
             {{ event?.category }}
           </v-chip>
-          <h2 class="mb-4" style="font-weight: 600; line-height: 1.3;">{{ event?.title }}</h2>
+          <h2 :class="xs ? 'text-h6 mb-3' : 'mb-4'" style="font-weight: 600; line-height: 1.3;">{{ event?.title }}</h2>
         </div>
 
         <v-card class="mb-4">
-          <v-card-text class="pa-4">
-            <div class="d-flex flex-column" style="gap: 16px;">
+          <v-card-text :class="xs ? 'pa-3' : 'pa-4'">
+            <div class="d-flex flex-column" :style="xs ? 'gap: 12px;' : 'gap: 16px;'">
               <div v-if="event?.date" class="d-flex align-center">
-                <v-icon class="mr-3" color="primary" size="small">mdi-calendar</v-icon>
+                <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="primary" :size="xs ? 'x-small' : 'small'">mdi-calendar</v-icon>
                 <div>
-                  <div class="text-body-2 font-weight-medium">{{ formatDateFromTimestamp(event?.date) }}</div>
-                  <div v-if="event?.startTime" class="text-caption text-medium-emphasis mt-1">
+                  <div :class="xs ? 'text-caption font-weight-medium' : 'text-body-2 font-weight-medium'">{{ formatDateFromTimestamp(event?.date) }}</div>
+                  <div v-if="event?.startTime" :class="xs ? 'text-caption text-medium-emphasis mt-0' : 'text-caption text-medium-emphasis mt-1'">
                     {{ formatTimeFromTime(event?.startTime) }}
                     <span v-if="event?.endTime"> - {{ formatTimeFromTime(event?.endTime) }}</span>
                   </div>
@@ -336,8 +339,8 @@
               <v-divider v-if="event?.location" />
 
               <div v-if="event?.location" class="d-flex align-center">
-                <v-icon class="mr-3" color="primary" size="small">mdi-map-marker</v-icon>
-                <div class="text-body-2">{{ event?.location }}</div>
+                <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="primary" :size="xs ? 'x-small' : 'small'">mdi-map-marker</v-icon>
+                <div :class="xs ? 'text-caption' : 'text-body-2'">{{ event?.location }}</div>
               </div>
 
               <v-divider v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0" />
@@ -346,12 +349,12 @@
                 v-if="event?.expiresAt && daysUntilExpiration !== null && daysUntilExpiration > 0"
                 class="d-flex align-center"
               >
-                <v-icon class="mr-3" color="warning" size="small">mdi-clock-alert</v-icon>
+                <v-icon :class="xs ? 'mr-2' : 'mr-3'" color="warning" :size="xs ? 'x-small' : 'small'">mdi-clock-alert</v-icon>
                 <div>
-                  <div class="text-body-2 text-warning font-weight-medium">
+                  <div :class="xs ? 'text-caption text-warning font-weight-medium' : 'text-body-2 text-warning font-weight-medium'">
                     Expires in {{ daysUntilExpiration }} {{ daysUntilExpiration === 1 ? "day" : "days" }}
                   </div>
-                  <div class="text-caption text-medium-emphasis mt-1">
+                  <div :class="xs ? 'text-caption text-medium-emphasis mt-0' : 'text-caption text-medium-emphasis mt-1'">
                     {{ expirationDateFormatted }}
                   </div>
                 </div>
@@ -361,43 +364,45 @@
         </v-card>
 
         <v-card v-if="event?.description" class="mb-4">
-          <v-card-text class="pa-5">
+          <v-card-text :class="xs ? 'pa-3' : 'pa-5'">
             <div class="rich-text-content" v-html="sanitizedDescription" />
           </v-card-text>
         </v-card>
 
         <!-- Reactions and Group Sharing Section -->
         <v-card class="mb-4">
-          <v-card-text class="pa-4">
-            <div class="d-flex align-center">
+          <v-card-text :class="xs ? 'pa-2' : 'pa-4'">
+            <div :class="xs ? 'd-flex flex-column' : 'd-flex align-center'" :style="xs ? 'gap: 12px;' : ''">
               <reaction-buttons
-                :compact="false"
                 :event-id="event?.id"
                 :reactions="event?.reactions || { like: 0, unlike: 0, heart: 0, laugh: 0, sad: 0, angry: 0 }"
                 store-module="eventSingle"
                 :user-reaction="event?.userReaction"
               />
-              <v-spacer v-if="isEventOwner" />
-              <div v-if="isEventOwner" class="d-flex align-center gap-2">
-                <div v-if="eventGroups.length > 0" class="d-flex flex-wrap gap-1">
+              <v-spacer v-if="isEventOwner && !xs" />
+              <div v-if="isEventOwner" :class="xs ? 'd-flex flex-column align-center' : 'd-flex align-center'" :style="xs ? 'gap: 8px;' : 'gap: 8px;'">
+                <div v-if="eventGroups.length > 0" class="d-flex flex-wrap gap-1 justify-center">
                   <v-chip
                     v-for="group in eventGroups"
                     :key="group.id"
                     :color="group.color || 'primary'"
-                    size="small"
+                    :size="xs ? 'x-small' : 'small'"
                     variant="flat"
                   >
-                    <v-icon :icon="group.icon || 'mdi-account-group'" size="x-small" start />
-                    <span class="text-caption">{{ group.name }}</span>
+                    <v-icon :icon="group.icon || 'mdi-account-group'" :size="xs ? 'xx-small' : 'x-small'" start />
+                    <span :class="xs ? 'text-caption' : 'text-caption'">{{ group.name }}</span>
                   </v-chip>
                 </div>
                 <v-btn
                   color="primary"
-                  icon="mdi-share-variant"
-                  size="small"
+                  :prepend-icon="xs ? 'mdi-share-variant' : undefined"
+                  :icon="xs ? undefined : 'mdi-share-variant'"
+                  :size="xs ? 'small' : 'small'"
                   variant="text"
                   @click="openGroupSelector"
-                />
+                >
+                  <span v-if="xs" class="ml-1">Share</span>
+                </v-btn>
               </div>
             </div>
           </v-card-text>
@@ -658,8 +663,7 @@
             <v-checkbox
               v-for="group in groups"
               :key="group.id"
-              v-model="selectedGroupIds"
-              class="mb-2"
+              v-model="selectedGroupIds"              
               hide-details="auto"
               :value="group.id"
             >

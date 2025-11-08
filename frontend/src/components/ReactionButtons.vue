@@ -9,22 +9,26 @@
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="reaction-button"
-          :class="{ 'reaction-active': userReaction === reaction.type }"
+          :class="{ 
+            'reaction-active': userReaction === reaction.type,
+            'reaction-mobile': isCompact
+          }"
           :color="userReaction === reaction.type ? reaction.color : 'default'"
-          density="default"
+          :density="isCompact ? 'compact' : 'default'"
           :disabled="loading"
-          :size="compact ? 'default' : 'large'"
+          :size="isCompact ? 'small' : 'default'"
           v-bind="tooltipProps"
           variant="text"
+          icon=""
           @click="handleReaction(reaction.type)"
         >
           <v-icon
             :icon="userReaction === reaction.type ? reaction.iconActive : reaction.icon"
-            :size="compact ? 'default' : 'x-large'"
+            :size="isCompact ? 'small' : 'default'"
           />
           <span
-            v-if="!compact || showCounts"
-            class="ml-1"
+            v-if="shouldShowCounts"
+            :class="isCompact ? 'ml-1 text-caption' : 'ml-1'"
           >{{ (reactions && reactions[reaction.type]) ? reactions[reaction.type] : 0 }}</span>
         </v-btn>
       </template>
@@ -33,7 +37,8 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
+  import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import $axios from '@/plugins/axios'
 
@@ -52,11 +57,11 @@
     },
     compact: {
       type: Boolean,
-      default: false,
+      default: null, // null means auto-detect from screen size
     },
     showCounts: {
       type: Boolean,
-      default: true,
+      default: null, // null means auto-detect from screen size
     },
     storeModule: {
       type: String,
@@ -66,8 +71,21 @@
 
   const emit = defineEmits(['reaction-toggled'])
 
+  const { xs, sm, mobile } = useDisplay()
   const store = useStore()
   const loading = ref(false)
+
+  // Auto-detect compact mode on mobile if not explicitly set
+  const isCompact = computed(() => {
+    if (props.compact !== null) return props.compact
+    return xs.value || mobile.value
+  })
+
+  // Auto-hide counts on very small screens if not explicitly set
+  const shouldShowCounts = computed(() => {
+    if (props.showCounts !== null) return props.showCounts
+    return !xs.value
+  })
 
   const reactionTypes = [
     { type: 'like', icon: 'mdi-thumb-up-outline', iconActive: 'mdi-thumb-up', color: 'primary', label: 'Like' },
@@ -132,6 +150,8 @@
   display: flex;
   gap: 4px;
   align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .reaction-buttons.compact {
@@ -139,9 +159,16 @@
 }
 
 .reaction-button {
-  min-width: auto;
-  padding: 8px 16px;
+  flex: 1;
+  min-width: 0;
+  /* padding: 8px 16px; */
   height: auto;
+  justify-content: center;
+}
+
+.reaction-button.reaction-mobile {
+  /* padding: 6px 8px; */
+  min-width: 0;
 }
 
 .reaction-button.reaction-active {
@@ -154,7 +181,23 @@
 
 .reaction-button:hover:not(:disabled) {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: transform 0.2s;
+}
+
+/* Mobile optimizations */
+@media (max-width: 600px) {
+  .reaction-buttons {
+    gap: 2px;
+  }
+  
+  .reaction-button {
+    /* padding: 6px 4px; */
+    min-width: 0;
+  }
+  
+  .reaction-button:hover:not(:disabled) {
+    transform: scale(1.02);
+  }
 }
 </style>
