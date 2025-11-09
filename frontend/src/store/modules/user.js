@@ -253,7 +253,7 @@ export const actions = {
   async requestResetPass ({ commit }, request) {
     try {
       const response = await $axios.post('/auth/requestResetPass', {
-        resetEmail: request,
+        resetEmail: request.resetEmail,
       })
       return response
     } catch (error) {

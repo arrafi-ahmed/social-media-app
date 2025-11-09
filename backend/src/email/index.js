@@ -20,7 +20,7 @@ function generateWelcomeEmail({ name, id, vueBaseUrl = VUE_BASE_URL }) {
  * Generate and return password reset email HTML and subject
  */
 function generatePasswordResetEmail({ token, vueBaseUrl = VUE_BASE_URL }) {
-  const resetUrl = `${vueBaseUrl}/reset-password/?token=${token}`;
+  const resetUrl = `${vueBaseUrl}/auth/reset-password?token=${token}`;
   const html = renderTemplate("password-reset", {
     title: "Reset Your Password",
     resetUrl

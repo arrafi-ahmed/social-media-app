@@ -29,12 +29,34 @@
             border-bottom: 1px solid #e0e0e0;
         }
 
+        .email-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .email-logo-img {
+            width: 28px;
+            height: 28px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
         .email-logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #e40046;
             text-decoration: none;
             margin: 0;
+            display: inline-block;
+        }
+
+        .email-logo-primary {
+            color: #e40046;
+        }
+
+        .email-logo-secondary {
+            color: #666666;
         }
 
         .email-content {
@@ -100,7 +122,12 @@
                 <!-- Header -->
                 <tr>
                     <td class="email-header">
-                        <h1 class="email-logo">{{appName}}</h1>
+                        <div class="email-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <img src="{{vueBaseUrl}}/img/logo.png" alt="WayzAway Logo" class="email-logo-img" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle;">
+                            <h1 class="email-logo" style="margin: 0; display: inline-block;">
+                                <span class="email-logo-primary">Wayz</span><span class="email-logo-secondary">Away</span>
+                            </h1>
+                        </div>
                     </td>
                 </tr>
 
