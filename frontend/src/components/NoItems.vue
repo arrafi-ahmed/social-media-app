@@ -38,8 +38,8 @@
     description: { type: String },
     actionText: { type: String },
     actionIcon: { type: String },
-    color: { type: String, default: 'info' },
-    type: { type: String, default: 'info' },
+    color: { type: String, default: 'primary' },
+    type: { type: String, default: undefined },
     maxWidth: { type: Number, default: 650 },
   })
 

@@ -161,7 +161,7 @@
 
   const handleResetFindEvents = () => setFindFormData('none')
   const handleFindEvents = form => setFindFormData('findForm', form)
-  const handleClickCategory = category => setFindFormData('findForm', category)
+  const handleClickCategory = category => setFindFormData('findForm', { category })
 
   function handleSort (form) {
     setFindFormData('findForm', form)

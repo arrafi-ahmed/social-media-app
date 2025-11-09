@@ -70,14 +70,19 @@ exports.updatePage = async (body, files) => {
   }
   const result = await db.getRow(sql, [body.pageName]);
 
+  // Convert description to JSON string for PostgreSQL JSONB column
+  const descriptionJson = typeof body.description === 'string' 
+    ? body.description 
+    : JSON.stringify(body.description);
+
   if (result) {
     const updateSql = `
       UPDATE pages 
-      SET title = $1, description = $2 
+      SET title = $1, description = $2::jsonb 
       WHERE name = $3
       RETURNING *
     `;
-    const row = await db.getRow(updateSql, [body.title, body.description, body.pageName]);
+    const row = await db.getRow(updateSql, [body.title, descriptionJson, body.pageName]);
     if (!row) {
       throw new CustomError("Page update failed!", 500);
     }
@@ -85,9 +90,9 @@ exports.updatePage = async (body, files) => {
   } else {
     const insertSql = `
       INSERT INTO pages (title, description, name) 
-      VALUES ($1, $2, $3)
+      VALUES ($1, $2::jsonb, $3)
       RETURNING *
     `;
-    return await db.getRow(insertSql, [body.title, body.description, body.pageName]);
+    return await db.getRow(insertSql, [body.title, descriptionJson, body.pageName]);
   }
 };

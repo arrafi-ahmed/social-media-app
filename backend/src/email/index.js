@@ -33,7 +33,7 @@ function generatePasswordResetEmail({ token, vueBaseUrl = VUE_BASE_URL }) {
  * Generate and return invitation email HTML and subject
  */
 function generateInvitationEmail({ senderName, message, token, apiBaseUrl = API_BASE_URL }) {
-  const acceptUrl = `${apiBaseUrl}/api/user/acceptInvite/?token=${token}`;
+  const acceptUrl = `${apiBaseUrl}/user/acceptInvite?token=${token}`;
   const html = renderTemplate("invitation", {
     title: "You've Been Invited!",
     senderName,

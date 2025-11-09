@@ -233,8 +233,8 @@
             <div class="container-border">
               <v-alert
                 class="mt-2"
+                color="primary"
                 density="comfortable"
-                type="info"
                 variant="tonal"
               >Upload up to 2 images. First selected image will be used as the cover.
               </v-alert>

@@ -48,15 +48,15 @@
   // Color options
   const colorOptions = [
     '#e40046', // Primary
-    '#1976d2', // Blue
+    '#c5003a', // Dark Red
     '#388e3c', // Green
     '#f57c00', // Orange
     '#7b1fa2', // Purple
-    '#0288d1', // Light Blue
     '#c2185b', // Pink
     '#5d4037', // Brown
-    '#455a64', // Blue Grey
     '#616161', // Grey
+    '#9c27b0', // Deep Purple
+    '#ff5722', // Deep Orange
   ]
 
   watch(() => props.modelValue, newVal => {

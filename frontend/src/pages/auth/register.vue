@@ -204,6 +204,32 @@
                   Already registered?
                 </v-btn>
               </div>
+              <div class="text-center mt-4">
+                <a
+                  href="https://apps.apple.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mx-2"
+                >
+                  <img
+                    alt="Download on the App Store"
+                    src="/img/badge-app-store.png"
+                    style="height: 40px; width: auto;"
+                  />
+                </a>
+                <a
+                  href="https://play.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mx-2"
+                >
+                  <img
+                    alt="Get it on Google Play"
+                    src="/img/badge-google-play.png"
+                    style="height: 40px; width: auto;"
+                  />
+                </a>
+              </div>
             </v-form>
           </v-card-text>
         </v-card>

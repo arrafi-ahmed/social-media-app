@@ -21,7 +21,7 @@ const dark = {
     'header': '#2A3A47',
     'background': '#2A3A47',
     'surface': '#3b4d59',
-    'primary': '#58a6ff',
+    'primary': '#e40046',
     'secondary': '#00bfa5',
     'success': '#4CAF50',
     'error': '#EF5350',

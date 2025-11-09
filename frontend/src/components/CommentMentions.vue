@@ -74,7 +74,7 @@
 }
 
 .comment-mentions :deep(.mention-link) {
-  color: #1976d2;
+  color: #e40046;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;

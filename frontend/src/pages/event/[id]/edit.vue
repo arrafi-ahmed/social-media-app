@@ -444,8 +444,8 @@
 
             <div class="container-border">
               <v-alert
+                color="primary"
                 density="comfortable"
-                type="info"
                 variant="tonal"
               >Add up to 25 new images. First selected becomes the cover if you remove the existing cover.
               </v-alert>

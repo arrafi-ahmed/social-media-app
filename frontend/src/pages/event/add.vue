@@ -361,8 +361,8 @@
 
               <div class="container-border">
                 <v-alert
+                  color="primary"
                   density="comfortable"
-                  type="info"
                   variant="tonal"
                 >First selected image will be used as the cover.
                 </v-alert>
