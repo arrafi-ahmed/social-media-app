@@ -3,7 +3,7 @@ import { countries } from '@/others/country-list.js'
 import router from '@/router/index.js'
 import store from '@/store/index.js'
 
-export const appInfo = { name: 'WayzAway', version: 2 }
+export const appInfo = { name: 'WayzAway', version: 2.1 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 export const baseUrl = import.meta.env.VITE_BASE_URL
