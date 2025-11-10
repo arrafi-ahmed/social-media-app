@@ -3,7 +3,6 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
-  import CategoryList from '@/components/CategoryList.vue'
   import EventFeatured from '@/components/EventFeatured.vue'
   import EventFilter from '@/components/EventFilter.vue'
   import EventInfinite from '@/components/EventInfinite.vue'
@@ -44,9 +43,6 @@
   const user = computed(() => store.state.eventWall.user)
   const featuredEvent = computed(() => store.state.eventWall.featuredEvent)
   const upcomingEvents = computed(() => store.state.eventWall.upcomingEvents)
-  const mountedEventCategories = computed(
-    () => store.getters['eventWall/getMountedEventCategories'],
-  )
 
   const settings = computed(() => store.state.user.settings)
   if (isObjEmpty(settings.value?.sort)) {
@@ -161,7 +157,6 @@
 
   const handleResetFindEvents = () => setFindFormData('none')
   const handleFindEvents = form => setFindFormData('findForm', form)
-  const handleClickCategory = category => setFindFormData('findForm', { category })
 
   function handleSort (form) {
     setFindFormData('findForm', form)
@@ -331,18 +326,6 @@
               </v-expansion-panel-text>
             </v-expansion-panel>
             <v-expansion-panel>
-              <v-expansion-panel-title>Event Categories
-              </v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <category-list
-                  :categories="mountedEventCategories"
-                  :selected="findFormData.category"
-                  type="headerless"
-                  @click-category="handleClickCategory"
-                />
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel>
               <v-expansion-panel-title>Upcoming Events</v-expansion-panel-title>
               <v-expansion-panel-text>
                 <events-upcoming :events="upcomingEvents" type="headerless" />
@@ -368,14 +351,6 @@
             v-if="featuredEvent?.id"
             :event="featuredEvent"
             type="has-header"
-          />
-
-          <!-- Categories Section -->
-          <category-list
-            :categories="mountedEventCategories"
-            :selected="findFormData.category"
-            type="has-header"
-            @click-category="handleClickCategory"
           />
 
           <!-- Upcoming Events Section -->

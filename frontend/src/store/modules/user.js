@@ -22,6 +22,10 @@ export const mutations = {
     const user = new User(payload || {})
     state.currentUser = user
     localStorage.setItem('currentUser', JSON.stringify(user))
+    // Trigger theme update event if theme is available
+    if (user.theme) {
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: user.theme }))
+    }
   },
   setCurrentUserName (state, payload) {
     state.currentUser.fullName = payload
@@ -38,6 +42,8 @@ export const mutations = {
   setCurrentUserTheme (state, payload) {
     state.currentUser.theme = payload
     localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+    // Trigger theme update event
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: payload }))
   },
   removeToken (state) {
     localStorage.removeItem('token')
@@ -54,6 +60,10 @@ export const mutations = {
     const settings = new UserSettings(payload || {})
     localStorage.setItem('settings', JSON.stringify(settings))
     state.settings = settings
+    // Trigger theme update event if theme is available
+    if (settings.theme) {
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: settings.theme }))
+    }
   },
   setFoundUsers (state, payload) {
     state.foundUsers = (payload || []).map(userData => new User(userData || {}))
@@ -85,11 +95,13 @@ export const mutations = {
 }
 
 export const actions = {
-  async signin ({ commit }, request) {
+  async signin ({ commit, dispatch }, request) {
     try {
       const response = await $axios.post('/auth/signin', request)
       commit('setToken', response.headers?.authorization)
       commit('setCurrentUser', response.data?.payload?.currentUser)
+      // Load settings from database after signin
+      await dispatch('setUserSettings')
       return response
     } catch (error) {
       throw error
@@ -112,6 +124,7 @@ export const actions = {
     try {
       const response = await $axios.get('/user/getProfileWSettings')
       commit('setProfile', response.data?.payload)
+      commit('setUserSettings', response.data?.payload)
       return response
     } catch (error) {
       throw error
@@ -142,37 +155,46 @@ export const actions = {
       throw error
     }
   },
-  async updateEmailNewEventNotification ({ commit }, request) {
+  async updateEmailNewEventNotification ({ commit, state }, request) {
     try {
       const response = await $axios.get(
         '/user/updateEmailNewEventNotification',
         { params: { payload: request } },
       )
       commit('setProfile', { emailNewEventNotification: request })
+      // Also update settings state and localStorage
+      const updatedSettings = { ...state.settings, emailNewEventNotification: request }
+      commit('setUserSettings', updatedSettings)
       return response
     } catch (error) {
       throw error
     }
   },
-  async updateEmailNewCommentNotification ({ commit }, request) {
+  async updateEmailNewCommentNotification ({ commit, state }, request) {
     try {
       const response = await $axios.get(
         '/user/updateEmailNewCommentNotification',
         { params: { payload: request } },
       )
       commit('setProfile', { emailNewCommentNotification: request })
+      // Also update settings state and localStorage
+      const updatedSettings = { ...state.settings, emailNewCommentNotification: request }
+      commit('setUserSettings', updatedSettings)
       return response
     } catch (error) {
       throw error
     }
   },
-  async updateEmailUpdateEventNotification ({ commit }, request) {
+  async updateEmailUpdateEventNotification ({ commit, state }, request) {
     try {
       const response = await $axios.get(
         '/user/updateEmailUpdateEventNotification',
         { params: { payload: request } },
       )
       commit('setProfile', { emailUpdateEventNotification: request })
+      // Also update settings state and localStorage
+      const updatedSettings = { ...state.settings, emailUpdateEventNotification: request }
+      commit('setUserSettings', updatedSettings)
       return response
     } catch (error) {
       throw error
@@ -284,7 +306,12 @@ export const actions = {
   async setUserSettings ({ commit }) {
     try {
       const response = await $axios.get('/user/getUserSettings')
-      commit('setUserSettings', response.data?.payload)
+      const settings = response.data?.payload
+      commit('setUserSettings', settings)
+      // Also update currentUser theme if theme is in settings
+      if (settings?.theme) {
+        commit('setCurrentUserTheme', settings.theme)
+      }
       return response
     } catch (error) {
       throw error

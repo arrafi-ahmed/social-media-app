@@ -35,7 +35,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 app.use(suppressToastMiddleware);
-
 //routes
 app.use("/auth", require("./src/controller/auth"));
 app.use("/user", require("./src/controller/user"));

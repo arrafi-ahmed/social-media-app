@@ -19,11 +19,14 @@ exports.register = async (payload, clientUrl) => {
   // insert into user settings
   await userService.createUserSettings(insertedUser.id);
 
-  // Send welcome email
+  // Send welcome email (non-blocking - don't fail registration if email fails)
   emailService.sendWelcomeEmail(payload.email, {
     name: payload.fullName,
     id: insertedUser.id,
     vueBaseUrl: clientUrl
+  }).catch((error) => {
+    // Log email error but don't throw - registration should succeed even if email fails
+    console.error("Failed to send welcome email:", error);
   });
 
   const admins = await userService.getAdmins();

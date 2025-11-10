@@ -447,45 +447,44 @@ exports.getEvent = async (eventId, userId = null) => {
     return null;
   }
 
-  // Check if event is shared with groups
-  const groupCheckSql = `SELECT COUNT(*) as count FROM event_group WHERE event_id = $1`;
-  const groupCheck = await db.getRow(groupCheckSql, [eventId]);
-  const isSharedWithGroups = groupCheck && parseInt(groupCheck.count) > 0;
-
   // Authorization check: userId is required for all events
   if (!userId) {
     throw new CustomError("Event not found or access denied!", 404);
   }
 
-  // If event is shared with groups, verify user has access
-  if (isSharedWithGroups) {
-    // Check if user is the event creator or a member of any group the event is shared with
-    // Note: Friends are NOT allowed if event is shared with groups (group-only privacy)
-    const accessSql = `
-      SELECT 1
-      FROM event_post e
-      LEFT JOIN event_group eg ON e.id = eg.event_id
-      LEFT JOIN group_member gm ON eg.group_id = gm.group_id AND gm.user_id = $2
-      WHERE e.id = $1
-        AND (e.user_id = $2 OR gm.user_id = $2)
-      LIMIT 1
-    `;
-    const hasAccess = await db.getRow(accessSql, [eventId, userId]);
-    if (!hasAccess) {
-      throw new CustomError("Event not found or access denied!", 404);
-    }
+  const eventCreatorId = result.userId || result.user_id;
+  
+  // Check if user is the event creator (always allow access)
+  if (eventCreatorId === userId) {
+    // Access granted - user is the creator
   } else {
-    // Event is NOT shared with groups - check if user is the creator or a friend
-    const eventCreatorId = result.userId || result.user_id;
-    
-    // If user is the event creator, allow access
-    if (eventCreatorId === userId) {
-      // Access granted - user is the creator
+    // Check if event is shared with any groups
+    const groupCheckSql = `SELECT COUNT(*) as count FROM event_group WHERE event_id = $1`;
+    const groupCheck = await db.getRow(groupCheckSql, [eventId]);
+    const isSharedWithGroups = groupCheck && parseInt(groupCheck.count) > 0;
+
+    if (isSharedWithGroups) {
+      // Event IS shared with groups - user must be a member of at least one group
+      // Note: Friends are NOT allowed if event is shared with groups (group-only privacy)
+      const accessSql = `
+        SELECT 1
+        FROM event_group eg
+        JOIN group_member gm ON eg.group_id = gm.group_id
+        WHERE eg.event_id = $1
+          AND gm.user_id = $2
+        LIMIT 1
+      `;
+      const hasGroupAccess = await db.getRow(accessSql, [eventId, userId]);
+      if (!hasGroupAccess) {
+        // User is not a member of any group the event is shared with
+        throw new CustomError("This content is private. You don't have access to view this event.", 403);
+      }
     } else {
-      // Check if user is friends with the event creator
+      // Event is NOT shared with groups - check if user is friends with the creator
       const areFriends = await userService.checkFriends(userId, eventCreatorId);
       if (!areFriends) {
-        throw new CustomError("Event not found or access denied!", 404);
+        // User is not friends with the event creator
+        throw new CustomError("This content is private. You don't have access to view this event.", 403);
       }
     }
   }

@@ -1,6 +1,7 @@
 import { ROLES } from '@/others/constants.js'
 import { countries } from '@/others/country-list.js'
 import router from '@/router/index.js'
+import store from '@/store/index.js'
 
 export const appInfo = { name: 'WayzAway', version: 2 }
 

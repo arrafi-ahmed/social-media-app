@@ -1,20 +1,46 @@
 <script setup>
-  import { computed, watch } from 'vue'
+  import { computed, onMounted, watch } from 'vue'
 
   import { useRoute } from 'vue-router'
   import { useStore } from 'vuex'
+  import { useTheme } from 'vuetify'
   import ProgressLoader from '@/components/ProgressLoader.vue'
   import { appInfo } from '@/others/util'
 
   const route = useRoute()
   const store = useStore()
+  const theme = useTheme()
 
   const snackbars = computed(() => store.state.snackbars)
+  const currentUser = computed(() => store.getters['auth/getCurrentUser'])
 
   // Handle Vuetify's update
   function setSnackbars (val) {
     store.commit('setSnackbars', val)
   }
+
+  // Watch for theme changes and apply to Vuetify
+  function handleThemeChange (event) {
+    if (event?.detail) {
+      theme.global.name.value = event.detail
+    }
+  }
+
+  // Watch currentUser theme changes
+  watch(() => currentUser.value?.theme, (newTheme) => {
+    if (newTheme) {
+      theme.global.name.value = newTheme
+    }
+  }, { immediate: true })
+
+  // Listen for theme change events
+  onMounted(() => {
+    window.addEventListener('theme-change', handleThemeChange)
+    // Apply theme from currentUser on mount
+    if (currentUser.value?.theme) {
+      theme.global.name.value = currentUser.value.theme
+    }
+  })
 
   watch(route, to => {
     const tail = appInfo.name + ' | Private Travel and Activity Journal'

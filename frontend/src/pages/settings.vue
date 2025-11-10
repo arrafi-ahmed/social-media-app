@@ -32,6 +32,7 @@
 
   const calcHome = computed(() => store.getters['auth/calcHome'])
   const profile = computed(() => store.state.user.profile)
+  const settings = computed(() => store.state.user.settings)
   const currentUser = computed(() => store.getters['auth/getCurrentUser'])
   const subscription = computed(() => store.state.subscription.subscription)
   const subscriptionPlans = computed(() => store.state.subscription.subscriptionPlans)
@@ -47,15 +48,14 @@
 
   // User model for profile updates
   const userInit = new User()
-  const user = reactive({ ...userInit })
-  user.newPassword = null
-  user.newProfilePicture = null
-  user.slug = null
+  const newUser = reactive({ ...userInit })
+  newUser.newPassword = null
+  newUser.newProfilePicture = null
   const imageDeleted = ref(false)
 
   // UserSettings model for notification settings
   const settingsInit = new UserSettings()
-  const settings = reactive({ ...settingsInit })
+  const newSettings = reactive({ ...settingsInit })
 
   function handleProfileImageChange (files) {
     // When new image is uploaded, reset deletion flag
@@ -67,9 +67,10 @@
   function handleDeleteProfileImage () {
     // When ImageManager delete is clicked, mark image for deletion
     imageDeleted.value = true
-    user.newProfilePicture = null
+    newUser.newProfilePicture = null
   }
 
+  const expansionPanel = ref([0])
   const form = ref(null)
   const isFormValid = ref(true)
 
@@ -78,20 +79,20 @@
     if (!isFormValid.value) return
 
     const formData = new FormData()
-    formData.append('fullName', user.fullName)
-    formData.append('email', user.email)
-    if (user.newPassword) {
-      formData.append('password', user.newPassword)
+    formData.append('fullName', newUser.fullName)
+    formData.append('email', newUser.email)
+    if (newUser.newPassword) {
+      formData.append('password', newUser.newPassword)
     }
-    if (user.slug) {
-      formData.append('slug', user.slug)
+    if (newUser.slug) {
+      formData.append('slug', newUser.slug)
     }
 
-    if (user.newProfilePicture) {
+    if (newUser.newProfilePicture) {
       // v-file-upload may return array or single file - handle both cases
       const fileToUpload = Array.isArray(user.newProfilePicture)
-        ? user.newProfilePicture[0]
-        : user.newProfilePicture
+        ? newUser.newProfilePicture[0]
+        : newUser.newProfilePicture
       if (fileToUpload) {
         formData.append('files', fileToUpload)
         if (profile.value?.image) formData.append('rmImage', profile.value?.image)
@@ -101,10 +102,10 @@
       formData.append('rmImage', profile.value?.image)
     }
 
-    store.dispatch('user/updateProfile', formData).then(() => {
+    store.dispatch('newUser/updateProfile', formData).then(() => {
       // Reset form after successful update
       imageDeleted.value = false
-      user.newProfilePicture = null
+      newUser.newProfilePicture = null
     })
   }
 
@@ -140,29 +141,12 @@
   onMounted(async () => {
     await store.dispatch('user/setProfileWSettings')
     // Map profile data to user model
-    Object.assign(user, {
-      id: profile.value?.id,
-      fullName: profile.value?.fullName,
-      email: profile.value?.email,
-      image: profile.value?.image,
-      slug: profile.value?.slug,
-      role: profile.value?.role,
-      createdAt: profile.value?.createdAt,
-    })
+    Object.assign(newUser, {...profile.value})
     // Reset image deletion flag when profile loads
     imageDeleted.value = false
-    user.newProfilePicture = null
+    newUser.newProfilePicture = null
 
-    // Map settings data to settings model
-    Object.assign(settings, {
-      id: profile.value?.settings?.id,
-      emailNewEventNotification: profile.value?.emailNewEventNotification,
-      emailUpdateEventNotification: profile.value?.emailUpdateEventNotification,
-      emailNewCommentNotification: profile.value?.emailNewCommentNotification,
-      sort: profile.value?.settings?.sort,
-      theme: profile.value?.theme || 'light',
-      userId: profile.value?.id,
-    })
+    Object.assign(newSettings, {...settings.value})
 
     // Fetch subscription data
     if (currentUser.value?.id) {
@@ -178,7 +162,7 @@
     <page-title :back-url="calcHome" subtitle="Manage your account" title="Settings" />
 
     <div class="page-content">
-      <v-expansion-panels variant="accordion">
+      <v-expansion-panels variant="inset" v-model="expansionPanel">
         <!-- Update Profile Section -->
         <v-expansion-panel>
           <v-expansion-panel-title>
@@ -201,7 +185,7 @@
               @submit.prevent="updateProfile"
             >
               <v-text-field
-                v-model="user.fullName"
+                v-model="newUser.fullName"
                 class="mt-3"
                 clearable
                 density="compact"
@@ -211,7 +195,7 @@
                 variant="solo"
               />
               <v-text-field
-                v-model="user.email"
+                v-model="newUser.email"
                 class="mt-3"
                 clearable
                 density="compact"
@@ -224,7 +208,7 @@
                 variant="solo"
               />
               <v-text-field
-                v-model="user.slug"
+                v-model="newUser.slug"
                 class="mt-3"
                 clearable
                 density="compact"
@@ -237,8 +221,9 @@
                 ]"
                 variant="solo"
               />
+              
               <v-text-field
-                v-model="user.newPassword"
+                v-model="newUser.newPassword"
                 class="mt-3"
                 clearable
                 density="compact"
@@ -257,7 +242,7 @@
                   @delete="handleDeleteProfileImage"
                 />
                 <v-file-upload
-                  v-model="user.newProfilePicture"
+                  v-model="newUser.newProfilePicture"
                   accept="image/*"
                   clearable
                   density="compact"
@@ -274,7 +259,7 @@
                   variant=""
                   @update:model-value="handleProfileImageChange"
                 />
-                <div v-if="imageDeleted && !user.newProfilePicture" class="text-body-2 text-medium-emphasis mt-2">
+                <div v-if="imageDeleted && !newUser.newProfilePicture" class="text-body-2 text-medium-emphasis mt-2">
                   Profile picture removed. Upload a new one or save to confirm deletion.
                 </div>
               </div>
@@ -398,45 +383,39 @@
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-switch
-              v-model="settings.emailNewEventNotification"
+              v-model="newSettings.emailNewEventNotification"
               class="mt-3"
-              color="primary"
-              :false-value="0"
+              color="primary"              
               hide-details
               inset
-              label="When friends post new event"
-              :true-value="1"
+              label="When friends post new event"              
               @update:model-value="
-                handleEmailNewEventNotification(settings.emailNewEventNotification)
+                handleEmailNewEventNotification(newSettings.emailNewEventNotification)
               "
             />
             <v-switch
-              v-model="settings.emailUpdateEventNotification"
+              v-model="newSettings.emailUpdateEventNotification"
               class="mt-3"
-              color="primary"
-              :false-value="0"
+              color="primary"            
               hide-details
               inset
-              label="When friends edit event"
-              :true-value="1"
+              label="When friends edit event"            
               @update:model-value="
                 handleEmailUpdateEventNotification(
-                  settings.emailUpdateEventNotification,
+                  newSettings.emailUpdateEventNotification,
                 )
               "
             />
             <v-switch
-              v-model="settings.emailNewCommentNotification"
+              v-model="newSettings.emailNewCommentNotification"
               class="mt-3"
-              color="primary"
-              :false-value="0"
+              color="primary"              
               hide-details
               inset
-              label="When friends comment on your event"
-              :true-value="1"
+              label="When friends comment on your event"              
               @update:model-value="
                 handleEmailNewCommentNotification(
-                  settings.emailNewCommentNotification,
+                  newSettings.emailNewCommentNotification,
                 )
               "
             />

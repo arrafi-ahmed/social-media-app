@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, onMounted, reactive, ref } from 'vue'
+  import { computed, nextTick, onMounted, reactive, ref } from 'vue'
   import { VueDraggable } from 'vue-draggable-plus'
   import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
@@ -239,6 +239,9 @@
       date: new Date(storedEditingEvent.value.date),
     })
 
+    // Ensure RichTextEditor is ready before setting description
+    await nextTick()
+
     // Set temporary post state if expiresAt exists
     if (editingEvent.expiresAt) {
       isTemporary.value = true
@@ -318,6 +321,7 @@
             <div class="mt-2">
               <label class="text-body-2 text-medium-emphasis mb-2 d-block">Description</label>
               <rich-text-editor
+                :key="`editor-${editingEvent.id}-${editingEvent.description ? 'loaded' : 'empty'}`"
                 v-model="editingEvent.description"
                 placeholder="Describe your event..."
               />

@@ -319,13 +319,14 @@
               </v-row>
 
               <!-- Temporary Post Option -->
-              <v-card class="mt-4" variant="outlined">
+              <v-card class="mt-4" variant="flat" density="compact">
                 <v-card-text>
-                  <div class="d-flex align-center mb-2">
+                  <div class="d-flex align-center">
                     <v-switch
                       v-model="isTemporary"
                       color="primary"
                       hide-details
+                      inset
                       label="Make this post temporary"
                     />
                   </div>

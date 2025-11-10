@@ -238,9 +238,52 @@
           loadEventGroups(),
         ])
       })
+      .catch(error => {
+        // Handle 403 (Forbidden) - private content
+        if (error?.response?.status === 403) {
+          const message = error?.response?.data?.msg || 'This content is private. You don\'t have access to view it.'
+          router.push({
+            name: 'notFound',
+            query: { 
+              errcode: 403,
+              message 
+            }
+          })
+        } else if (error?.response?.status === 404) {
+          // Handle 404 (Not Found) - event doesn't exist
+          const message = error?.response?.data?.msg || 'Event not found'
+          router.push({ 
+            name: 'notFound',
+            query: {
+              errcode: 404,
+              message
+            }
+          })
+        } else {
+          // Other errors - show error message
+          console.error('Error loading event:', error)
+          router.push({ 
+            name: 'notFound',
+            query: {
+              errcode: error?.response?.status || 500,
+              message: error?.response?.data?.msg || 'An error occurred'
+            }
+          })
+        }
+      })
       .finally(() => {
+        // Only redirect to notFound if event is not loaded and we haven't already navigated
         if (!event.value || !event.value.id) {
-          router.push({ name: 'notFound' })
+          const currentRoute = router.currentRoute.value
+          if (currentRoute.name !== 'notFound') {
+            router.push({ 
+              name: 'notFound',
+              query: {
+                errcode: 404,
+                message: 'Event not found'
+              }
+            })
+          }
         }
       })
   })

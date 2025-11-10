@@ -637,6 +637,11 @@ exports.getPendingInvitation = async (email) => {
 };
 
 exports.createUserSettings = async (userId) => {
+  // Create user settings with all email notifications enabled by default
+  // All 3 email notifications are set to true for new users:
+  // - email_new_event_notification: true
+  // - email_update_event_notification: true
+  // - email_new_comment_notification: true
   const sql = `
     INSERT INTO user_settings (
       email_new_event_notification, email_update_event_notification,

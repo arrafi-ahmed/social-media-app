@@ -319,6 +319,16 @@
 
   // Watch for external changes to modelValue
   watch(() => props.modelValue, async newValue => {
+    // Wait for editor to be ready if it's not yet
+    if (!editor.value || !editorReady.value) {
+      // Wait a bit and try again
+      await nextTick()
+      // If still not ready, wait a bit more
+      if (!editor.value || !editorReady.value) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+      }
+    }
+    
     if (editor.value && editorReady.value && editor.value.commands) {
       await nextTick()
       try {

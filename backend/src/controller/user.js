@@ -197,18 +197,19 @@ router.get("/acceptInvite", async (req, res, next) => {
         message: "Friend invitation accepted!"
       },
       register: {
-        url: "/register",
+        url: "/auth/register",
         message: "Friend invitation will be accepted after registration!"
       }
     };
 
     const redirect = redirectMap[result.redirect];
+
     if (redirect) {
       const clientUrl = VUE_BASE_URL + redirect.url;
       res.redirect(301, `${clientUrl}?apiQueryMsg=${redirect.message}`);
     }
   } catch (error) {
-    const clientUrl = VUE_BASE_URL + "/register";
+    const clientUrl = VUE_BASE_URL + "/auth/register";
     const apiQueryMsg = error instanceof CustomError ? error.message : "Invitation accepting failed!";
     res.redirect(301, `${clientUrl}?apiQueryMsg=${apiQueryMsg}`);
   }
