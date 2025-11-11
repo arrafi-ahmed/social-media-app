@@ -23,8 +23,7 @@
     :class="{ clickable }"
     color="secondary"
     rounded
-    size="45"
-    tile
+    size="45"    
     @click="clickable ? $emit('clickAvatar') : undefined"
   >
     <template v-if="showFallback">

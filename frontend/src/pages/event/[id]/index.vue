@@ -94,6 +94,7 @@
   const selectedGroupIds = ref([])
   const isLoadingGroups = ref(false)
   const groupDialogOpen = ref(false)
+  const hasNavigatedToError = ref(false)
 
   async function handleFavoriteEvent () {
     // Always show collection selector dialog
@@ -242,6 +243,7 @@
         // Handle 403 (Forbidden) - private content
         if (error?.response?.status === 403) {
           const message = error?.response?.data?.msg || 'This content is private. You don\'t have access to view it.'
+          hasNavigatedToError.value = true
           router.push({
             name: 'notFound',
             query: { 
@@ -252,6 +254,7 @@
         } else if (error?.response?.status === 404) {
           // Handle 404 (Not Found) - event doesn't exist
           const message = error?.response?.data?.msg || 'Event not found'
+          hasNavigatedToError.value = true
           router.push({ 
             name: 'notFound',
             query: {
@@ -262,6 +265,7 @@
         } else {
           // Other errors - show error message
           console.error('Error loading event:', error)
+          hasNavigatedToError.value = true
           router.push({ 
             name: 'notFound',
             query: {
@@ -272,8 +276,8 @@
         }
       })
       .finally(() => {
-        // Only redirect to notFound if event is not loaded and we haven't already navigated
-        if (!event.value || !event.value.id) {
+        // Only redirect to notFound if event is not loaded and we haven't already navigated in catch
+        if (!hasNavigatedToError.value && (!event.value || !event.value.id)) {
           const currentRoute = router.currentRoute.value
           if (currentRoute.name !== 'notFound') {
             router.push({ 

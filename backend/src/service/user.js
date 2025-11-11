@@ -356,8 +356,18 @@ exports.getFriendsWSettings = async (userId) => {
 };
 
 exports.removeFriend = async (userId, friendshipId) => {
+  // First verify the friendship exists and belongs to the user
+  const checkSql = `SELECT id FROM friendship WHERE id = $1 AND (user_id_1 = $2 OR user_id_2 = $2)`;
+  const checkResult = await db.getRow(checkSql, [friendshipId, userId]);
+  
+  if (!checkResult) {
+    // Return a result with rowCount 0 to indicate no rows were found
+    return { rowCount: 0 };
+  }
+  
+  // Delete the friendship
   const sql = `DELETE FROM friendship WHERE id = $1 AND (user_id_1 = $2 OR user_id_2 = $2)`;
-  return await db.execute(sql, [friendshipId, userId, userId]);
+  return await db.execute(sql, [friendshipId, userId]);
 };
 
 exports.searchUser = async (requestedUser) => {

@@ -63,7 +63,7 @@ router.get("/getCommentsByEventId", auth, async (req, res, next) => {
 
 router.post("/addComment", auth, async (req, res, next) => {
   try {
-    const result = await eventService.addComment(req.body, req.currentUser.id);
+    const result = await eventService.addComment(req.body, req.currentUser.id, VUE_BASE_URL);
     res
       .status(200)
       .json(new ApiResponse("Comment posted successfully!", result));

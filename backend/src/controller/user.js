@@ -105,13 +105,26 @@ router.get("/removeFriend", auth, async (req, res, next) => {
     const userId = req.query?.userId || req.currentUser.id;
     const friendshipId = req.query?.friendshipId;
 
-    const result = await userService.removeFriend(userId, friendshipId);
-    if (result) {
+    // Check if friendshipId is provided
+    if (friendshipId === undefined || friendshipId === null || friendshipId === '') {
+      return res.status(400).json(new ApiResponse("Friendship ID is required", null));
+    }
+
+    // Convert to integer to ensure type matching
+    const friendshipIdInt = parseInt(friendshipId, 10);
+    const userIdInt = parseInt(userId, 10);
+
+    if (isNaN(friendshipIdInt) || isNaN(userIdInt)) {
+      return res.status(400).json(new ApiResponse("Invalid friendship ID or user ID", null));
+    }
+
+    const result = await userService.removeFriend(userIdInt, friendshipIdInt);
+    if (result && result.rowCount > 0) {
       res
         .status(200)
         .json(new ApiResponse("Removed from friend list!", result));
     } else {
-      throw new Error();
+      return res.status(404).json(new ApiResponse("Friendship not found or could not be removed", null));
     }
   } catch (error) {
     return next(error);

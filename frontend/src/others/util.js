@@ -263,10 +263,25 @@ export const isValidPass = [
   v => /\d/.test(v) || 'Password must include at least one number!',
 ]
 
-export function showApiQueryMsg () {
+export function showApiQueryMsg (defaultColor = 'info') {
   if (localStorage.hasOwnProperty('apiQueryMsg')) {
+    const message = localStorage.getItem('apiQueryMsg')
+    // Determine color based on message content
+    let color = defaultColor
+    if (message.toLowerCase().includes('accepted') || 
+        message.toLowerCase().includes('success') ||
+        message.toLowerCase().includes('added') ||
+        message.toLowerCase().includes('created')) {
+      color = 'success'
+    } else if (message.toLowerCase().includes('error') || 
+               message.toLowerCase().includes('failed') ||
+               message.toLowerCase().includes('invalid')) {
+      color = 'error'
+    }
+    
     store.commit('addSnackbar', {
-      text: localStorage.getItem('apiQueryMsg'),
+      text: message,
+      color: color,
     })
     localStorage.removeItem('apiQueryMsg')
   }

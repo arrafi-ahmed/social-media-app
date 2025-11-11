@@ -19,14 +19,20 @@ const dark = {
   dark: true,
   colors: {
     'header': '#2A3A47',
-    'background': '#2A3A47',
-    'surface': '#3b4d59',
-    'primary': '#e40046',
+    'background': '#1a1a1a',
+    'surface': '#2d2d2d',
+    'primary': '#ff6b7a', // Softer, more dark mode friendly red
     'secondary': '#00bfa5',
-    'success': '#4CAF50',
+    'success': '#66BB6A',
     'error': '#EF5350',
-    'on-background': '#E8EFF5',
-    'on-surface': '#E8EFF5',
+    'warning': '#FFA726',
+    'info': '#42A5F5',
+    'on-background': '#ffffff', // Bright white for better readability
+    'on-surface': '#ffffff', // Bright white for better readability
+    'on-primary': '#ffffff',
+    'on-secondary': '#ffffff',
+    'on-error': '#ffffff',
+    'on-success': '#ffffff',
   },
 }
 const light = {

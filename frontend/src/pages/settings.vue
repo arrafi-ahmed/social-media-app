@@ -50,6 +50,7 @@
   const userInit = new User()
   const newUser = reactive({ ...userInit })
   newUser.newPassword = null
+  newUser.confirmPassword = null
   newUser.newProfilePicture = null
   const imageDeleted = ref(false)
 
@@ -75,8 +76,13 @@
   const isFormValid = ref(true)
 
   async function updateProfile () {
-    await form.value.validate()
-    if (!isFormValid.value) return
+    const validationResult = await form.value?.validate()
+    if (validationResult?.valid === false || !isFormValid.value) return
+
+    // Validate password match if password is provided
+    if (newUser.newPassword && newUser.newPassword !== newUser.confirmPassword) {
+      return
+    }
 
     const formData = new FormData()
     formData.append('fullName', newUser.fullName)
@@ -90,7 +96,7 @@
 
     if (newUser.newProfilePicture) {
       // v-file-upload may return array or single file - handle both cases
-      const fileToUpload = Array.isArray(user.newProfilePicture)
+      const fileToUpload = Array.isArray(newUser.newProfilePicture)
         ? newUser.newProfilePicture[0]
         : newUser.newProfilePicture
       if (fileToUpload) {
@@ -102,11 +108,16 @@
       formData.append('rmImage', profile.value?.image)
     }
 
-    store.dispatch('newUser/updateProfile', formData).then(() => {
+    try {
+      await store.dispatch('user/updateProfile', formData)
       // Reset form after successful update
       imageDeleted.value = false
       newUser.newProfilePicture = null
-    })
+      newUser.newPassword = null
+      newUser.confirmPassword = null
+    } catch (error) {
+      console.error('Failed to update profile:', error)
+    }
   }
 
   function handleEmailNewEventNotification (value) {
@@ -230,6 +241,20 @@
                 hide-details="auto"
                 label="New Password"
                 type="password"
+                variant="solo"
+              />
+              <v-text-field
+                v-model="newUser.confirmPassword"
+                class="mt-3"
+                clearable
+                density="compact"
+                hide-details="auto"
+                label="Confirm Password"
+                type="password"
+                :rules="[
+                  (v) => !newUser.newPassword || !!v || 'Please confirm your password',
+                  (v) => !newUser.newPassword || v === newUser.newPassword || 'Passwords do not match',
+                ]"
                 variant="solo"
               />
               <div class="mt-3">

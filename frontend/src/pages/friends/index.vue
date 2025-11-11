@@ -6,6 +6,7 @@
   import NameCard from '@/components/NameCard.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
+  import { showApiQueryMsg } from '@/others/util.js'
 
   definePage({
     name: 'friends',
@@ -52,6 +53,7 @@
   }
 
   onMounted(() => {
+    showApiQueryMsg()
     store.dispatch('user/setFriends')
   })
 </script>

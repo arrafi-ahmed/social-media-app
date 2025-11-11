@@ -130,13 +130,24 @@ export const actions = {
       throw error
     }
   },
-  async updateProfile ({ commit }, request) {
+  async updateProfile ({ commit, rootState }, request) {
     try {
       const response = await $axios.post('/user/updateProfile', request)
-      commit('setProfile', response.data?.payload)
-      commit('setCurrentUserName', response.data?.payload?.fullName)
-      commit('setCurrentUserImage', response.data?.payload?.image)
-      commit('setCurrentUserSlug', response.data?.payload?.slug)
+      const payload = response.data?.payload
+      
+      // Update user module state
+      commit('setProfile', payload)
+      commit('setCurrentUserName', payload?.fullName)
+      commit('setCurrentUserImage', payload?.image)
+      commit('setCurrentUserSlug', payload?.slug)
+      
+      // Also update auth module's currentUser so AppBar reflects changes immediately
+      commit('auth/setCurrentUser', {
+        fullName: payload?.fullName,
+        image: payload?.image,
+        slug: payload?.slug,
+      }, { root: true })
+      
       return response
     } catch (error) {
       throw error

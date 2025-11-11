@@ -10,6 +10,7 @@ export default class User {
                 role = 20,
                 theme = 'light',
                 createdAt = null,
+                friendshipId = null,
               } = {}) {
     this.id = id
     this.fullName = fullName
@@ -21,5 +22,6 @@ export default class User {
     this.role = role
     this.theme = theme
     this.createdAt = createdAt
+    this.friendshipId = friendshipId
   }
 }

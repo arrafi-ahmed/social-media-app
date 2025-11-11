@@ -1,10 +1,10 @@
 <script setup>
-  import { computed, reactive, ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { computed, onMounted, reactive, ref } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import { PasswordReset, User } from '@/models'
-  import { isValidEmail } from '@/others/util'
+  import { isValidEmail, showApiQueryMsg } from '@/others/util'
 
   definePage({
     name: 'signin', // Set the route name to 'signin'
@@ -18,6 +18,7 @@
   const { mobile } = useDisplay()
   const store = useStore()
   const router = useRouter()
+  const route = useRoute()
 
   // User model for signin (without password)
   const userInit = new User()
@@ -46,9 +47,28 @@
         password: password.value,
       })
       .then(result => {
-        router.push(calcHome.value)
+        // Check if there's a redirect message in localStorage (from friend invitation)
+        const apiQueryMsg = localStorage.getItem('apiQueryMsg')
+        if (apiQueryMsg && apiQueryMsg.toLowerCase().includes('friend')) {
+          // Redirect to friends page if it's a friend invitation message
+          // Don't show the message here - let the friends page show it
+          router.push({ name: 'friends' })
+        } else {
+          router.push(calcHome.value)
+          // Only show non-friend messages here
+          showApiQueryMsg()
+        }
       })
   }
+
+  onMounted(() => {
+    // Only show non-friend messages on signin page
+    // Friend messages should be shown on friends page after login
+    const apiQueryMsg = localStorage.getItem('apiQueryMsg')
+    if (apiQueryMsg && !apiQueryMsg.toLowerCase().includes('friend')) {
+      showApiQueryMsg()
+    }
+  })
 
   const dialog = ref(false)
   const resetForm = ref(null)

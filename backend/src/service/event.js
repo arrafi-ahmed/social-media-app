@@ -546,7 +546,7 @@ exports.getCommentsByEventId = async (eventId) => {
   return comments;
 };
 
-exports.addComment = async (newComment, userId) => {
+exports.addComment = async (newComment, userId, clientUrl) => {
   const sql = `
     INSERT INTO event_comment (event_id, user_id, text, created_at) 
     VALUES ($1, $2, $3, $4)
@@ -569,6 +569,30 @@ exports.addComment = async (newComment, userId) => {
       }
     } else {
       comment.mentions = [];
+    }
+
+    // Send immediate email notification to event owner if they have notifications enabled
+    if (clientUrl) {
+      try {
+        // Get event owner's user_id directly from the database
+        const eventSql = `SELECT user_id FROM event_post WHERE id = $1`;
+        const event = await db.getRow(eventSql, [newComment.eventId]);
+        
+        if (event && event.userId && event.userId !== userId) {
+          // Get event owner's settings to check if they have email notifications enabled
+          const eventOwner = await userService.getProfileWSettings(event.userId);
+          if (eventOwner && eventOwner.emailNewCommentNotification) {
+            // Send email notification to event owner
+            await emailService.sendNewCommentEmail(eventOwner.email, {
+              userId: eventOwner.id,
+              vueBaseUrl: clientUrl
+            });
+          }
+        }
+      } catch (error) {
+        // Don't fail the comment creation if email sending fails
+        console.error('Error sending comment notification email:', error);
+      }
     }
   } else {
     if (comment) comment.mentions = [];
