@@ -153,6 +153,15 @@
               </v-list>
             </v-menu>
           </template>
+          <template #mobile-actions>
+            <v-btn
+              icon="mdi-account-plus"
+              rounded
+              variant="flat"
+              color="primary"
+              @click="openCreateDialog"
+            />
+          </template>
         </page-title>
 
         <div class="page-content">          

@@ -196,13 +196,13 @@
       .dispatch(`${storeModule.value}/editEvent`, formData)
       .then(() => {
         switch (route.query.src) {
-          case 'single': {
-            router.push({ name: 'eventSingle', params: { id: editingEvent.id } })
+          case 'browse': {
+            router.push({ name: 'browse' })
 
             break
           }
-          case 'browse': {
-            router.push({ name: 'browse' })
+          case 'single': {
+            router.push({ name: 'wall', params: { id: currentUser.value.slug || currentUser.value.id } })
 
             break
           }

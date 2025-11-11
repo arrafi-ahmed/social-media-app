@@ -201,7 +201,12 @@ router.get("/getEventsByUserId", auth, async (req, res, next) => {
     const userId = req.query?.userId ? parseInt(req.query.userId, 10) : req.currentUser.id;
     const page = req.query?.page ? parseInt(req.query.page, 10) : 1;
     const sort = req.query?.sort || "LATEST";
-    const result = await eventService.getEventsByUserId({ userId, page, sort });
+    const result = await eventService.getEventsByUserId({ 
+      userId, 
+      currentUserId: req.currentUser.id,
+      page, 
+      sort 
+    });
     res.status(200).json(new ApiResponse(null, result));
   } catch (error) {
     return next(error);
@@ -234,6 +239,7 @@ router.get("/getUpcomingEvents", auth, async (req, res, next) => {
 router.post("/findWallEvents", auth, async (req, res, next) => {
   try {
     req.body.userId = req.body?.userId ? parseInt(req.body.userId, 10) : req.currentUser.id;
+    req.body.currentUserId = req.currentUser.id;
     const result = await eventService.findWallEvents(req.body);
     res.status(200).json(new ApiResponse(null, result));
   } catch (error) {

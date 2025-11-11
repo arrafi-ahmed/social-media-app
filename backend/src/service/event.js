@@ -243,19 +243,50 @@ function getSortingColumn(sort) {
   }
 }
 
-exports.getEventsByUserId = async ({ userId, page = 1, sort = "LATEST" }) => {
+exports.getEventsByUserId = async ({ userId, currentUserId, page = 1, sort = "LATEST" }) => {
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
 
-  const sql = `
+  // If viewing own profile, show all events. Otherwise, filter out private group events
+  const isOwnProfile = userId === currentUserId;
+  
+  let sql = `
     SELECT e.*, c.full_name, c.image, c.slug
     FROM event_post e
     JOIN users c ON e.user_id = c.id
     WHERE e.user_id = $1
-    ORDER BY ${getSortingColumn(sort)}
-    LIMIT $2 OFFSET $3
+      AND (e.expires_at IS NULL OR e.expires_at > NOW())
   `;
-  return db.getRows(sql, [userId, itemsPerPage, offset]);
+
+  const values = [userId];
+  let paramIndex = 2;
+
+  // If viewing someone else's profile, filter out private group events where current user is not a member
+  if (!isOwnProfile) {
+    sql += ` AND (
+      -- Events NOT shared with any group (visible to friends)
+      NOT EXISTS (
+        SELECT 1
+        FROM event_group eg
+        WHERE eg.event_id = e.id
+      )
+      -- OR events shared with groups that current user belongs to
+      OR EXISTS (
+        SELECT 1
+        FROM event_group eg
+        JOIN group_member gm ON eg.group_id = gm.group_id
+        WHERE eg.event_id = e.id
+          AND gm.user_id = $${paramIndex}
+      )
+    )`;
+    values.push(currentUserId);
+    paramIndex++;
+  }
+
+  sql += ` ORDER BY ${getSortingColumn(sort)} LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+  values.push(itemsPerPage, offset);
+  
+  return db.getRows(sql, values);
 };
 exports.getAllEventsByFriends = async ({ userId, page = 1, sort = "LATEST" }) => {
   const itemsPerPage = 10;
@@ -300,6 +331,7 @@ exports.getAllEventsByFriends = async ({ userId, page = 1, sort = "LATEST" }) =>
 
 exports.findWallEvents = async ({
                                   userId,
+                                  currentUserId,
                                   searchKeyword,
                                   startDate,
                                   endDate,
@@ -311,6 +343,9 @@ exports.findWallEvents = async ({
   const offset = (page - 1) * itemsPerPage;
   const values = [];
 
+  // If viewing own profile, show all events. Otherwise, filter out private group events
+  const isOwnProfile = userId === currentUserId;
+  
   let sql = `
     SELECT e.*, c.full_name, c.image, c.slug
     FROM event_post e
@@ -320,6 +355,28 @@ exports.findWallEvents = async ({
 
   values.push(userId);
   let paramIndex = 2;
+
+  // If viewing someone else's profile, filter out private group events where current user is not a member
+  if (!isOwnProfile) {
+    sql += ` AND (
+      -- Events NOT shared with any group (visible to friends)
+      NOT EXISTS (
+        SELECT 1
+        FROM event_group eg
+        WHERE eg.event_id = e.id
+      )
+      -- OR events shared with groups that current user belongs to
+      OR EXISTS (
+        SELECT 1
+        FROM event_group eg
+        JOIN group_member gm ON eg.group_id = gm.group_id
+        WHERE eg.event_id = e.id
+          AND gm.user_id = $${paramIndex}
+      )
+    )`;
+    values.push(currentUserId);
+    paramIndex++;
+  }
 
   if (searchKeyword) {
     sql += ` and e.title like $${paramIndex++}`;
