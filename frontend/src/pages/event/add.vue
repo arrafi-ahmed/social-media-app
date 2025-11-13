@@ -180,18 +180,26 @@
       })
       router.push({ name: 'wall', params: { id: currentUser.slug || currentUser.id } })
     }).catch(error => {
-      // Handle post limit error
+      // Handle post limit error or subscription expired error
       if (error.response?.status === 403) {
+        const errorMsg = error.response?.data?.msg || 'Post limit reached. Upgrade to premium for unlimited posts!'
         store.commit('addSnackbar', {
-          text: error.response?.data?.msg || 'Post limit reached. Upgrade to premium for unlimited posts!',
+          text: errorMsg,
           color: 'error',
         })
-        // Reload limit status from store
-        store.dispatch('subscription/fetchPostLimitStatus', currentUser.id).then(() => {
-          if (postLimitStatusRef.value) {
-            postLimitStatusRef.value.loadLimitStatus()
-          }
-        })
+        // If subscription expired, redirect to pricing after a short delay
+        if (errorMsg.includes('subscription has expired') || errorMsg.includes('no longer active')) {
+          setTimeout(() => {
+            router.push({ name: 'pricing' })
+          }, 2000)
+        } else {
+          // Reload limit status from store
+          store.dispatch('subscription/fetchPostLimitStatus', currentUser.id).then(() => {
+            if (postLimitStatusRef.value) {
+              postLimitStatusRef.value.loadLimitStatus()
+            }
+          })
+        }
       } else {
         // Handle other errors - show specific error message from backend
         // The axios interceptor already shows the error, but we ensure it's shown here too

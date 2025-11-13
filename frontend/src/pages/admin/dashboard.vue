@@ -238,34 +238,34 @@
         userId,
       }).then(() => {
         // Refresh user subscription data after update
+        // Backend already sends proper message via ApiResponse, axios interceptor will show it
         refreshUserSubscription(userId)
       }).catch((error) => {
         console.error('Error saving subscription:', error)
-        store.commit('addSnackbar', {
-          text: error?.response?.data?.message || 'Failed to save subscription',
-          color: 'error',
-        })
+        // Error message is already shown by axios interceptor, but ensure it's shown if missing
+        if (!error?.response?.data?.msg) {
+          store.commit('addSnackbar', {
+            text: 'Failed to save subscription',
+            color: 'error',
+          })
+        }
       })
     } else {
       store.dispatch('subscription/deleteSubscription', {
         userId,
-      }).then((result) => {
+      }).then(() => {
         // Refresh user subscription data after deletion
+        // Backend already sends proper message via ApiResponse, axios interceptor will show it
         refreshUserSubscription(userId)
-        // Show success message
-        const message = result === 'deleted_orphaned'
-          ? 'Subscription removed from database (was not found in Stripe)'
-          : 'Subscription deleted successfully'
-        store.commit('addSnackbar', {
-          text: message,
-          color: 'success',
-        })
       }).catch((error) => {
         console.error('Error deleting subscription:', error)
-        store.commit('addSnackbar', {
-          text: error?.response?.data?.message || 'Failed to delete subscription',
-          color: 'error',
-        })
+        // Error message is already shown by axios interceptor, but ensure it's shown if missing
+        if (!error?.response?.data?.msg) {
+          store.commit('addSnackbar', {
+            text: 'Failed to delete subscription',
+            color: 'error',
+          })
+        }
       })
     }
   }

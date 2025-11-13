@@ -271,9 +271,24 @@ exports.saveSubscription = async (planId, planTitle, userId) => {
 };
 
 exports.getStripeSubscriptionExpiryDate = async (subscriptionId) => {
-  const stripeSubscription =
-    await stripeService.getStripeSubscription(subscriptionId);
-  return new Date(stripeSubscription.current_period_end * 1000);
+  try {
+    const stripeSubscription =
+      await stripeService.getStripeSubscription(subscriptionId);
+    return new Date(stripeSubscription.current_period_end * 1000);
+  } catch (error) {
+    // Check if the error is "No such subscription" or resource_missing
+    const isSubscriptionNotFound = 
+      error.code === "resource_missing" ||
+      error.type === "StripeInvalidRequestError" ||
+      (error.message && error.message.includes("No such subscription"));
+    
+    if (isSubscriptionNotFound) {
+      // Subscription doesn't exist in Stripe, return null to indicate expired/missing
+      return null;
+    }
+    // If it's a different error, re-throw it
+    throw error;
+  }
 };
 
 // Check if user has premium subscription (Standard or Ultimate)

@@ -18,7 +18,22 @@ const globalErrHandler = (err, req, res, next) => {
         .status(err.statusCode)
         .json(new ApiResponse(err.message, err.payload));
     } else {
-      res.status(500).json(new ApiResponse("Something went wrong!", null));
+      // Check if it's a Stripe error about missing subscription
+      const isStripeSubscriptionNotFound = 
+        (err.type === "StripeInvalidRequestError" || 
+         err.code === "resource_missing" ||
+         (err.message && err.message.includes("No such subscription")));
+      
+      if (isStripeSubscriptionNotFound) {
+        res.status(403).json(
+          new ApiResponse(
+            "Your subscription has expired or is no longer active. Please upgrade your subscription to continue posting events.",
+            null
+          )
+        );
+      } else {
+        res.status(500).json(new ApiResponse("Something went wrong!", null));
+      }
     }
   }
   return next(err);
