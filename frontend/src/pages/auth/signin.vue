@@ -47,15 +47,24 @@
         password: password.value,
       })
       .then(() => {
+        // Only redirect to friends page if there's an actual pending invitation
         const pendingInvite = localStorage.getItem('acceptInvite')
-        const apiQueryMsg = localStorage.getItem('apiQueryMsg')
-        const isFriendMessage = apiQueryMsg && apiQueryMsg.toLowerCase().includes('friend')
-
-        if (pendingInvite || isFriendMessage) {
-          router.push({ name: 'friends' })
-          return
+        
+        if (pendingInvite) {
+          // Validate that acceptInvite is valid JSON with a token
+          try {
+            const inviteData = JSON.parse(pendingInvite)
+            if (inviteData?.token) {
+              router.push({ name: 'friends' })
+              return
+            }
+          } catch {
+            // Invalid JSON, remove it and continue to home
+            localStorage.removeItem('acceptInvite')
+          }
         }
 
+        // Normal signin - go to home page
         router.push(calcHome.value)
         showApiQueryMsg()
       })
