@@ -99,7 +99,22 @@ router.get("/deleteSubscription", auth, async (req, res, next) => {
   try {
     const userId = req.query?.userId;
     const result = await subscriptionService.deleteSubscription(userId);
-    res.status(200).json(new ApiResponse("Subscription deleted!", result));
+    
+    // Handle different response types
+    let message = "Subscription deleted!";
+    if (result === "not_found") {
+      message = "No subscription found to delete.";
+    } else if (result === "deleted_orphaned") {
+      message = "Subscription removed from database (was not found in Stripe).";
+    } else if (result === "basic_deleted") {
+      message = "Basic subscription deleted!";
+    } else if (result === "premium_deleted") {
+      message = "Premium subscription deleted!";
+    } else if (result === "premium_deleted_stripe_only") {
+      message = "Subscription cancelled in Stripe but may not have been deleted from database.";
+    }
+    
+    res.status(200).json(new ApiResponse(message, result));
   } catch (error) {
     return next(error);
   }

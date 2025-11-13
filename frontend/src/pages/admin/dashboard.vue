@@ -236,11 +236,59 @@
         planId,
         planTitle,
         userId,
+      }).then(() => {
+        // Refresh user subscription data after update
+        refreshUserSubscription(userId)
+      }).catch((error) => {
+        console.error('Error saving subscription:', error)
+        store.commit('addSnackbar', {
+          text: error?.response?.data?.message || 'Failed to save subscription',
+          color: 'error',
+        })
       })
     } else {
       store.dispatch('subscription/deleteSubscription', {
         userId,
+      }).then((result) => {
+        // Refresh user subscription data after deletion
+        refreshUserSubscription(userId)
+        // Show success message
+        const message = result === 'deleted_orphaned'
+          ? 'Subscription removed from database (was not found in Stripe)'
+          : 'Subscription deleted successfully'
+        store.commit('addSnackbar', {
+          text: message,
+          color: 'success',
+        })
+      }).catch((error) => {
+        console.error('Error deleting subscription:', error)
+        store.commit('addSnackbar', {
+          text: error?.response?.data?.message || 'Failed to delete subscription',
+          color: 'error',
+        })
       })
+    }
+  }
+
+  async function refreshUserSubscription (userId) {
+    try {
+      const response = await $axios.get('/subscription/getSubscription', {
+        params: { userId },
+      })
+      const subscriptionData = response.data?.payload
+      const index = foundUsersWSucscription.value.findIndex(u => u.id === userId)
+      if (index !== -1) {
+        foundUsersWSucscription.value[index] = {
+          ...subscriptionData,
+          ...foundUsersWSucscription.value[index],
+          subscriptionId: foundUsersWSucscription.value[index].id,
+          isSubscriptionActive:
+            subscriptionData?.active === true
+            && subscriptionData.stripeSubscriptionId !== '0',
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing subscription:', error)
     }
   }
 

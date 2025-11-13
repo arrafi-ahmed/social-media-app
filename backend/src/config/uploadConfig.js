@@ -1,7 +1,7 @@
 // Central config for upload and compress middleware
 const defaultConfig = {
   prefix: null,
-  maxSize: 5 * 1024 * 1024, // 5MB
+  maxSize: 10 * 1024 * 1024, // 10MB
   allowedExts: [".jpg", ".jpeg", ".png"],
   maxWidth: 1400,
   format: "jpeg",
@@ -47,5 +47,4 @@ module.exports = {
     fieldName: "files",
     maxCount: 3
   }
-
 }; 

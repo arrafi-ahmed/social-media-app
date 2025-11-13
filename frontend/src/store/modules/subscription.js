@@ -186,6 +186,11 @@ export const actions = {
   async deleteSubscription ({ commit }, request) {
     try {
       const response = await $axios.get('/subscription/deleteSubscription', { params: { userId: request.userId } })
+      // Reset subscription if successfully deleted
+      if (response.data?.payload && ['basic_deleted', 'premium_deleted', 'deleted_orphaned'].includes(response.data.payload)) {
+        commit('resetSubscription')
+        commit('resetStripeSubscription')
+      }
       return response.data?.payload
     } catch (error) {
       throw error

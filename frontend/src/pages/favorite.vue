@@ -12,7 +12,7 @@
       layout: 'default',
     },
   })
-
+ 
   const store = useStore()
   const calcHome = computed(() => store.getters['auth/calcHome'])
   const events = computed(() => store.state.eventFavorite.events)

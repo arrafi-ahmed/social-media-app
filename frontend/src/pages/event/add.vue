@@ -192,6 +192,21 @@
             postLimitStatusRef.value.loadLimitStatus()
           }
         })
+      } else {
+        // Handle other errors - show specific error message from backend
+        // The axios interceptor already shows the error, but we ensure it's shown here too
+        // in case the interceptor didn't catch it (e.g., network errors)
+        const errorMessage = error.response?.data?.msg || error.message || 'Something went wrong'
+        if (error.response?.data?.msg) {
+          // Error message already shown by axios interceptor, but log for debugging
+          console.error('Event creation error:', errorMessage)
+        } else {
+          // Show error if interceptor didn't catch it
+          store.commit('addSnackbar', {
+            text: errorMessage,
+            color: 'error',
+          })
+        }
       }
     })
   }

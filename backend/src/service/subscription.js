@@ -20,10 +20,31 @@ exports.fetchPremiumSubscriptionData = async (userId) => {
   if (subscription && subscription.stripeSubscriptionId == 0) {
     return { subscription };
   }
-  const stripeSubscription = await stripeService.getStripeSubscription(
-    subscription.stripeSubscriptionId
-  );
-  return { subscription, stripeSubscription };
+  
+  // Try to fetch Stripe subscription, handle case where it doesn't exist
+  try {
+    const stripeSubscription = await stripeService.getStripeSubscription(
+      subscription.stripeSubscriptionId
+    );
+    return { subscription, stripeSubscription };
+  } catch (error) {
+    // Check if the error is "No such subscription" or resource_missing
+    const isSubscriptionNotFound = 
+      error.code === "resource_missing" ||
+      error.type === "StripeInvalidRequestError" ||
+      (error.message && error.message.includes("No such subscription"));
+    
+    if (isSubscriptionNotFound) {
+      // Subscription doesn't exist in Stripe (orphaned DB entry)
+      // Return subscription without Stripe data, but mark it as inactive
+      return { 
+        subscription: { ...subscription, active: false },
+        stripeSubscription: null 
+      };
+    }
+    // If it's a different error, re-throw it
+    throw error;
+  }
 };
 
 exports.getSubscriptionPlans = () => {
@@ -54,6 +75,12 @@ exports.cancelSubscription = async (stripeSubscriptionId) => {
 // instantCancel = true
 exports.deleteSubscription = async (userId) => {
   const subscription = await exports.getSubscription(userId);
+  
+  // If no subscription exists in DB, return early
+  if (!subscription) {
+    return "not_found";
+  }
+  
   // if basic plan cancelled, delete the subscription entry from db
   if (subscription.stripeSubscriptionId === "0") {
     const sql = `DELETE
@@ -62,9 +89,40 @@ exports.deleteSubscription = async (userId) => {
     const result = await db.execute(sql, [subscription.stripeSubscriptionId]);
     return result.rowCount > 0 ? "basic_deleted" : null;
   }
-  const deletedSubscription = await stripeService.cancelStripeSubscription(subscription.stripeSubscriptionId);
+  
+  // Try to cancel the Stripe subscription
+  let stripeError = null;
+  try {
+    const deletedSubscription = await stripeService.cancelStripeSubscription(subscription.stripeSubscriptionId);
+    if (deletedSubscription) {
+      // Stripe subscription cancelled successfully, delete from DB
+      const sql = `DELETE
+                   FROM subscription
+                   WHERE stripe_subscription_id = $1`;
+      const result = await db.execute(sql, [subscription.stripeSubscriptionId]);
+      return result.rowCount > 0 ? "premium_deleted" : "premium_deleted_stripe_only";
+    }
+  } catch (error) {
+    stripeError = error;
+    // Check if the error is "No such subscription" or resource_missing
+    const isSubscriptionNotFound = 
+      error.code === "resource_missing" ||
+      error.type === "StripeInvalidRequestError" ||
+      (error.message && error.message.includes("No such subscription"));
+    
+    if (isSubscriptionNotFound) {
+      // Subscription doesn't exist in Stripe (orphaned DB entry), delete from DB anyway
+      const sql = `DELETE
+                   FROM subscription
+                   WHERE stripe_subscription_id = $1`;
+      const result = await db.execute(sql, [subscription.stripeSubscriptionId]);
+      return result.rowCount > 0 ? "deleted_orphaned" : null;
+    }
+    // If it's a different error, re-throw it
+    throw error;
+  }
 
-  return deletedSubscription ? "premium_deleted" : null;
+  return null;
 };
 
 exports.updateSubscription = (subscription, subscriptionId) => {
