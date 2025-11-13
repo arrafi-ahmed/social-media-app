@@ -116,6 +116,15 @@
               </v-list>
             </v-menu>
           </template>
+          <template #mobile-actions>
+            <v-btn
+              color="primary"
+              icon="mdi-account-plus"
+              rounded
+              variant="flat"
+              @click="$router.push({ name: 'friendsInvite' })"
+            />
+          </template>
         </page-title>
 
         <div class="page-content">
