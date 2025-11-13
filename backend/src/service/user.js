@@ -637,13 +637,38 @@ exports.sendTodaysEventEmail = async (clientUrl) => {
 exports.getProfileWSettings = async (userId) => {
   const sql = `
     SELECT c.id, c.full_name, c.email, c.date_of_birth, c.country, c.image, c.slug, c.created_at,
-           us.email_new_event_notification, us.email_update_event_notification, 
-           us.email_new_comment_notification, us.theme
+           COALESCE(us.email_new_event_notification, true) as email_new_event_notification,
+           COALESCE(us.email_update_event_notification, true) as email_update_event_notification, 
+           COALESCE(us.email_new_comment_notification, true) as email_new_comment_notification,
+           COALESCE(us.theme, 'light') as theme,
+           us.user_id as settings_user_id
     FROM users as c
-    JOIN user_settings as us ON c.id = us.user_id
+    LEFT JOIN user_settings as us ON c.id = us.user_id
     WHERE c.id = $1
   `;
-  return await db.getRow(sql, [userId]);
+  const result = await db.getRow(sql, [userId]);
+  
+  // If user exists but has no settings record, create default settings
+  if (result && !result.settingsUserId) {
+    await exports.createUserSettings(userId);
+    // Re-fetch with the newly created settings (without the check field)
+    const refetchSql = `
+      SELECT c.id, c.full_name, c.email, c.date_of_birth, c.country, c.image, c.slug, c.created_at,
+             us.email_new_event_notification, us.email_update_event_notification, 
+             us.email_new_comment_notification, us.theme
+      FROM users as c
+      JOIN user_settings as us ON c.id = us.user_id
+      WHERE c.id = $1
+    `;
+    return await db.getRow(refetchSql, [userId]);
+  }
+  
+  // Remove the check field from result before returning
+  if (result && result.settingsUserId !== undefined) {
+    delete result.settingsUserId;
+  }
+  
+  return result;
 };
 
 exports.updateEmailNewEventNotification = async (payload, userId) => {
