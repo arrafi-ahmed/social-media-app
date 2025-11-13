@@ -52,9 +52,40 @@
     store.dispatch('user/removeFriend', friendshipId)
   }
 
-  onMounted(() => {
-    showApiQueryMsg()
-    store.dispatch('user/setFriends')
+  async function handlePendingInvite () {
+    const storedInvite = localStorage.getItem('acceptInvite')
+    if (!storedInvite) {
+      return 'none'
+    }
+
+    let inviteData = null
+    try {
+      inviteData = JSON.parse(storedInvite)
+    } catch {
+      localStorage.removeItem('acceptInvite')
+      return 'none'
+    }
+
+    if (!inviteData?.token) {
+      localStorage.removeItem('acceptInvite')
+      return 'none'
+    }
+
+    try {
+      const response = await store.dispatch('user/acceptInvite', inviteData.token)
+      localStorage.removeItem('acceptInvite')
+      return 'success'
+    } catch (error) {
+      localStorage.removeItem('acceptInvite')
+      return 'error'
+    }
+  }
+
+  onMounted(async () => {
+    const inviteStatus = await handlePendingInvite()  
+    if (inviteStatus !== 'success') {
+      await store.dispatch('user/setFriends')
+    }
   })
 </script>
 

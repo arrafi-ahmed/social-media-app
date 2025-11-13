@@ -124,14 +124,18 @@
   const routeInfo = computed(() => store.state.routeInfo)
 
   onMounted(() => {
-    if (
-      ['eventSingle', 'eventEdit'].includes(routeInfo.value.from?.name)
-      && routeInfo.value.actionSource === 'back'
-    ) {
-      if (routeInfo.value.lastScrollY)
+    const cameFromEventContext = ['eventSingle', 'eventEdit'].includes(routeInfo.value.from?.name)
+    const shouldRestore = cameFromEventContext && ['back', 'edit'].includes(routeInfo.value.actionSource)
+
+    if (shouldRestore) {
+      if (events.value.length === 0) {
+        fetchData()
+      } else if (routeInfo.value.lastScrollY != null) {
         window.scrollTo(0, routeInfo.value.lastScrollY)
+      }
       return
     }
+
     fetchData()
   })
 </script>

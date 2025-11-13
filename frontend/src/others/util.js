@@ -268,20 +268,20 @@ export function showApiQueryMsg (defaultColor = 'info') {
     const message = localStorage.getItem('apiQueryMsg')
     // Determine color based on message content
     let color = defaultColor
-    if (message.toLowerCase().includes('accepted') || 
-        message.toLowerCase().includes('success') ||
-        message.toLowerCase().includes('added') ||
-        message.toLowerCase().includes('created')) {
+    if (message.toLowerCase().includes('accepted')
+      || message.toLowerCase().includes('success')
+      || message.toLowerCase().includes('added')
+      || message.toLowerCase().includes('created')) {
       color = 'success'
-    } else if (message.toLowerCase().includes('error') || 
-               message.toLowerCase().includes('failed') ||
-               message.toLowerCase().includes('invalid')) {
+    } else if (message.toLowerCase().includes('error')
+      || message.toLowerCase().includes('failed')
+      || message.toLowerCase().includes('invalid')) {
       color = 'error'
     }
-    
+
     store.commit('addSnackbar', {
       text: message,
-      color: color,
+      color,
     })
     localStorage.removeItem('apiQueryMsg')
   }

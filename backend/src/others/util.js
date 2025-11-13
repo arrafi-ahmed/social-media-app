@@ -4,7 +4,8 @@ const { ROLES } = require("./constants");
 const { API_BASE_URL, VUE_BASE_URL, NODE_ENV } = process.env;
 
 const excludedSecurityURLs = [
-  "/user/acceptInvite"
+  "/user/acceptInvite",
+  "/user/invite/preview"
 ];
 const HTTP_STATUS = {
   TOKEN_EXPIRED: 440, // Login Time-out (custom status for token expiry)

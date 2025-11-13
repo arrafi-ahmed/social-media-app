@@ -121,17 +121,17 @@
   }
 
   function handleEmailNewEventNotification (value) {
-    settings.emailNewEventNotification = value
+    settings.value.emailNewEventNotification = value
     store.dispatch('user/updateEmailNewEventNotification', value)
   }
 
   function handleEmailNewCommentNotification (value) {
-    settings.emailNewCommentNotification = value
+    settings.value.emailNewCommentNotification = value
     store.dispatch('user/updateEmailNewCommentNotification', value)
   }
 
   function handleEmailUpdateEventNotification (value) {
-    settings.emailUpdateEventNotification = value
+    settings.value.emailUpdateEventNotification = value
     store.dispatch('user/updateEmailUpdateEventNotification', value)
   }
 
@@ -152,12 +152,12 @@
   onMounted(async () => {
     await store.dispatch('user/setProfileWSettings')
     // Map profile data to user model
-    Object.assign(newUser, {...profile.value})
+    Object.assign(newUser, { ...profile.value })
     // Reset image deletion flag when profile loads
     imageDeleted.value = false
     newUser.newProfilePicture = null
 
-    Object.assign(newSettings, {...settings.value})
+    Object.assign(newSettings, { ...settings.value })
 
     // Fetch subscription data
     if (currentUser.value?.id) {
@@ -173,7 +173,7 @@
     <page-title :back-url="calcHome" subtitle="Manage your account" title="Settings" />
 
     <div class="page-content">
-      <v-expansion-panels variant="inset" v-model="expansionPanel">
+      <v-expansion-panels v-model="expansionPanel" variant="inset">
         <!-- Update Profile Section -->
         <v-expansion-panel>
           <v-expansion-panel-title>
@@ -232,7 +232,7 @@
                 ]"
                 variant="solo"
               />
-              
+
               <v-text-field
                 v-model="newUser.newPassword"
                 class="mt-3"
@@ -250,11 +250,11 @@
                 density="compact"
                 hide-details="auto"
                 label="Confirm Password"
-                type="password"
                 :rules="[
                   (v) => !newUser.newPassword || !!v || 'Please confirm your password',
                   (v) => !newUser.newPassword || v === newUser.newPassword || 'Passwords do not match',
                 ]"
+                type="password"
                 variant="solo"
               />
               <div class="mt-3">
@@ -410,10 +410,10 @@
             <v-switch
               v-model="newSettings.emailNewEventNotification"
               class="mt-3"
-              color="primary"              
+              color="primary"
               hide-details
               inset
-              label="When friends post new event"              
+              label="When friends post new event"
               @update:model-value="
                 handleEmailNewEventNotification(newSettings.emailNewEventNotification)
               "
@@ -421,10 +421,10 @@
             <v-switch
               v-model="newSettings.emailUpdateEventNotification"
               class="mt-3"
-              color="primary"            
+              color="primary"
               hide-details
               inset
-              label="When friends edit event"            
+              label="When friends edit event"
               @update:model-value="
                 handleEmailUpdateEventNotification(
                   newSettings.emailUpdateEventNotification,
@@ -434,10 +434,10 @@
             <v-switch
               v-model="newSettings.emailNewCommentNotification"
               class="mt-3"
-              color="primary"              
+              color="primary"
               hide-details
               inset
-              label="When friends comment on your event"              
+              label="When friends comment on your event"
               @update:model-value="
                 handleEmailNewCommentNotification(
                   newSettings.emailNewCommentNotification,

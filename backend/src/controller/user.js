@@ -199,32 +199,34 @@ router.post("/sendInvite", auth, async (req, res, next) => {
   }
 });
 
-router.get("/acceptInvite", async (req, res, next) => {
+router.get("/acceptInvite", (req, res) => {
+  const token = req.query?.token;
+  const redirectUrl = new URL(`${VUE_BASE_URL}/friends/accept`);
+  if (token) {
+    redirectUrl.searchParams.set("token", token);
+  }
+  res.redirect(301, redirectUrl.toString());
+});
+
+router.get("/invite/preview", async (req, res, next) => {
   try {
     const token = req.query?.token;
-    const result = await userService.acceptInvite(token);
-
-    const redirectMap = {
-      friends: {
-        url: "/friends",
-        message: "Friend invitation accepted!"
-      },
-      register: {
-        url: "/auth/register",
-        message: "Friend invitation will be accepted after registration!"
-      }
-    };
-
-    const redirect = redirectMap[result.redirect];
-
-    if (redirect) {
-      const clientUrl = VUE_BASE_URL + redirect.url;
-      res.redirect(301, `${clientUrl}?apiQueryMsg=${redirect.message}`);
-    }
+    const result = await userService.previewInvite(token);
+    res.status(200).json(new ApiResponse(null, result));
   } catch (error) {
-    const clientUrl = VUE_BASE_URL + "/auth/register";
-    const apiQueryMsg = error instanceof CustomError ? error.message : "Invitation accepting failed!";
-    res.redirect(301, `${clientUrl}?apiQueryMsg=${apiQueryMsg}`);
+    return next(error);
+  }
+});
+
+router.post("/acceptInvite", auth, async (req, res, next) => {
+  try {
+    const token = req.body?.token;
+    const result = await userService.acceptInvite(token, req.currentUser.id);
+    res
+      .status(200)
+      .json(new ApiResponse("Friend invitation accepted!", result));
+  } catch (error) {
+    return next(error);
   }
 });
 

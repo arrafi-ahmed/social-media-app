@@ -82,6 +82,7 @@
 
   function goEditEvent (event) {
     store.commit(`setScrollY`, window.scrollY)
+    store.commit('setActionSource', 'edit')
     store.commit(`${storeModule.value}/setEditingEvent`, event)
     router
       .push({ name: 'eventEdit', params: { id: event.id }, query: { src: source } })

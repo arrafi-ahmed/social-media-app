@@ -25,7 +25,7 @@
   const singleDateType = ref('start') // 'start' or 'end' when in single mode
   const startDateValue = ref(null)
   const endDateValue = ref(null)
-  
+
   // v-model for date input - must be array when multiple="range", single value when multiple=false
   const dateInputValue = ref([])
 
@@ -40,7 +40,7 @@
   )
 
   // Format date to YYYY-MM-DD for backend
-  const formatDate = (date) => {
+  function formatDate (date) {
     if (!date) return null
     if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) return date
     if (typeof date === 'string') {
@@ -58,24 +58,35 @@
   }
 
   // Watch for date input changes
-  watch(dateInputValue, (newValue) => {
+  watch(dateInputValue, newValue => {
     if (isRangeMode.value) {
       // Range mode: newValue is an array
       if (Array.isArray(newValue)) {
-        if (newValue.length === 0) {
-          startDateValue.value = null
-          endDateValue.value = null
-        } else if (newValue.length === 1) {
-          startDateValue.value = newValue[0]
-          endDateValue.value = null
-        } else if (newValue.length === 2) {
-          const sorted = [...newValue].sort((a, b) => {
-            const dateA = a instanceof Date ? a.getTime() : new Date(a).getTime()
-            const dateB = b instanceof Date ? b.getTime() : new Date(b).getTime()
-            return dateA - dateB
-          })
-          startDateValue.value = sorted[0]
-          endDateValue.value = sorted[1]
+        switch (newValue.length) {
+          case 0: {
+            startDateValue.value = null
+            endDateValue.value = null
+
+            break
+          }
+          case 1: {
+            startDateValue.value = newValue[0]
+            endDateValue.value = null
+
+            break
+          }
+          case 2: {
+            const sorted = [...newValue].sort((a, b) => {
+              const dateA = a instanceof Date ? a.getTime() : new Date(a).getTime()
+              const dateB = b instanceof Date ? b.getTime() : new Date(b).getTime()
+              return dateA - dateB
+            })
+            startDateValue.value = sorted[0]
+            endDateValue.value = sorted[1]
+
+            break
+          }
+        // No default
         }
       }
     } else {
@@ -171,12 +182,12 @@
                   color="primary"
                   density="comfortable"
                   hide-details
+                  :hide-header="false"
                   :label="isRangeMode ? 'Start & End Date' : (singleDateType === 'start' ? 'Start Date' : 'End Date')"
                   :multiple="isRangeMode ? 'range' : false"
-                  :hide-header="false"
                   prepend-icon=""
                   @click-clear="startDateValue = null; endDateValue = null"
-                  >
+                >
                   <template #header="{ header, transition }">
                     <div class="d-flex align-center justify-space-between pa-2 px-6">
                       <div class="d-flex align-center" style="gap: 8px; flex: 1;">
@@ -187,7 +198,7 @@
                           density="compact"
                           hide-details
                           size="x-small"
-                      />
+                        />
                       </div>
                       <div
                         v-if="!isRangeMode"
@@ -203,10 +214,10 @@
                           size="x-small"
                           variant="outlined"
                         >
-                          <v-btn value="start" size="x-small">
+                          <v-btn size="x-small" value="start">
                             Start
                           </v-btn>
-                          <v-btn value="end" size="x-small">
+                          <v-btn size="x-small" value="end">
                             End
                           </v-btn>
                         </v-btn-toggle>

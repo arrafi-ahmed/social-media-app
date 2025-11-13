@@ -1,6 +1,6 @@
 <script setup>
   import { computed, onMounted, reactive, ref } from 'vue'
-  import { useRouter, useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import { PasswordReset, User } from '@/models'
@@ -46,18 +46,18 @@
         email: user.email,
         password: password.value,
       })
-      .then(result => {
-        // Check if there's a redirect message in localStorage (from friend invitation)
+      .then(() => {
+        const pendingInvite = localStorage.getItem('acceptInvite')
         const apiQueryMsg = localStorage.getItem('apiQueryMsg')
-        if (apiQueryMsg && apiQueryMsg.toLowerCase().includes('friend')) {
-          // Redirect to friends page if it's a friend invitation message
-          // Don't show the message here - let the friends page show it
+        const isFriendMessage = apiQueryMsg && apiQueryMsg.toLowerCase().includes('friend')
+
+        if (pendingInvite || isFriendMessage) {
           router.push({ name: 'friends' })
-        } else {
-          router.push(calcHome.value)
-          // Only show non-friend messages here
-          showApiQueryMsg()
+          return
         }
+
+        router.push(calcHome.value)
+        showApiQueryMsg()
       })
   }
 
@@ -190,28 +190,28 @@
               </div>
               <div class="text-center mt-4">
                 <a
-                  href="https://apps.apple.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="mx-2"
+                  href="https://apps.apple.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   <img
                     alt="Download on the App Store"
                     src="/img/badge-app-store.png"
                     style="height: 40px; width: auto;"
-                  />
+                  >
                 </a>
                 <a
-                  href="https://play.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="mx-2"
+                  href="https://play.google.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   <img
                     alt="Get it on Google Play"
                     src="/img/badge-google-play.png"
                     style="height: 40px; width: auto;"
-                  />
+                  >
                 </a>
               </div>
             </v-form>

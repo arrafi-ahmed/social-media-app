@@ -134,20 +134,20 @@ export const actions = {
     try {
       const response = await $axios.post('/user/updateProfile', request)
       const payload = response.data?.payload
-      
+
       // Update user module state
       commit('setProfile', payload)
       commit('setCurrentUserName', payload?.fullName)
       commit('setCurrentUserImage', payload?.image)
       commit('setCurrentUserSlug', payload?.slug)
-      
+
       // Also update auth module's currentUser so AppBar reflects changes immediately
       commit('auth/setCurrentUser', {
         fullName: payload?.fullName,
         image: payload?.image,
         slug: payload?.slug,
       }, { root: true })
-      
+
       return response
     } catch (error) {
       throw error
@@ -278,6 +278,15 @@ export const actions = {
   async sendInvite ({ commit }, request) {
     try {
       const response = await $axios.post('/user/sendInvite', request)
+      return response
+    } catch (error) {
+      throw error
+    }
+  },
+  async acceptInvite ({ dispatch }, token) {
+    try {
+      const response = await $axios.post('/user/acceptInvite', { token })
+      await dispatch('setFriends')
       return response
     } catch (error) {
       throw error

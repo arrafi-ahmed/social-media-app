@@ -21,6 +21,7 @@ function compress(configKey) {
         const filename = `${config.prefix}-${Date.now()}-${Math.round(Math.random() * 1e5)}.${config.format}`;
         const filepath = path.join(dest, filename);
         await sharp(file.buffer)
+          .rotate() // Auto-rotate based on EXIF orientation data
           .resize(config.maxWidth)
           .toFormat(config.format, { quality: config.quality })
           .toFile(filepath);

@@ -2,8 +2,8 @@
   import { computed, onMounted, watch } from 'vue'
 
   import { useRoute } from 'vue-router'
-  import { useStore } from 'vuex'
   import { useTheme } from 'vuetify'
+  import { useStore } from 'vuex'
   import ProgressLoader from '@/components/ProgressLoader.vue'
   import { appInfo } from '@/others/util'
 
@@ -27,7 +27,7 @@
   }
 
   // Watch currentUser theme changes
-  watch(() => currentUser.value?.theme, (newTheme) => {
+  watch(() => currentUser.value?.theme, newTheme => {
     if (newTheme) {
       theme.global.name.value = newTheme
     }

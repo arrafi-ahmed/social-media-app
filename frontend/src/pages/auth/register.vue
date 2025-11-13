@@ -30,6 +30,48 @@
   const form = ref(null)
   const isFormValid = ref(true)
   const isSubmitting = ref(false)
+  const isEmailPrefilled = ref(false)
+
+  function parseStoredInvite () {
+    const storedInvite = localStorage.getItem('acceptInvite')
+    if (!storedInvite) {
+      return null
+    }
+
+    try {
+      return JSON.parse(storedInvite)
+    } catch {
+      localStorage.removeItem('acceptInvite')
+      return null
+    }
+  }
+
+  async function handleInviteAfterAuth (currentUser = {}) {
+    const inviteData = parseStoredInvite()
+    if (!inviteData?.token) {
+      return false
+    }
+
+    const currentEmail = currentUser?.email?.toLowerCase?.()
+    if (inviteData.email && currentEmail && inviteData.email.toLowerCase() !== currentEmail) {
+      localStorage.setItem('apiQueryMsg', 'Invitation email does not match the registered account.')
+      localStorage.removeItem('acceptInvite')
+      return false
+    }
+
+    try {
+      const response = await $axios.post('/user/acceptInvite', { token: inviteData.token })
+      const successMessage = response?.data?.message || 'Friend invitation accepted!'
+      localStorage.setItem('apiQueryMsg', successMessage)
+    } catch (error) {
+      const message = error?.response?.data?.message || 'Invitation accepting failed!'
+      localStorage.setItem('apiQueryMsg', message)
+    } finally {
+      localStorage.removeItem('acceptInvite')
+    }
+
+    return true
+  }
 
   async function registerUser () {
     await form.value.validate()
@@ -54,6 +96,8 @@
       store.commit('auth/setToken', response?.headers?.authorization)
       store.commit('auth/setCurrentUser', payload.currentUser)
 
+      const inviteHandled = await handleInviteAfterAuth(payload.currentUser)
+
       // Welcome event is already created on the backend, just add it to store
       if (payload.welcomeEvent) {
         store.commit('eventWall/addEvent', payload.welcomeEvent)
@@ -61,7 +105,11 @@
 
       // Reset form after successful registration
       Object.assign(user, userInit)
-      router.push({ name: 'friendsInvite', params: { ref: 'register' } })
+      if (inviteHandled) {
+        router.push({ name: 'friends' })
+      } else {
+        router.push({ name: 'friendsInvite', params: { ref: 'register' } })
+      }
     } catch (error) {
       const message = error?.response?.data?.message || 'Registration failed!'
     // store.commit("addSnackbar", {text: message, color: "error"});
@@ -72,6 +120,11 @@
 
   onMounted(() => {
     showApiQueryMsg()
+    const inviteData = parseStoredInvite()
+    if (inviteData?.email) {
+      user.email = inviteData.email
+      isEmailPrefilled.value = true
+    }
   })
 </script>
 <template>
@@ -129,6 +182,7 @@
                 class="mt-2 mt-md-4"
                 clearable
                 density="comfortable"
+                :disabled="isEmailPrefilled"
                 hide-details="auto"
                 label="Email Address"
                 required
@@ -206,28 +260,28 @@
               </div>
               <div class="text-center mt-4">
                 <a
-                  href="https://apps.apple.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="mx-2"
+                  href="https://apps.apple.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   <img
                     alt="Download on the App Store"
                     src="/img/badge-app-store.png"
                     style="height: 40px; width: auto;"
-                  />
+                  >
                 </a>
                 <a
-                  href="https://play.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="mx-2"
+                  href="https://play.google.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   <img
                     alt="Get it on Google Play"
                     src="/img/badge-google-play.png"
                     style="height: 40px; width: auto;"
-                  />
+                  >
                 </a>
               </div>
             </v-form>

@@ -195,6 +195,7 @@
     store
       .dispatch(`${storeModule.value}/editEvent`, formData)
       .then(() => {
+        store.commit('setActionSource', 'edit')
         switch (route.query.src) {
           case 'browse': {
             router.push({ name: 'browse' })

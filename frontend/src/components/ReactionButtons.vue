@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     class="d-flex align-center flex-wrap"
     :class="isCompact ? 'justify-space-between' : ''"
   >
@@ -14,15 +14,15 @@
       >
         <template #activator="{ props: tooltipProps }">
           <v-btn
-            :class="{ 
-              'reaction-active': userReaction === reaction.type            
-            }"          
+            :class="{
+              'reaction-active': userReaction === reaction.type
+            }"
             :color="userReaction === reaction.type ? reaction.color : 'default'"
             :density="isCompact ? 'comfortable' : 'default'"
-            :disabled="loading"        
+            :disabled="loading"
             v-bind="tooltipProps"
-            variant="text"
             icon=""
+            variant="text"
             @click="handleReaction(reaction.type)"
           >
             <v-icon

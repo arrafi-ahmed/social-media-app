@@ -229,6 +229,9 @@
   }
 
   onMounted(() => {
+    // Always scroll to top when entering event single page
+    window.scrollTo(0, 0)
+    
     store
       .dispatch('eventSingle/getEvent', route.params.id)
       .then(res => {
@@ -246,32 +249,32 @@
           hasNavigatedToError.value = true
           router.push({
             name: 'notFound',
-            query: { 
+            query: {
               errcode: 403,
-              message 
-            }
+              message,
+            },
           })
         } else if (error?.response?.status === 404) {
           // Handle 404 (Not Found) - event doesn't exist
           const message = error?.response?.data?.msg || 'Event not found'
           hasNavigatedToError.value = true
-          router.push({ 
+          router.push({
             name: 'notFound',
             query: {
               errcode: 404,
-              message
-            }
+              message,
+            },
           })
         } else {
           // Other errors - show error message
           console.error('Error loading event:', error)
           hasNavigatedToError.value = true
-          router.push({ 
+          router.push({
             name: 'notFound',
             query: {
               errcode: error?.response?.status || 500,
-              message: error?.response?.data?.msg || 'An error occurred'
-            }
+              message: error?.response?.data?.msg || 'An error occurred',
+            },
           })
         }
       })
@@ -280,12 +283,12 @@
         if (!hasNavigatedToError.value && (!event.value || !event.value.id)) {
           const currentRoute = router.currentRoute.value
           if (currentRoute.name !== 'notFound') {
-            router.push({ 
+            router.push({
               name: 'notFound',
               query: {
                 errcode: 404,
-                message: 'Event not found'
-              }
+                message: 'Event not found',
+              },
             })
           }
         }
@@ -305,6 +308,7 @@
   function goEditEvent () {
     if (!event.value?.id) return
     store.commit('setScrollY', window.scrollY)
+    store.commit('setActionSource', 'edit')
     store.commit('eventSingle/setEditingEvent', event.value)
     router.push({ name: 'eventEdit', params: { id: event.value.id }, query: { src: 'single' } })
   }
@@ -314,11 +318,11 @@
   <v-container v-if="event?.id">
     <v-row align="center" class="pb-1" justify="space-between">
       <v-col class="d-flex align-center" cols="auto">
-        <v-btn :size="xs ? 'small' : 'default'" icon="mdi-arrow-left" variant="text" @click="goBack" />
+        <v-btn icon="mdi-arrow-left" :size="xs ? 'small' : 'default'" variant="text" @click="goBack" />
         <user-avatar
           :class="xs ? 'ml-1' : 'ml-2'"
-          :img-src="event?.image"
           :img-size="xs ? 40 : undefined"
+          :img-src="event?.image"
           @click-avatar="goUserProfile(getUserIdentifier)"
         />
 
@@ -720,7 +724,7 @@
             <v-checkbox
               v-for="group in groups"
               :key="group.id"
-              v-model="selectedGroupIds"              
+              v-model="selectedGroupIds"
               hide-details="auto"
               :value="group.id"
             >

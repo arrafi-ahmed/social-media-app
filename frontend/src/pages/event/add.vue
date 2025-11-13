@@ -319,7 +319,7 @@
               </v-row>
 
               <!-- Temporary Post Option -->
-              <v-card class="mt-4" variant="flat" density="compact">
+              <v-card class="mt-4" density="compact" variant="flat">
                 <v-card-text>
                   <div class="d-flex align-center">
                     <v-switch

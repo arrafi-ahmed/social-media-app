@@ -62,20 +62,20 @@
 
   async function loadEvents ({ done }) {
     if (isLoading) return
-    
+
     // Prevent refetching page 1 if events already exist when returning from eventSingle
     // This keeps the events in store and maintains scroll position
-    const isReturningFromEventSingle = 
-      ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name) &&
-      routeInfo.value.actionSource === 'back'
-    
+    const isReturningFromEventSingle
+      = ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name)
+        && routeInfo.value.actionSource === 'back'
+
     // Only skip if we're returning from eventSingle AND events already exist
     // If events.length is 0, we still need to load them
     if (isReturningFromEventSingle && events.value.length > 0 && page.value === 1 && filterActive.value !== 'findForm') {
       done('ok')
       return
     }
-    
+
     isLoading = true
     try {
       const action
@@ -166,8 +166,10 @@
     })
   }
 
-  async function fetchData () {
-    resetPageNEvents()
+  async function fetchUserData (resetEvents = true) {
+    if (resetEvents) {
+      resetPageNEvents()
+    }
 
     // Try to fetch user by slug or id
     let userData
@@ -226,26 +228,46 @@
     }
   }
 
+  async function fetchData () {
+    return fetchUserData(true)
+  }
+
   const routeInfo = computed(() => store.state.routeInfo)
   const isOwnProfile = computed(() => user.value?.id === currentUser.id)
 
   onMounted(() => {
-    // fix: going other profile from event single - comment namecard, then return to event single - back btn. dont update new profile info
-    if (user.value?.id && user.value?.id != route.params.id) {
-      fetchData()
-    }
-    if (
-      ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name)
-      && routeInfo.value.actionSource === 'back'
-    ) {
-      // Restore scroll position after a brief delay to ensure DOM is ready
-      if (routeInfo.value.lastScrollY) {
+    const cameFromEventContext = ['eventSingle', 'eventEdit', 'eventEdit-wall'].includes(routeInfo.value.from?.name)
+    const shouldRestore = cameFromEventContext && ['back', 'edit'].includes(routeInfo.value.actionSource)
+
+    if (shouldRestore) {
+      // When returning from eventSingle, preserve events and scroll position
+      if (events.value.length === 0) {
+        // Events are empty, need to fetch everything
+        fetchData()
+      } else if (user.value?.id && user.value?.id != route.params.id) {
+        // User doesn't match route, fetch user data without resetting events
+        fetchUserData(false)
+        // Restore scroll position after a short delay
+        if (routeInfo.value.lastScrollY != null) {
+          setTimeout(() => {
+            window.scrollTo(0, routeInfo.value.lastScrollY)
+          }, 100)
+        }
+      } else if (routeInfo.value.lastScrollY != null) {
+        // Everything is correct, just restore scroll position
         setTimeout(() => {
           window.scrollTo(0, routeInfo.value.lastScrollY)
         }, 100)
       }
       return
     }
+
+    // fix: going other profile from event single - comment namecard, then return to event single - back btn. dont update new profile info
+    if (user.value?.id && user.value?.id != route.params.id) {
+      fetchData()
+      return
+    }
+
     fetchData()
   })
   watch(
@@ -275,7 +297,7 @@
         v-if="xs && isOwnProfile"
         color="primary"
         icon="mdi-plus"
-        rounded        
+        rounded
         variant="flat"
         @click="openAddEvent"
       />

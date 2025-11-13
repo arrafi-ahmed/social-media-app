@@ -256,7 +256,7 @@ exports.sendInvite = async (body, userId) => {
         senderName: senderData.fullName,
         message: body.message,
         token,
-        apiBaseUrl: process.env.API_BASE_URL
+        vueBaseUrl: process.env.VUE_BASE_URL
       });
     }
   );
@@ -266,55 +266,75 @@ exports.sendInvite = async (body, userId) => {
   return { successfulInvites, failedInvites }; // Return details of successful invitations
 };
 
-exports.acceptInvite = async (token) => {
-  try {
-    const sql = `SELECT * FROM invitation WHERE token = $1`;
-    const invitation = await db.getRow(sql, [token]);
-
-    //if valid invitation
-    if (invitation) {
-      //destructure 'id' event its undefined
-      const { id: receiverId } =
-      (await exports.getIdByEmail(invitation.receiverEmail)) || {};
-      // if receiver id exist then no need to register
-      if (receiverId) {
-        //  check if friends and throw err
-        const areFriends = await exports.checkFriends(
-          invitation.senderId,
-          receiverId
-        );
-
-        if (areFriends) {
-          throw new CustomError("User already in friendlist!");
-        }
-
-        //  insert into friendship
-        const sql2 = `INSERT INTO friendship (user_id_1, user_id_2, created_at) VALUES ($1, $2, $3)`;
-        await db.execute(sql2, [invitation.senderId, receiverId, new Date()]);
-
-        //  delete record from invitation by id
-        const sql3 = `DELETE FROM invitation WHERE id = $1`;
-        await db.execute(sql3, [invitation.id]);
-
-        //  redirect to friends page
-        return { redirect: "friends" };
-      }
-      // if receiver id doesn't exist
-      else {
-        //  1 invitation with is_accepted=true if user doesnt exist,
-        const sql = `UPDATE invitation SET is_accepted = true WHERE id = $1`;
-        await db.execute(sql, [invitation.id]);
-        //  redirect to register page
-        return { redirect: "register" };
-      }
-    }
-    //invalid invitation
-    else {
-      throw new CustomError("Invalid invitation!");
-    }
-  } catch (error) {
-    throw error;
+exports.previewInvite = async (token) => {
+  if (!token) {
+    throw new CustomError("Invalid invitation!", 400);
   }
+
+  const invitation = await db.getRow(
+    `SELECT id, sender_id, receiver_email FROM invitation WHERE token = $1`,
+    [token]
+  );
+
+  if (!invitation) {
+    throw new CustomError("Invalid invitation!");
+  }
+
+  const sender = await exports.getUserById(invitation.senderId);
+  const receiver = await exports.getIdByEmail(invitation.receiverEmail);
+
+  let alreadyFriends = false;
+  if (receiver?.id) {
+    const friendship = await exports.checkFriends(invitation.senderId, receiver.id);
+    alreadyFriends = !!friendship;
+  }
+
+  return {
+    token,
+    email: invitation.receiverEmail,
+    senderName: sender?.fullName || null,
+    receiverExists: !!receiver?.id,
+    alreadyFriends
+  };
+};
+
+exports.acceptInvite = async (token, currentUserId) => {
+  if (!token) {
+    throw new CustomError("Invalid invitation!", 400);
+  }
+
+  const invitation = await db.getRow(
+    `SELECT id, sender_id, receiver_email FROM invitation WHERE token = $1`,
+    [token]
+  );
+
+  if (!invitation) {
+    throw new CustomError("Invalid invitation!");
+  }
+
+  const receiver = await exports.getUserById(currentUserId);
+  if (!receiver) {
+    throw new CustomError("User not found!", 404);
+  }
+
+  const normalizedReceiverEmail = receiver.email?.toLowerCase();
+  if (normalizedReceiverEmail !== invitation.receiverEmail?.toLowerCase()) {
+    throw new CustomError("This invitation doesn't belong to your account!", 403);
+  }
+
+  const friendship = await exports.checkFriends(invitation.senderId, receiver.id);
+  if (friendship) {
+    throw new CustomError("User already in friendlist!");
+  }
+
+  await db.execute(
+    `INSERT INTO friendship (user_id_1, user_id_2, created_at) VALUES ($1, $2, $3)`,
+    [invitation.senderId, receiver.id, new Date()]
+  );
+
+  await db.execute(`DELETE FROM invitation WHERE id = $1`, [invitation.id]);
+
+  return { newFriendsCount: 1 };
 };
 
 exports.getFriends = async (userId) => {

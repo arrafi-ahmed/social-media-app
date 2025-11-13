@@ -17,7 +17,7 @@
 
   // Determine if this is a private content error (403) or not found (404)
   const isPrivateContent = computed(() => status.value == 403 || status.value == '403')
-  
+
   // Get appropriate title and button text based on error type
   const errorTitle = computed(() => isPrivateContent.value ? 'Private Group' : status.value)
   const buttonText = computed(() => isPrivateContent.value ? 'Back to Browse' : 'Go Home')
@@ -26,7 +26,13 @@
 <template>
   <v-container class="fill-height">
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="6" lg="5" class="text-center">
+      <v-col
+        class="text-center"
+        cols="12"
+        lg="5"
+        md="6"
+        sm="8"
+      >
         <!-- Error code and message above animation -->
         <v-card class="mx-auto mb-4 error-header" elevation="2">
           <v-card-text class="pa-4">
@@ -36,10 +42,10 @@
             </p>
           </v-card-text>
         </v-card>
-        
+
         <!-- Animation -->
-        <div class="bg page_404 mb-4"></div>
-        
+        <div class="bg page_404 mb-4" />
+
         <!-- Action buttons -->
         <v-btn
           class="clickable mb-2"
@@ -49,7 +55,7 @@
           variant="flat"
         >
           {{ buttonText }}
-        </v-btn>      
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>

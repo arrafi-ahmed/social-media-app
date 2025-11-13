@@ -162,20 +162,20 @@
       <v-img
         ref="targetImageContainer"
         :aspect-ratio="targetImageRatio"
+        class="mx-auto"
         :contain="!fullSize"
         :height="calcDialogDimension.renderedHeight || calcDialogDimension.height"
         :src="currImg"
         :width="calcDialogDimension.renderedWidth || calcDialogDimension.width"
-        class="mx-auto"
         @click="switchFullsize"
         @load="onImageLoad"
       >
         <v-row
           v-if="imgSet"
-          align="center"      class="fill-height ma-0"
+          align="center"
+          class="fill-height ma-0"
           justify="space-between"
-      
-      >
+        >
           <v-col class="d-flex justify-center" cols="auto">
             <v-icon
               v-if="currIndex > 0"

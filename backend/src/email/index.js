@@ -1,6 +1,6 @@
 const { sendMail } = require("./transporter");
 const { renderTemplate } = require("./config");
-const { API_BASE_URL, VUE_BASE_URL } = process.env;
+const { VUE_BASE_URL } = process.env;
 
 /**
  * Generate and return welcome email HTML and subject
@@ -32,8 +32,8 @@ function generatePasswordResetEmail({ token, vueBaseUrl = VUE_BASE_URL }) {
 /**
  * Generate and return invitation email HTML and subject
  */
-function generateInvitationEmail({ senderName, message, token, apiBaseUrl = API_BASE_URL }) {
-  const acceptUrl = `${apiBaseUrl}/user/acceptInvite?token=${token}`;
+function generateInvitationEmail({ senderName, message, token, vueBaseUrl = VUE_BASE_URL }) {
+  const acceptUrl = `${vueBaseUrl}/friends/accept?token=${token}`;
   const html = renderTemplate("invitation", {
     title: "You've Been Invited!",
     senderName,

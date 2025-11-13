@@ -328,7 +328,7 @@
         await new Promise(resolve => setTimeout(resolve, 100))
       }
     }
-    
+
     if (editor.value && editorReady.value && editor.value.commands) {
       await nextTick()
       try {

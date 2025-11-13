@@ -155,79 +155,79 @@
           </template>
           <template #mobile-actions>
             <v-btn
+              color="primary"
               icon="mdi-account-plus"
               rounded
               variant="flat"
-              color="primary"
               @click="openCreateDialog"
             />
           </template>
         </page-title>
 
-        <div class="page-content">          
-          <!-- Groups List -->          
-            <div class="d-flex align-center" style="gap: 8px; flex-wrap: wrap;">
-              <!-- All Chip -->
-              <v-chip
-                class="clickable"
-                :color="selectedGroup === null ? 'primary' : 'default'"
-                size="large"
-                :variant="selectedGroup === null ? 'flat' : 'outlined'"
-                @click="selectGroup(null)"
-              >
-                <v-icon icon="mdi-view-grid" start />
-                All
-              </v-chip>
-              <!-- Group Chips -->
-              <v-chip
-                v-for="group in groups"
-                :key="group.id"
-                class="clickable"
-                :color="selectedGroup === group.id ? (group.color || 'primary') : 'default'"
-                size="large"
-                :variant="selectedGroup === group.id ? 'flat' : 'outlined'"
-                @click="selectGroup(group.id)"
-              >
-                <v-icon :icon="group.icon || 'mdi-account-group'" start />
-                {{ group.name }}
-                <span v-if="group.memberCount > 0" class="ml-1">({{ group.memberCount }})</span>
+        <div class="page-content">
+          <!-- Groups List -->
+          <div class="d-flex align-center" style="gap: 8px; flex-wrap: wrap;">
+            <!-- All Chip -->
+            <v-chip
+              class="clickable"
+              :color="selectedGroup === null ? 'primary' : 'default'"
+              size="large"
+              :variant="selectedGroup === null ? 'flat' : 'outlined'"
+              @click="selectGroup(null)"
+            >
+              <v-icon icon="mdi-view-grid" start />
+              All
+            </v-chip>
+            <!-- Group Chips -->
+            <v-chip
+              v-for="group in groups"
+              :key="group.id"
+              class="clickable"
+              :color="selectedGroup === group.id ? (group.color || 'primary') : 'default'"
+              size="large"
+              :variant="selectedGroup === group.id ? 'flat' : 'outlined'"
+              @click="selectGroup(group.id)"
+            >
+              <v-icon :icon="group.icon || 'mdi-account-group'" start />
+              {{ group.name }}
+              <span v-if="group.memberCount > 0" class="ml-1">({{ group.memberCount }})</span>
 
-                <!-- Group Menu -->
-                <v-menu location="bottom">
-                  <template #activator="{ props: menuProps }">
-                    <v-icon
-                      class="ml-1"
-                      size="small"
-                      v-bind="menuProps"
-                      @click.stop
-                    >mdi-dots-vertical
-                    </v-icon>
-                  </template>
-                  <v-list density="compact">
-                    <v-list-item
-                      prepend-icon="mdi-account-multiple"
-                      @click="openMemberDialog(group)"
-                    >
-                      <v-list-item-title>Manage Members</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item
-                      prepend-icon="mdi-pencil"
-                      @click="openEditDialog(group)"
-                    >
-                      <v-list-item-title>Edit</v-list-item-title>
-                    </v-list-item>
-                    <v-divider />
-                    <v-list-item
-                      class="text-error"
-                      prepend-icon="mdi-delete"
-                      @click="() => { deletingGroup = group; deleteDialogOpen = true }"
-                    >
-                      <v-list-item-title>Delete</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-chip>
-            </div>          
+              <!-- Group Menu -->
+              <v-menu location="bottom">
+                <template #activator="{ props: menuProps }">
+                  <v-icon
+                    class="ml-1"
+                    size="small"
+                    v-bind="menuProps"
+                    @click.stop
+                  >mdi-dots-vertical
+                  </v-icon>
+                </template>
+                <v-list density="compact">
+                  <v-list-item
+                    prepend-icon="mdi-account-multiple"
+                    @click="openMemberDialog(group)"
+                  >
+                    <v-list-item-title>Manage Members</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    prepend-icon="mdi-pencil"
+                    @click="openEditDialog(group)"
+                  >
+                    <v-list-item-title>Edit</v-list-item-title>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item
+                    class="text-error"
+                    prepend-icon="mdi-delete"
+                    @click="() => { deletingGroup = group; deleteDialogOpen = true }"
+                  >
+                    <v-list-item-title>Delete</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-chip>
+          </div>
 
           <!-- Event Card Feed -->
           <event-infinite
