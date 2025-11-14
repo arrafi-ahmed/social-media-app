@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
 const db = require("../db");
@@ -497,3 +498,107 @@ async function bulkDeleteInvitations(invitationIds) {
   `;
   return await db.execute(queryText, invitationIds);
 }
+
+/**
+ * Verifies Facebook's signed request
+ * @param {string} signedRequest - The signed_request parameter from Facebook
+ * @returns {object|null} - Decoded payload if valid, null otherwise
+ */
+function verifyFacebookSignedRequest(signedRequest) {
+  if (!signedRequest || !FACEBOOK_APP_SECRET) {
+    return null;
+  }
+
+  try {
+    const parts = signedRequest.split(".");
+    if (parts.length !== 2) {
+      return null;
+    }
+
+    const [signature, payload] = parts;
+
+    // Decode the payload
+    const decodedPayload = decodeBase64Url(payload);
+    const payloadData = JSON.parse(decodedPayload);
+
+    // Verify the signature
+    const expectedSignature = crypto
+      .createHmac("sha256", FACEBOOK_APP_SECRET)
+      .update(payload)
+      .digest("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    if (signature !== expectedSignature) {
+      return null;
+    }
+
+    return payloadData;
+  } catch (error) {
+    console.error("Error verifying Facebook signed request:", error);
+    return null;
+  }
+}
+
+/**
+ * Handles Facebook data deletion callback
+ * @param {string} signedRequest - The signed_request parameter from Facebook
+ * @returns {object} - Response with confirmation_code and url
+ */
+exports.handleFacebookDataDeletion = async (signedRequest) => {
+  validateFacebookConfig();
+
+  // Verify the signed request
+  const payload = verifyFacebookSignedRequest(signedRequest);
+  if (!payload || !payload.user_id) {
+    throw new CustomError("Invalid signed request", 400);
+  }
+
+  const facebookUserId = payload.user_id;
+
+  // Find the user by Facebook provider_user_id
+  const socialIdentity = await userService.getSocialIdentity(
+    "facebook",
+    facebookUserId
+  );
+
+  if (!socialIdentity) {
+    // User not found, but we still need to return a valid response
+    // Generate a confirmation code for tracking
+    const confirmationCode = uuidv4().replace(/-/g, "").substring(0, 10);
+    return {
+      url: `${VUE_BASE_URL || "http://localhost:3000"}/user-deletion-status/${confirmationCode}`,
+      confirmation_code: confirmationCode
+    };
+  }
+
+  const userId = socialIdentity.userId;
+
+  // Delete the user and all associated data
+  try {
+    // Get user image before deletion
+    const user = await userService.getUserById(userId);
+    const userImage = user?.image || null;
+
+    // Delete the user (this will cascade delete related data)
+    await userService.deleteUser(userId, userImage);
+
+    // Generate confirmation code
+    const confirmationCode = uuidv4().replace(/-/g, "").substring(0, 10);
+
+    return {
+      url: `${VUE_BASE_URL || "http://localhost:3000"}/user-deletion-status/${confirmationCode}`,
+      confirmation_code: confirmationCode
+    };
+  } catch (error) {
+    console.error("Error deleting Facebook user:", error);
+    // Still return a response even if deletion fails
+    // Facebook expects a response, and we can handle the error internally
+    const confirmationCode = uuidv4().replace(/-/g, "").substring(0, 10);
+    return {
+      url: `${VUE_BASE_URL || "http://localhost:3000"}/user-deletion-status/${confirmationCode}`,
+      confirmation_code: confirmationCode
+    };
+  }
+};

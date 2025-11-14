@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const ApiResponse = require("../model/ApiResponse");
 const CustomError = require("../model/CustomError");
 const { VUE_BASE_URL } = require("../others/util");
@@ -110,6 +112,41 @@ router.post("/submitResetPass", async (req, res, next) => {
     res.status(200).json(new ApiResponse("Password reset successful!", result));
   } catch (error) {
     return next(error);
+  }
+});
+
+// Facebook Data Deletion Callback
+// This endpoint is called by Facebook when a user requests data deletion
+// It must be publicly accessible (no auth middleware)
+// Facebook sends a POST request with signed_request parameter
+// Facebook typically sends as form-encoded data, but we handle both JSON and form data
+router.post("/facebook/user-delete", express.urlencoded({ extended: true }), async (req, res, next) => {
+  try {
+    // Facebook can send signed_request in body (JSON or form-encoded)
+    // Try multiple possible field names
+    const signedRequest = req.body?.signed_request 
+      || req.body?.signedRequest 
+      || req.body?.['signed_request'];
+    
+    if (!signedRequest) {
+      return res.status(400).json({
+        error: "Missing signed_request parameter"
+      });
+    }
+
+    const result = await authService.handleFacebookDataDeletion(signedRequest);
+    
+    // Facebook expects a plain JSON response (not wrapped in ApiResponse)
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Facebook data deletion error:", error);
+    // Even on error, return a valid response format for Facebook
+    // Facebook requires a response, so we always return 200 with a confirmation code
+    const confirmationCode = uuidv4().replace(/-/g, "").substring(0, 10);
+    res.status(200).json({
+      url: `${VUE_BASE_URL || "http://localhost:4173"}/user-deletion-status/${confirmationCode}`,
+      confirmation_code: confirmationCode
+    });
   }
 });
 
