@@ -29,7 +29,7 @@
   
   // Computed property that transforms users with subscription data
   const foundUsersWSucscription = computed(() => {
-    const user = foundUsers.value.map(user => ({
+    return foundUsers.value.map(user => ({
       ...user,
       subscriptionId: user.id,
       isSubscriptionActive: 
@@ -37,8 +37,6 @@
         && user.stripeSubscriptionId !== '0' 
         && user.stripeSubscriptionId !== 0,
     }))
-    console.log(91, user)
-    return user
   })
 
   const initLanding = computed(() => store.state.page.landing)
@@ -250,10 +248,15 @@
         planId,
         planTitle,
         userId,
-      }).then(() => {
-        // Refresh user subscription data after update
-        // Backend already sends proper message via ApiResponse, axios interceptor will show it
-        // refreshUserSubscription(userId)
+      }).then((payload) => {
+        // Update user subscription data in store instead of refetching
+        const subscriptionData = payload?.insertedSubscription
+        if (subscriptionData) {
+          store.commit('user/updateUserSubscription', {
+            userId,
+            subscriptionData,
+          })
+        }
       }).catch((error) => {
         console.error('Error saving subscription:', error)
         // Error message is already shown by axios interceptor, but ensure it's shown if missing
@@ -268,9 +271,11 @@
       store.dispatch('subscription/deleteSubscription', {
         userId,
       }).then(() => {
-        // Refresh user subscription data after deletion
-        // Backend already sends proper message via ApiResponse, axios interceptor will show it
-        refreshUserSubscription(userId)
+        // Update user subscription data in store instead of refetching
+        store.commit('user/updateUserSubscription', {
+          userId,
+          subscriptionData: null, // null means remove subscription
+        })
       }).catch((error) => {
         console.error('Error deleting subscription:', error)
         // Error message is already shown by axios interceptor, but ensure it's shown if missing
@@ -281,16 +286,6 @@
           })
         }
       })
-    }
-  }
-
-  async function refreshUserSubscription (userId) {
-    // Simply refresh the search to get updated subscription data
-    if (searchingUser.value) {
-      await store.dispatch('user/searchUser', searchingUser.value)
-    } else {
-      // If no search term, search for empty string to get all users
-      await store.dispatch('user/searchUser', '')
     }
   }
 

@@ -93,7 +93,7 @@ exports.getUserById = async (userId) => {
 };
 
 exports.getIdByEmail = async (email) => {
-  const sql = `SELECT id FROM users WHERE email = $1`;
+  const sql = `SELECT id FROM users WHERE LOWER(email) = LOWER($1)`;
   return await db.getRow(sql, [email]);
 };
 
@@ -196,9 +196,9 @@ exports.sendInvite = async (body, userId) => {
   const senderId = userId;
 
   const validations = emails.map(async (email) => {
-    //check if initation sent already
+    //check if initation sent already (case insensitive)
     const existingInvite = await db.getRow(
-      `SELECT * FROM invitation WHERE sender_id = $1 AND receiver_email = $2`,
+      `SELECT * FROM invitation WHERE sender_id = $1 AND LOWER(receiver_email) = LOWER($2)`,
       [userId, email]
     );
     if (existingInvite && existingInvite.id) {
@@ -703,7 +703,7 @@ exports.updateEmailNewCommentNotification = async (payload, userId) => {
 };
 
 exports.getPendingInvitation = async (email) => {
-  const sql = `SELECT * FROM invitation WHERE receiver_email = $1 AND is_accepted = true`;
+  const sql = `SELECT * FROM invitation WHERE LOWER(receiver_email) = LOWER($1) AND is_accepted = true`;
   return await db.getRows(sql, [email]);
 };
 

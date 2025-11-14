@@ -92,6 +92,29 @@ export const mutations = {
     }
     state.foundUsers.splice(targetItemIndex, 1)
   },
+  updateUserSubscription (state, { userId, subscriptionData }) {
+    const userIndex = state.foundUsers.findIndex(user => user.id === userId)
+    if (userIndex === -1) {
+      return
+    }
+    const user = state.foundUsers[userIndex]
+    // Update subscription fields
+    if (subscriptionData) {
+      // Adding subscription
+      user.subscriptionActive = subscriptionData.active ?? true
+      user.stripeSubscriptionId = subscriptionData.stripeSubscriptionId
+      user.subscriptionId = subscriptionData.id ?? subscriptionData.subscriptionId
+      user.planId = subscriptionData.planId
+      user.pendingCancel = subscriptionData.pendingCancel ?? false
+    } else {
+      // Removing subscription
+      user.subscriptionActive = false
+      user.stripeSubscriptionId = '0'
+      user.subscriptionId = null
+      user.planId = null
+      user.pendingCancel = false
+    }
+  },
   setFriends (state, payload) {
     state.friends = (payload || []).map(friendData => new User(friendData || {}))
   },

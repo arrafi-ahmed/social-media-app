@@ -76,12 +76,12 @@ exports.register = async (payload, clientUrl) => {
 };
 
 exports.signin = async (payload) => {
-  // First, get user by email to retrieve stored password
+  // First, get user by email to retrieve stored password (case insensitive)
   const sql = `
     SELECT u.id, u.full_name, u.image, u.email, u.password, u.role, u.slug, us.theme
     FROM users u
     LEFT JOIN user_settings us ON u.id = us.user_id
-    WHERE u.email = $1
+    WHERE LOWER(u.email) = LOWER($1)
   `;
   const result = await db.getRow(sql, [payload.email]);
 
@@ -140,7 +140,7 @@ exports.submitResetPass = async ({ token, newPass }) => {
 
   // Hash the new password before updating
   const hashedPassword = await bcrypt.hash(newPass, 10);
-  const updateSql = `UPDATE users SET password = $1 WHERE email = $2`;
+  const updateSql = `UPDATE users SET password = $1 WHERE LOWER(email) = LOWER($2)`;
   await db.execute(updateSql, [hashedPassword, result.email]);
 
   const deleteSql = `DELETE FROM password_reset WHERE token = $1`;
