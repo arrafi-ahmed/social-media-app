@@ -97,6 +97,23 @@
       })
       .catch(error => {})
   }
+
+  function startSocialLogin (provider) {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    if (!baseUrl) {
+      store.commit('addSnackbar', {
+        text: 'API base URL is not configured.',
+        color: 'error',
+      })
+      return
+    }
+    const target = new URL(`/auth/${provider}`, baseUrl)
+    const redirect = route.query?.redirect
+    if (redirect) {
+      target.searchParams.set('redirect', redirect)
+    }
+    window.location.href = target.toString()
+  }
 </script>
 
 <template>
@@ -181,6 +198,29 @@
               >
                 Login
               </v-btn>
+              <v-divider class="my-4" />
+              <div class="text-center text-medium-emphasis mb-3">
+                Or continue with
+              </div>
+              <div class="d-flex flex-column gap-3">
+                <v-btn
+                  block
+                  color="primary"
+                  prepend-icon="mdi-google"                  
+                  @click="startSocialLogin('google')"
+                >
+                  Continue with Google
+                </v-btn>
+                <v-btn
+                  block
+                  color="blue-darken-4"
+                  prepend-icon="mdi-facebook"
+                  class="mt-2"
+                  @click="startSocialLogin('facebook')"
+                >
+                  Continue with Facebook
+                </v-btn>
+              </div>
               <div class="text-center mt-2 mt-md-4">
                 Not registered yet?
                 <v-btn

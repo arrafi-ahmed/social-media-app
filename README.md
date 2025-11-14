@@ -89,3 +89,23 @@ npm run build:full
 ### Customize configuration
 
 See [Configuration Reference](https://vitejs.dev/config/).
+
+## Social Login Configuration
+
+Google and Facebook OAuth require the following environment variables:
+
+```
+# Backend (.env)
+GOOGLE_CLIENT_ID=<google-client-id>
+GOOGLE_CLIENT_SECRET=<google-client-secret>
+GOOGLE_CALLBACK_URL=https://api.example.com/auth/google/callback
+
+FACEBOOK_APP_ID=<facebook-app-id>
+FACEBOOK_APP_SECRET=<facebook-app-secret>
+FACEBOOK_CALLBACK_URL=https://api.example.com/auth/facebook/callback
+
+# Optional: override the frontend route the backend redirects to
+SOCIAL_LOGIN_REDIRECT_URL=https://app.example.com/auth/social-callback
+```
+
+Set the matching OAuth redirect URIs in the Google Cloud Console and Facebook Developer dashboard so they point to the backend callback URLs shown above.

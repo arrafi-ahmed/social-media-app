@@ -17,8 +17,15 @@
   const findForm = reactive({
     searchKeyword: null,
     category: null,
-    sort: settings.value?.sort,
+    sort: settings.value?.sort || 'LATEST',
   })
+
+  // Watch settings and update sort when settings are loaded from DB
+  watch(() => settings.value?.sort, (newSort) => {
+    if (newSort && newSort !== findForm.sort) {
+      findForm.sort = newSort
+    }
+  }, { immediate: true })
 
   // Date mode controls
   const isRangeMode = ref(true) // true = range mode, false = single date mode
@@ -271,6 +278,7 @@
                     <v-list density="compact">
                       <!--              LATEST-->
                       <v-list-item
+                        :active="findForm.sort === 'LATEST'"
                         link
                         prepend-icon="mdi-sort-clock-descending-outline"
                         title="Recent Posts"
@@ -278,6 +286,7 @@
                       />
                       <!--              DESC-->
                       <v-list-item
+                        :active="findForm.sort === 'DESC'"
                         link
                         prepend-icon="mdi-sort-variant"
                         title="Newest Events First"
@@ -285,6 +294,7 @@
                       />
                       <!--              ASC-->
                       <v-list-item
+                        :active="findForm.sort === 'ASC'"
                         link
                         prepend-icon="mdi-sort-reverse-variant"
                         title="Oldest Events First"

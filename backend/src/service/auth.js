@@ -1,11 +1,28 @@
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const { OAuth2Client } = require("google-auth-library");
+const fetch = require("node-fetch");
 const db = require("../db");
 const CustomError = require("../model/CustomError");
 const eventService = require("./event");
 const emailService = require("../email");
 const userService = require("./user");
+const { VUE_BASE_URL, customerRole } = require("../others/util");
+
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL,
+  FACEBOOK_APP_ID,
+  FACEBOOK_APP_SECRET,
+  FACEBOOK_CALLBACK_URL,
+  SOCIAL_LOGIN_REDIRECT_URL
+} = process.env;
+
+const SOCIAL_REDIRECT_URL =
+  SOCIAL_LOGIN_REDIRECT_URL ||
+  (VUE_BASE_URL ? `${VUE_BASE_URL}/auth/social-callback` : "http://localhost:4173/auth/social-callback");
 
 exports.register = async (payload, clientUrl) => {
   const existingUser = await userService.getIdByEmail(payload.email);
@@ -41,38 +58,16 @@ exports.register = async (payload, clientUrl) => {
   // Generate authentication data
   const authData = generateAuthData(insertedUser);
 
-  // Create welcome event for the new user
-  const welcomeEvent = await eventService.createWelcomeEvent(insertedUser.id);
-
-  // Get pending invitations for the registered user
-  const pendingInvitations = await userService.getPendingInvitation(
-    insertedUser.email
-  );
-
-  // if no invitation return only registered data
-  if (pendingInvitations?.length === 0) {
-    return { authData, welcomeEvent };
+  const onboardingData = await buildNewUserOnboardingPayload(insertedUser);
+  if (!onboardingData.newFriendsCount) {
+    return { authData, welcomeEvent: onboardingData.welcomeEvent };
   }
-  // if pending invitation
-  else {
-    const pendingInvitationIds = pendingInvitations.map((item) => item.id);
 
-    // Prepare friendship records for bulk insertion
-    const friendshipRecords = pendingInvitations.map((item) => ({
-      userId1: insertedUser.id,
-      userId2: item.senderId
-    }));
-
-    await Promise.all([
-      bulkInsertFriendships(friendshipRecords),
-      bulkDeleteInvitations(pendingInvitationIds)
-    ]);
-    return {
-      newFriendsCount: friendshipRecords.length,
-      authData,
-      welcomeEvent
-    };
-  }
+  return {
+    authData,
+    welcomeEvent: onboardingData.welcomeEvent,
+    newFriendsCount: onboardingData.newFriendsCount
+  };
 };
 
 exports.signin = async (payload) => {
@@ -147,6 +142,133 @@ exports.submitResetPass = async ({ token, newPass }) => {
   return await db.execute(deleteSql, [token]);
 };
 
+exports.getGoogleAuthUrl = (options = {}) => {
+  const client = createGoogleClient();
+  if (!client) {
+    throw new CustomError("Google login is not configured!", 503);
+  }
+  const statePayload = encodeStatePayload({
+    redirect: sanitizeRedirectPath(options.redirect)
+  });
+  return client.generateAuthUrl({
+    access_type: "offline",
+    prompt: "consent",
+    scope: ["openid", "email", "profile"],
+    state: statePayload
+  });
+};
+
+exports.handleGoogleCallback = async ({ code, state }) => {
+  if (!code) {
+    throw new CustomError("Missing authorization code", 400);
+  }
+  const client = createGoogleClient();
+  if (!client) {
+    throw new CustomError("Google login is not configured!", 503);
+  }
+  const statePayload = decodeStatePayload(state);
+
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
+  const response = await client.request({
+    url: "https://www.googleapis.com/oauth2/v2/userinfo"
+  });
+  const profile = response.data;
+  const socialResult = await handleSocialLogin({
+    provider: "google",
+    providerUserId: profile.id,
+    email: profile.email,
+    fullName: profile.name || [profile.given_name, profile.family_name].filter(Boolean).join(" "),
+    image: profile.picture
+  });
+
+  return buildSocialRedirect({
+    token: socialResult.authData.token,
+    currentUser: socialResult.authData.currentUser,
+    redirect: statePayload.redirect,
+    onboarding: socialResult.isNewUser
+      ? {
+        isNewUser: true,
+        welcomeEvent: socialResult.welcomeEvent,
+        newFriendsCount: socialResult.newFriendsCount
+      }
+      : undefined
+  });
+};
+
+exports.getFacebookAuthUrl = (options = {}) => {
+  validateFacebookConfig();
+  const statePayload = encodeStatePayload({
+    redirect: sanitizeRedirectPath(options.redirect)
+  });
+  const authUrl = new URL("https://www.facebook.com/v19.0/dialog/oauth");
+  authUrl.searchParams.set("client_id", FACEBOOK_APP_ID);
+  authUrl.searchParams.set("redirect_uri", FACEBOOK_CALLBACK_URL);
+  authUrl.searchParams.set("state", statePayload);
+  authUrl.searchParams.set("scope", "email,public_profile");
+  authUrl.searchParams.set("response_type", "code");
+  return authUrl.toString();
+};
+
+exports.handleFacebookCallback = async ({ code, state }) => {
+  if (!code) {
+    throw new CustomError("Missing authorization code", 400);
+  }
+  validateFacebookConfig();
+  const statePayload = decodeStatePayload(state);
+
+  const tokenResponse = await fetch(
+    `https://graph.facebook.com/v19.0/oauth/access_token?client_id=${FACEBOOK_APP_ID}` +
+      `&redirect_uri=${encodeURIComponent(FACEBOOK_CALLBACK_URL)}` +
+      `&client_secret=${FACEBOOK_APP_SECRET}` +
+      `&code=${encodeURIComponent(code)}`
+  );
+  const tokenJson = await tokenResponse.json();
+  if (tokenJson.error) {
+    throw new CustomError(tokenJson.error.message || "Facebook login failed!", 400);
+  }
+
+  const profileResponse = await fetch(
+    `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${tokenJson.access_token}`
+  );
+  const profileJson = await profileResponse.json();
+  if (profileJson.error) {
+    throw new CustomError(profileJson.error.message || "Failed to fetch Facebook profile!", 400);
+  }
+
+  const socialResult = await handleSocialLogin({
+    provider: "facebook",
+    providerUserId: profileJson.id,
+    email: profileJson.email,
+    fullName: profileJson.name,
+    image: profileJson.picture?.data?.url
+  });
+
+  return buildSocialRedirect({
+    token: socialResult.authData.token,
+    currentUser: socialResult.authData.currentUser,
+    redirect: statePayload.redirect,
+    onboarding: socialResult.isNewUser
+      ? {
+        isNewUser: true,
+        welcomeEvent: socialResult.welcomeEvent,
+        newFriendsCount: socialResult.newFriendsCount
+      }
+      : undefined
+  });
+};
+
+exports.buildSocialErrorRedirect = (state, error) => {
+  const statePayload = decodeStatePayload(state);
+  const message = error instanceof CustomError
+    ? error.message
+    : "Unable to complete social login!";
+  return buildSocialRedirect({
+    redirect: statePayload.redirect,
+    error: message
+  });
+};
+
 function generateAuthData(result) {
   let token = "";
   let currentUser = {};
@@ -162,6 +284,182 @@ function generateAuthData(result) {
     token = jwt.sign({ currentUser }, process.env.TOKEN_SECRET);
   }
   return { token, currentUser };
+}
+
+function createGoogleClient() {
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
+    return null;
+  }
+  return new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL);
+}
+
+function validateFacebookConfig() {
+  if (!FACEBOOK_APP_ID || !FACEBOOK_APP_SECRET || !FACEBOOK_CALLBACK_URL) {
+    throw new CustomError("Facebook login is not configured!", 503);
+  }
+}
+
+function encodeBase64Url(value) {
+  return Buffer.from(value)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+function decodeBase64Url(value) {
+  if (!value) return "";
+  let base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4) {
+    base64 += "=";
+  }
+  return Buffer.from(base64, "base64").toString("utf8");
+}
+
+function encodeStatePayload(payload = {}) {
+  return encodeBase64Url(JSON.stringify(payload));
+}
+
+function decodeStatePayload(encoded) {
+  if (!encoded) return {};
+  try {
+    return JSON.parse(decodeBase64Url(encoded));
+  } catch (error) {
+    return {};
+  }
+}
+
+function sanitizeRedirectPath(redirect) {
+  if (!redirect || typeof redirect !== "string") {
+    return "";
+  }
+  if (!redirect.startsWith("/") || redirect.startsWith("//")) {
+    return "";
+  }
+  return redirect;
+}
+
+function buildSocialRedirect({ token, currentUser, redirect, onboarding, error }) {
+  const target = new URL(SOCIAL_REDIRECT_URL);
+  const safeRedirect = sanitizeRedirectPath(redirect);
+  if (safeRedirect) {
+    target.searchParams.set("redirect", safeRedirect);
+  }
+  if (token) {
+    target.searchParams.set("token", token);
+  }
+  if (currentUser) {
+    target.searchParams.set("user", encodeBase64Url(JSON.stringify(currentUser)));
+  }
+  if (onboarding) {
+    target.searchParams.set("onboarding", encodeBase64Url(JSON.stringify(onboarding)));
+  }
+  if (error) {
+    target.searchParams.set("error", error);
+  }
+  return target.toString();
+}
+
+async function handleSocialLogin(profile) {
+  const provider = (profile.provider || "").toLowerCase();
+  if (!provider || !profile.providerUserId) {
+    throw new CustomError("Invalid social profile received!", 400);
+  }
+
+  const socialIdentity = await userService.getSocialIdentity(
+    provider,
+    profile.providerUserId
+  );
+  let userRecord = null;
+  let isNewUser = false;
+  const email = profile.email ? profile.email.toLowerCase() : null;
+
+  if (socialIdentity) {
+    userRecord = await userService.getUserById(socialIdentity.userId);
+  } else {
+    if (email) {
+      userRecord = await userService.getUserByEmail(email);
+    }
+    if (!userRecord) {
+      if (!email) {
+        throw new CustomError(
+          `No email returned from ${provider}. Please grant email permission and try again.`,
+          400
+        );
+      }
+      const newUser = await userService.createUser({
+        fullName: profile.fullName || deriveFullName(email),
+        email,
+        password: null,
+        role: customerRole
+      });
+      await userService.createUserSettings(newUser.id);
+      const admins = await userService.getAdmins();
+      if (admins?.length) {
+        const friendRecords = admins.map((admin) => ({
+          userId1: admin.id,
+          userId2: newUser.id
+        }));
+        await bulkInsertFriendships(friendRecords);
+      }
+      userRecord = newUser;
+      isNewUser = true;
+    }
+    await userService.createOrUpdateSocialIdentity({
+      userId: userRecord.id,
+      provider,
+      providerUserId: profile.providerUserId,
+      email
+    });
+  }
+
+  let onboardingData = null;
+  if (isNewUser && userRecord) {
+    onboardingData = await buildNewUserOnboardingPayload(userRecord);
+  }
+
+  const authData = generateAuthData(userRecord);
+  return {
+    authData,
+    welcomeEvent: onboardingData?.welcomeEvent,
+    newFriendsCount: onboardingData?.newFriendsCount,
+    isNewUser
+  };
+}
+
+async function buildNewUserOnboardingPayload(userRecord) {
+  const welcomeEvent = await eventService.createWelcomeEvent(userRecord.id);
+  let newFriendsCount;
+
+  if (userRecord.email) {
+    const pendingInvitations = await userService.getPendingInvitation(userRecord.email);
+    if (pendingInvitations?.length) {
+      const pendingInvitationIds = pendingInvitations.map((item) => item.id);
+      const friendshipRecords = pendingInvitations.map((item) => ({
+        userId1: userRecord.id,
+        userId2: item.senderId
+      }));
+
+      await Promise.all([
+        bulkInsertFriendships(friendshipRecords),
+        bulkDeleteInvitations(pendingInvitationIds)
+      ]);
+
+      newFriendsCount = friendshipRecords.length;
+    }
+  }
+
+  return {
+    welcomeEvent,
+    newFriendsCount
+  };
+}
+
+function deriveFullName(email) {
+  if (!email) {
+    return "WayzAway member";
+  }
+  return email.split("@")[0] || "WayzAway member";
 }
 
 async function bulkInsertFriendships(records) {

@@ -55,8 +55,15 @@
     startDate: null,
     endDate: null,
     category: null,
-    sort: settings.value?.sort,
+    sort: settings.value?.sort || 'LATEST',
   })
+
+  // Watch settings and update sort when settings are loaded from DB
+  watch(() => settings.value?.sort, (newSort) => {
+    if (newSort && newSort !== findFormData.sort) {
+      findFormData.sort = newSort
+    }
+  }, { immediate: true })
   const page = computed(() => store.state.eventWall.page)
   let isLoading = false
 

@@ -1,6 +1,6 @@
 <script setup>
   import { computed, onMounted, ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import PageTitle from '@/components/PageTitle.vue'
@@ -16,6 +16,7 @@
   })
 
   const router = useRouter()
+  const route = useRoute()
   const store = useStore()
   const { mobile } = useDisplay()
 
@@ -27,13 +28,21 @@
   const email = ref(null)
   const message = ref(null)
 
-  const destination = computed(() =>
-    routeInfo.value.from.name === 'register'
-      ? 'pricing'
-      : (routeInfo.value.from.name === 'friends'
-        ? 'friends'
-        : null),
+  const cameFromRegister = computed(() =>
+    route.query?.ref === 'register'
+    || route.params?.ref === 'register'
+    || routeInfo.value.from?.name === 'register',
   )
+
+  const destination = computed(() => {
+    if (cameFromRegister.value) {
+      return 'pricing'
+    }
+    if (routeInfo.value.from?.name === 'friends') {
+      return 'friends'
+    }
+    return null
+  })
 
   async function sendInvite () {
     await form.value.validate()

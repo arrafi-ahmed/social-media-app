@@ -97,6 +97,11 @@ exports.getIdByEmail = async (email) => {
   return await db.getRow(sql, [email]);
 };
 
+exports.getUserByEmail = async (email) => {
+  const sql = `SELECT * FROM users WHERE LOWER(email) = LOWER($1)`;
+  return await db.getRow(sql, [email]);
+};
+
 // Helper function used internally to check if slug exists
 async function getIdBySlug(slug) {
   const sql = `SELECT id FROM users WHERE slug = $1`;
@@ -134,6 +139,34 @@ exports.getAdmins = async () => {
 exports.getUsers = async () => {
   const sql = `SELECT * FROM users ORDER BY created_at DESC`;
   return await db.getRows(sql, []);
+};
+
+exports.getSocialIdentity = async (provider, providerUserId) => {
+  const sql = `
+    SELECT *
+    FROM social_identities
+    WHERE provider = $1 AND provider_user_id = $2
+  `;
+  return await db.getRow(sql, [provider, providerUserId]);
+};
+
+exports.createOrUpdateSocialIdentity = async (payload) => {
+  const sql = `
+    INSERT INTO social_identities (user_id, provider, provider_user_id, email, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ON CONFLICT (provider, provider_user_id)
+    DO UPDATE SET
+      user_id = EXCLUDED.user_id,
+      email = EXCLUDED.email,
+      updated_at = CURRENT_TIMESTAMP
+    RETURNING *
+  `;
+  return await db.getRow(sql, [
+    payload.userId,
+    payload.provider,
+    payload.providerUserId,
+    payload.email
+  ]);
 };
 
 // Export users to CSV

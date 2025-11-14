@@ -42,6 +42,54 @@ router.post("/signin", async (req, res, next) => {
   }
 });
 
+router.get("/google", (req, res, next) => {
+  try {
+    const authUrl = authService.getGoogleAuthUrl({
+      redirect: req.query?.redirect
+    });
+    return res.redirect(302, authUrl);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get("/google/callback", async (req, res) => {
+  try {
+    const redirectUrl = await authService.handleGoogleCallback({
+      code: req.query?.code,
+      state: req.query?.state
+    });
+    return res.redirect(302, redirectUrl);
+  } catch (error) {
+    const fallback = authService.buildSocialErrorRedirect(req.query?.state, error);
+    return res.redirect(302, fallback);
+  }
+});
+
+router.get("/facebook", (req, res, next) => {
+  try {
+    const authUrl = authService.getFacebookAuthUrl({
+      redirect: req.query?.redirect
+    });
+    return res.redirect(302, authUrl);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get("/facebook/callback", async (req, res) => {
+  try {
+    const redirectUrl = await authService.handleFacebookCallback({
+      code: req.query?.code,
+      state: req.query?.state
+    });
+    return res.redirect(302, redirectUrl);
+  } catch (error) {
+    const fallback = authService.buildSocialErrorRedirect(req.query?.state, error);
+    return res.redirect(302, fallback);
+  }
+});
+
 router.post("/requestResetPass", async (req, res, next) => {
   try {
     const result = await authService.requestResetPass(

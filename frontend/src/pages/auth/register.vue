@@ -5,6 +5,7 @@
   import { useStore } from 'vuex'
   import User from '@/models/user.js'
   import { isValidEmail, isValidPass, showApiQueryMsg } from '@/others/util.js'
+  import { handleInviteAfterAuth, parseStoredInvite } from '@/others/onboarding'
 
   definePage({
     name: 'register',
@@ -31,47 +32,6 @@
   const isFormValid = ref(true)
   const isSubmitting = ref(false)
   const isEmailPrefilled = ref(false)
-
-  function parseStoredInvite () {
-    const storedInvite = localStorage.getItem('acceptInvite')
-    if (!storedInvite) {
-      return null
-    }
-
-    try {
-      return JSON.parse(storedInvite)
-    } catch {
-      localStorage.removeItem('acceptInvite')
-      return null
-    }
-  }
-
-  async function handleInviteAfterAuth (currentUser = {}) {
-    const inviteData = parseStoredInvite()
-    if (!inviteData?.token) {
-      return false
-    }
-
-    const currentEmail = currentUser?.email?.toLowerCase?.()
-    if (inviteData.email && currentEmail && inviteData.email.toLowerCase() !== currentEmail) {
-      localStorage.setItem('apiQueryMsg', 'Invitation email does not match the registered account.')
-      localStorage.removeItem('acceptInvite')
-      return false
-    }
-
-    try {
-      const response = await $axios.post('/user/acceptInvite', { token: inviteData.token })
-      const successMessage = response?.data?.message || 'Friend invitation accepted!'
-      localStorage.setItem('apiQueryMsg', successMessage)
-    } catch (error) {
-      const message = error?.response?.data?.message || 'Invitation accepting failed!'
-      localStorage.setItem('apiQueryMsg', message)
-    } finally {
-      localStorage.removeItem('acceptInvite')
-    }
-
-    return true
-  }
 
   async function registerUser () {
     await form.value.validate()
@@ -108,7 +68,7 @@
       if (inviteHandled) {
         router.push({ name: 'friends' })
       } else {
-        router.push({ name: 'friendsInvite', params: { ref: 'register' } })
+        router.push({ name: 'friendsInvite', query: { ref: 'register' } })
       }
     } catch (error) {
       const message = error?.response?.data?.message || 'Registration failed!'

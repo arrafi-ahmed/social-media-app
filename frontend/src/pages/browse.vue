@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import EventFilter from '@/components/EventFilter.vue'
@@ -39,8 +39,15 @@
     startDate: null,
     endDate: null,
     category: null,
-    sort: settings.value?.sort,
+    sort: settings.value?.sort || 'LATEST',
   })
+
+  // Watch settings and update sort when settings are loaded from DB
+  watch(() => settings.value?.sort, (newSort) => {
+    if (newSort && newSort !== findFormData.sort) {
+      findFormData.sort = newSort
+    }
+  }, { immediate: true })
   const page = computed(() => moduleCore.value.page)
   let isLoading = false
 

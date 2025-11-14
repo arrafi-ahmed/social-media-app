@@ -27,6 +27,7 @@ declare module 'vue-router/auto-routes' {
     'resetPassword': RouteRecordInfo<'resetPassword', '/auth/reset-password', Record<never, never>, Record<never, never>>,
     'signin': RouteRecordInfo<'signin', '/auth/signin', Record<never, never>, Record<never, never>>,
     'signout': RouteRecordInfo<'signout', '/auth/signout', Record<never, never>, Record<never, never>>,
+    'socialCallback': RouteRecordInfo<'socialCallback', '/auth/social-callback', Record<never, never>, Record<never, never>>,
     'blog': RouteRecordInfo<'blog', '/blog', Record<never, never>, Record<never, never>>,
     'blogSingle': RouteRecordInfo<'blogSingle', '/blog/:id/single', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'browse': RouteRecordInfo<'browse', '/browse', Record<never, never>, Record<never, never>>,

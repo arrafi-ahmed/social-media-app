@@ -234,10 +234,10 @@ function getSortingColumn(sort) {
       return `e.created_at DESC, e.id DESC`;
     }
     case "DESC": {
-      return `e.date DESC, e.id DESC`;
+      return `e.date DESC, e.start_time DESC NULLS LAST, e.id DESC`;
     }
     case "ASC": {
-      return `e.date ASC, e.id ASC`;
+      return `e.date ASC, e.start_time DESC NULLS LAST, e.id ASC`;
     }
     // No default
   }
