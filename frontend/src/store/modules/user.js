@@ -66,7 +66,19 @@ export const mutations = {
     }
   },
   setFoundUsers (state, payload) {
-    state.foundUsers = (payload || []).map(userData => new User(userData || {}))
+    state.foundUsers = (payload || []).map(userData => {
+      // Create User object but preserve all raw data including subscription fields
+      const user = new User(userData || {})
+      // Preserve subscription fields that User model doesn't handle
+      if (userData) {
+        user.subscriptionActive = userData.subscriptionActive
+        user.pendingCancel = userData.pendingCancel
+        user.stripeSubscriptionId = userData.stripeSubscriptionId
+        user.subscriptionId = userData.subscriptionId
+        user.planId = userData.planId
+      }
+      return user
+    })
   },
   removeFoundUsers (state) {
     state.foundUsers = []
@@ -110,6 +122,15 @@ export const actions = {
   async signout ({ commit }) {
     commit('removeToken')
     commit('removeCurrentUser')
+    // Clear all localStorage items
+    localStorage.removeItem('token')
+    localStorage.removeItem('currentUser')
+    localStorage.removeItem('settings')
+    localStorage.removeItem('postLimitStatus')
+    localStorage.removeItem('acceptInvite')
+    localStorage.removeItem('apiQueryMsg')
+    localStorage.removeItem('subscription_success')
+    // Note: Not clearing 'vuetify:dynamic-reload' as it's for Vuetify dev mode
   },
   async setProfile ({ commit }) {
     try {

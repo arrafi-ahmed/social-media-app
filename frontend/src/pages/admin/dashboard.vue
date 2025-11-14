@@ -29,14 +29,16 @@
   
   // Computed property that transforms users with subscription data
   const foundUsersWSucscription = computed(() => {
-    return foundUsers.value.map(user => ({
+    const user = foundUsers.value.map(user => ({
       ...user,
       subscriptionId: user.id,
       isSubscriptionActive: 
-        user.subscription_active === true 
-        && user.stripe_subscription_id !== '0' 
-        && user.stripe_subscription_id !== 0,
+        user.subscriptionActive === true 
+        && user.stripeSubscriptionId !== '0' 
+        && user.stripeSubscriptionId !== 0,
     }))
+    console.log(91, user)
+    return user
   })
 
   const initLanding = computed(() => store.state.page.landing)
@@ -251,7 +253,7 @@
       }).then(() => {
         // Refresh user subscription data after update
         // Backend already sends proper message via ApiResponse, axios interceptor will show it
-        refreshUserSubscription(userId)
+        // refreshUserSubscription(userId)
       }).catch((error) => {
         console.error('Error saving subscription:', error)
         // Error message is already shown by axios interceptor, but ensure it's shown if missing
@@ -516,12 +518,12 @@
                         </v-chip>
                       </div>
                     </v-expansion-panel-title>
-                    <v-expansion-panel-text>
+                    <v-expansion-panel-text>                    
                       <v-data-table
                         class="text-no-wrap"
                         :headers="[
                           { title: 'User', key: 'user', sortable: false },
-                          { title: 'Email', key: 'email', sortable: true },
+                          { title: 'Email', key: 'email', sortable: false },
                           { title: 'Premium', key: 'premium', sortable: false, width: '120px', align: 'center' },
                           { title: 'Actions', key: 'actions', sortable: false, width: '100px' }
                         ]"
@@ -544,7 +546,7 @@
                         </template>
                         <template #item.user="{ item }">
                           <div class="d-flex align-center gap-3">
-                            <v-avatar size="40">
+                            <v-avatar size="40" class="mr-2">
                               <v-img
                                 v-if="item.image && item.image !== 'null'"
                                 cover
@@ -562,7 +564,7 @@
                                   })
                                 "
                               >
-                                {{ item.fullName || item.full_name }}
+                                {{ item.fullName }}
                               </div>
                               <div class="text-caption text-medium-emphasis">
                                 ID: {{ item.id }}
@@ -732,8 +734,8 @@
                       v-if="blogs.length > 0"
                       class="text-no-wrap"
                       :headers="[
-                        { title: 'Title', key: 'title', sortable: true },
-                        { title: 'Created', key: 'createdAt', sortable: true },
+                        { title: 'Title', key: 'title', sortable: false },
+                        { title: 'Created', key: 'createdAt', sortable: false },
                         { title: 'Actions', key: 'actions', sortable: false, width: '120px' }
                       ]"
                       :items="blogs"

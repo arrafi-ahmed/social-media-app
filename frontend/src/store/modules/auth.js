@@ -38,6 +38,15 @@ export const actions = {
   async signout ({ commit }) {
     commit('removeToken')
     commit('removeCurrentUser')
+    // Clear all localStorage items
+    localStorage.removeItem('token')
+    localStorage.removeItem('currentUser')
+    localStorage.removeItem('settings')
+    localStorage.removeItem('postLimitStatus')
+    localStorage.removeItem('acceptInvite')
+    localStorage.removeItem('apiQueryMsg')
+    localStorage.removeItem('subscription_success')
+    // Note: Not clearing 'vuetify:dynamic-reload' as it's for Vuetify dev mode
   },
   async register ({ commit }, request) {
     const response = await $axios.post('/auth/register', request)
