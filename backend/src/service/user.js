@@ -391,11 +391,27 @@ exports.removeFriend = async (userId, friendshipId) => {
 };
 
 exports.searchUser = async (requestedUser) => {
-  let sql = `SELECT id, full_name, email, date_of_birth, country, image, slug FROM users`;
+  let sql = `
+    SELECT 
+      u.id, 
+      u.full_name, 
+      u.email, 
+      u.date_of_birth, 
+      u.country, 
+      u.image, 
+      u.slug,
+      s.id as subscription_id,
+      s.plan_id,
+      s.stripe_subscription_id,
+      s.active as subscription_active,
+      s.pending_cancel
+    FROM users u
+    LEFT JOIN subscription s ON u.id = s.user_id
+  `;
   sql += requestedUser
-    ? ` WHERE ((CASE WHEN $1 ~ '^[0-9]+$' THEN id = CAST($1 AS INT) ELSE FALSE END)
-          OR LOWER(email) = $2
-          OR LOWER(full_name) LIKE '%' || $3 || '%')`
+    ? ` WHERE ((CASE WHEN $1 ~ '^[0-9]+$' THEN u.id = CAST($1 AS INT) ELSE FALSE END)
+          OR LOWER(u.email) = $2
+          OR LOWER(u.full_name) LIKE '%' || $3 || '%')`
     : "";
 
   const params = requestedUser

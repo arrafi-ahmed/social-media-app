@@ -1,12 +1,12 @@
 <script setup>
-  import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { useDisplay } from 'vuetify'
   import { useStore } from 'vuex'
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
   import NoItems from '@/components/NoItems.vue'
   import PageTitle from '@/components/PageTitle.vue'
   import RichTextEditor from '@/components/RichTextEditor.vue'
-  import { formatDateFromTimestamp, getBlogImageUrl, getPageImageUrl, isValidImage } from '@/others/util.js'
+  import { formatDateFromTimestamp, getBlogImageUrl, getPageImageUrl, getUserImageUrl, isValidImage } from '@/others/util.js'
   import $axios from '@/plugins/axios.js'
 
   definePage({
@@ -26,6 +26,18 @@
   const blogs = computed(() => store.state.blog.blogs)
   const categories = computed(() => store.state.category.categories)
   const foundUsers = computed(() => store.state.user.foundUsers)
+  
+  // Computed property that transforms users with subscription data
+  const foundUsersWSucscription = computed(() => {
+    return foundUsers.value.map(user => ({
+      ...user,
+      subscriptionId: user.id,
+      isSubscriptionActive: 
+        user.subscription_active === true 
+        && user.stripe_subscription_id !== '0' 
+        && user.stripe_subscription_id !== 0,
+    }))
+  })
 
   const initLanding = computed(() => store.state.page.landing)
   const initAbout = computed(() => store.state.page.about)
@@ -271,24 +283,12 @@
   }
 
   async function refreshUserSubscription (userId) {
-    try {
-      const response = await $axios.get('/subscription/getSubscription', {
-        params: { userId },
-      })
-      const subscriptionData = response.data?.payload
-      const index = foundUsersWSucscription.value.findIndex(u => u.id === userId)
-      if (index !== -1) {
-        foundUsersWSucscription.value[index] = {
-          ...subscriptionData,
-          ...foundUsersWSucscription.value[index],
-          subscriptionId: foundUsersWSucscription.value[index].id,
-          isSubscriptionActive:
-            subscriptionData?.active === true
-            && subscriptionData.stripeSubscriptionId !== '0',
-        }
-      }
-    } catch (error) {
-      console.error('Error refreshing subscription:', error)
+    // Simply refresh the search to get updated subscription data
+    if (searchingUser.value) {
+      await store.dispatch('user/searchUser', searchingUser.value)
+    } else {
+      // If no search term, search for empty string to get all users
+      await store.dispatch('user/searchUser', '')
     }
   }
 
@@ -332,44 +332,6 @@
     }
   }
 
-  const foundUsersWSucscription = ref([])
-
-  watch(
-    () => foundUsers.value,
-    async targetUsers => {
-      // Create a copy of foundUsers to work with
-      const updatedUsers = [...foundUsers.value]
-
-      for (const user of targetUsers) {
-        try {
-          const response = await $axios.get('/subscription/getSubscription', {
-            params: { userId: user.id },
-          })
-          const subscriptionData = response.data?.payload // Make sure to access the data property
-          const index = updatedUsers.findIndex(u => u.id === user.id)
-          if (index !== -1) {
-            // Update the copy instead of the original reactive property
-            updatedUsers[index] = {
-              ...subscriptionData,
-              ...updatedUsers[index],
-              subscriptionId: updatedUsers[index].id,
-              isSubscriptionActive:
-                subscriptionData?.active === true
-                && subscriptionData.stripeSubscriptionId !== '0',
-            }
-          }
-        } catch (error) {
-          console.error('API call failed:', error)
-        }
-      }
-
-      // Use nextTick to update foundUsers.value after the DOM update cycle
-      await nextTick(() => {
-        foundUsersWSucscription.value = updatedUsers
-      })
-    },
-    { deep: true }, // Use deep watcher if foundUsers.value is an array of objects
-  )
 
   onMounted(() => {
     store.commit('user/removeFoundUsers')
@@ -584,9 +546,9 @@
                           <div class="d-flex align-center gap-3">
                             <v-avatar size="40">
                               <v-img
-                                v-if="item.image"
+                                v-if="item.image && item.image !== 'null'"
                                 cover
-                                :src="item.image"
+                                :src="getUserImageUrl(item.image)"
                               />
                               <v-icon v-else>mdi-account</v-icon>
                             </v-avatar>
