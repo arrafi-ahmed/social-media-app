@@ -376,10 +376,24 @@ async function handleSocialLogin(profile) {
   const email = profile.email ? profile.email.toLowerCase() : null;
 
   if (socialIdentity) {
-    userRecord = await userService.getUserById(socialIdentity.userId);
+    // Fetch user with role and theme (similar to signin flow)
+    const sql = `
+      SELECT u.id, u.full_name, u.image, u.email, u.role, u.slug, us.theme
+      FROM users u
+      LEFT JOIN user_settings us ON u.id = us.user_id
+      WHERE u.id = $1
+    `;
+    userRecord = await db.getRow(sql, [socialIdentity.userId]);
   } else {
     if (email) {
-      userRecord = await userService.getUserByEmail(email);
+      // Fetch user with role and theme (similar to signin flow)
+      const sql = `
+        SELECT u.id, u.full_name, u.image, u.email, u.role, u.slug, us.theme
+        FROM users u
+        LEFT JOIN user_settings us ON u.id = us.user_id
+        WHERE LOWER(u.email) = LOWER($1)
+      `;
+      userRecord = await db.getRow(sql, [email]);
     }
     if (!userRecord) {
       if (!email) {
@@ -403,7 +417,14 @@ async function handleSocialLogin(profile) {
         }));
         await bulkInsertFriendships(friendRecords);
       }
-      userRecord = newUser;
+      // Fetch the newly created user with role and theme
+      const sql = `
+        SELECT u.id, u.full_name, u.image, u.email, u.role, u.slug, us.theme
+        FROM users u
+        LEFT JOIN user_settings us ON u.id = us.user_id
+        WHERE u.id = $1
+      `;
+      userRecord = await db.getRow(sql, [newUser.id]);
       isNewUser = true;
     }
     await userService.createOrUpdateSocialIdentity({

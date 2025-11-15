@@ -105,10 +105,12 @@
     }
   }
 
-  const currentUser = store.getters['auth/getCurrentUser']
+  const currentUser = computed(() => store.getters['auth/getCurrentUser'])
   onMounted(async () => {
     processSuccessQueryParam()
-    await store.dispatch('subscription/setSubscription', currentUser.id)
+    if (currentUser.value?.id) {
+      await store.dispatch('subscription/setSubscription', currentUser.value.id)
+    }
     await store.dispatch('subscription/setSubscriptionPlans')
   })
 </script>
