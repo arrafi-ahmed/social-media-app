@@ -28,20 +28,32 @@ export const mutations = {
     }
   },
   setCurrentUserName (state, payload) {
+    // Read current user from localStorage to preserve all fields (from auth module)
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    currentUser.fullName = payload
     state.currentUser.fullName = payload
-    localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
   },
   setCurrentUserImage (state, payload) {
+    // Read current user from localStorage to preserve all fields (from auth module)
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    currentUser.image = payload
     state.currentUser.image = payload
-    localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
   },
   setCurrentUserSlug (state, payload) {
+    // Read current user from localStorage to preserve all fields (from auth module)
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    currentUser.slug = payload
     state.currentUser.slug = payload
-    localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
   },
   setCurrentUserTheme (state, payload) {
+    // Read current user from localStorage to preserve all fields (from auth module)
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    currentUser.theme = payload
     state.currentUser.theme = payload
-    localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
     // Trigger theme update event
     window.dispatchEvent(new CustomEvent('theme-change', { detail: payload }))
   },
@@ -204,6 +216,8 @@ export const actions = {
       // If theme is updated, also update currentUser
       if (request.theme !== undefined) {
         commit('setCurrentUserTheme', request.theme)
+        // Also update auth module's currentUser so it reflects changes immediately
+        commit('auth/setCurrentUser', { theme: request.theme }, { root: true })
       }
       return response
     } catch (error) {
@@ -375,6 +389,8 @@ export const actions = {
       // Also update currentUser theme if theme is in settings
       if (settings?.theme) {
         commit('setCurrentUserTheme', settings.theme)
+        // Also update auth module's currentUser so it reflects changes immediately
+        commit('auth/setCurrentUser', { theme: settings.theme }, { root: true })
       }
       return response
     } catch (error) {
